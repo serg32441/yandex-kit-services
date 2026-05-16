@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Яндекс Кит — Настройка интернет-магазина | Перенос с маркетплейсов в Сочи</title>
+    <meta name="description" content="Профессиональная настройка Яндекс Кит: интернет-магазин за 5 дней. Перенос товаров с Wildberries, Ozon, Авито. Ваш личный бренд без комиссий.">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .btn-primary { 
+            background-color: #10B981; 
+            transition: all 0.3s ease; 
+        }
+        .btn-primary:hover { 
+            background-color: #059669; 
+            transform: translateY(-2px);
+            box-shadow: 0 20px 40px rgba(16, 185, 129, 0.3);
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .card {
+            background: rgba(20, 20, 25, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 16px;
+            padding: 32px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+        .stat-number {
+            font-size: 72px;
+            font-weight: 800;
+            letter-spacing: -0.04em;
+            line-height: 1.0;
+        }
+        @media (max-width: 768px) {
+            h1 { font-size: 36px !important; }
+            h2 { font-size: 28px !important; }
+            .stat-number { font-size: 48px; }
+            .cards-grid { grid-template-columns: 1fr !important; }
+            .container { padding: 0 24px; }
+            section { padding: 32px 0 !important; }
+            .btn-primary { padding: 12px 24px; font-size: 16px; }
+        }
+        @media (max-width: 480px) {
+            h1 { font-size: 30px !important; }
+        }
+        .guarantee-badge {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.8; } }
+    </style>
+</head>
+<body class="bg-[#0A0A0F] text-white">
+    <!-- Nav -->
+    <nav class="fixed w-full z-50 bg-[#0A0A0F]/80 backdrop-blur-md border-b border-white/5" style="height: 72px;">
+        <div class="max-w-7xl mx-auto px-6 h-full flex items-center justify-between">
+            <div class="text-xl font-bold">Яндекс Кит <span class="text-emerald-400">Мастер</span></div>
+            <a href="#services" class="text-sm text-gray-300 hover:text-white transition">Услуги</a>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="min-h-screen flex items-center justify-center px-6" style="padding-top: 120px;">
+        <div class="max-w-5xl mx-auto text-center">
+            <div class="mb-6">
+                <span class="inline-block px-4 py-2 bg-emerald-900/30 border border-emerald-500/30 rounded-full text-sm text-emerald-400">
+                    ИНТЕРНЕТ-МАГАЗИН ЗА 5 ДНЕЙ
+                </span>
+            </div>
+            <h1 class="text-5xl md:text-7xl font-bold mb-8 leading-tight" style="font-weight: 800; letter-spacing: -0.04em;">
+                Перестаньте кормить<br>
+                <span class="gradient-text">маркетплейсы</span><br>
+                <span class="text-4xl md:text-5xl font-light text-gray-300">— стройте свой бренд</span>
+            </h1>
+            <p class="text-xl md:text-2xl text-gray-300 mb-10 max-w-3xl mx-auto leading-relaxed">
+                Настрою интернет-магазин на Яндекс.Кит. Перенесу товары с Wildberries, Ozon, Авито. 
+                <strong class="text-emerald-400">Без комиссий площадки. Без риска блокировки</strong> вашего аккаунта.
+            </p>
+            
+            <div class="guarantee-badge bg-red-900/20 border border-red-500/30 rounded-lg p-4 mb-10 max-w-lg mx-auto">
+                <p class="text-red-400 font-semibold text-sm">⚠️ Wildberries повышает комиссии до 25%. Ozon — растёт конкуренция. Вы теряете деньги каждый день.</p>
+            </div>
+            
+            <a href="tel:+79153138254" class="btn-primary text-white font-bold py-4 px-10 rounded-full text-lg inline-block shadow-2xl">
+                Получить бесплатную консультацию
+            </a>
+            <p class="text-sm text-gray-500 mt-4">Ответим в течение 15 минут • +7 915 313-82-54</p>
+        </div>
+    </section>
+
+    <!-- Stats -->
+    <section class="py-20 bg-[#0D0D12]">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="grid md:grid-cols-3 gap-10">
+                <div class="text-center">
+                    <div class="stat-number gradient-text">0%</div>
+                    <p class="text-gray-300 mt-4">Комиссия площадки — ваши деньги остаются у вас</p>
+                </div>
+                <div class="text-center">
+                    <div class="stat-number gradient-text">5</div>
+                    <p class="text-gray-300 mt-4">Дней — средний срок запуска магазина под ключ</p>
+                </div>
+                <div class="text-center">
+                    <div class="stat-number gradient-text">100%</div>
+                    <p class="text-gray-300 mt-4">Перенос всех товаров: фото, цены, описания, категории</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Problem / Solution -->
+    <section class="py-20 px-6">
+        <div class="max-w-4xl mx-auto">
+            <h2 class="text-4xl md:text-5xl font-bold mb-12 text-center" style="letter-spacing: -0.02em;">
+                Почему маркетплейс — это ловушка
+            </h2>
+            
+            <div class="space-y-8 text-lg text-gray-300 leading-relaxed">
+                <div class="card">
+                    <p class="text-xl text-gray-300 mb-4">
+                        Вы продаёте на Wildberries или Ozon, думаете, что бизнес под контролем. Но посмотрите правде в глаза:
+                    </p>
+                    <div class="space-y-4">
+                        <div class="flex items-start gap-4">
+                            <span class="text-red-400 font-bold text-xl">✗</span>
+                            <p><strong class="text-white">Комиссия 15-25%</strong> — каждый четвёртый товар уходит площадке</p>
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <span class="text-red-400 font-bold text-xl">✗</span>
+                            <p><strong class="text-white">Блокировка без предупреждения</strong> — аккаунт могут закрыть за один отзыв</p>
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <span class="text-red-400 font-bold text-xl">✗</span>
+                            <p><strong class="text-white">Вы не владеете клиентами</strong> — они клиенты площадки, а не ваши</p>
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <span class="text-red-400 font-bold text-xl">✗</span>
+                            <p><strong class="text-white">Нет базы для повторных продаж</strong> — клиент купил в другом месте, вы не вернёте его</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card bg-gradient-to-br from-emerald-900/20 to-transparent border-emerald-500/20">
+                    <div class="border-l-4 border-emerald-500 pl-6 mb-6">
+                        <p class="text-2xl font-semibold text-emerald-400">
+                            Яндекс.Кит решает все эти проблемы. Ваш магазин. Ваши клиенты. Ваши деньги.
+                        </p>
+                    </div>
+                    <p>
+                        Мы перенесём все ваши товары каталогом, настроим витрину, подключим оплату и доставку. 
+                        Вы получаете <strong class="text-white">полностью рабочий интернет-магазин</strong>, а не зависимость от комиссии площадки.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services / Benefits -->
+    <section id="services" class="py-20 bg-[#0D0D12] px-6">
+        <div class="max-w-6xl mx-auto">
+            <h2 class="text-4xl md:text-5xl font-bold mb-16 text-center" style="letter-spacing: -0.02em;">
+                Что вы получите
+            </h2>
+            <div class="grid md:grid-cols-3 gap-8 cards-grid">
+                <div class="card">
+                    <div class="text-emerald-400 text-5xl font-bold mb-4">01</div>
+                    <h3 class="text-2xl font-semibold text-white mb-4">Создание магазина</h3>
+                    <p>Каталог товаров в Яндекс.Кит с фото, описаниями, ценами. Профессиональная витрина, адаптивная под мобильные устройства.</p>
+                </div>
+                <div class="card">
+                    <div class="text-emerald-400 text-5xl font-bold mb-4">02</div>
+                    <h3 class="text-2xl font-semibold text-white mb-4">Перенос с маркетплейсов</h3>
+                    <p>Заберём все товары с Wildberries, Ozon, Авито. Фото, характеристики, цены — всё сохранено и аккуратно перенесено.</p>
+                </div>
+                <div class="card">
+                    <div class="text-emerald-400 text-5xl font-bold mb-4">03</div>
+                    <h3 class="text-2xl font-semibold text-white mb-4">Подключение оплаты</h3>
+                    <p>ЮKassa, Тинькофф, Сбербанк. Клиент платит на сайте — деньги сразу вам, без комиссии площадки.</p>
+                </div>
+                <div class="card">
+                    <div class="text-emerald-400 text-5xl font-bold mb-4">04</div>
+                    <h3 class="text-2xl font-semibold text-white mb-4">Настройка доставки</h3>
+                    <p>СДЭК, Boxberry, Почта России, курьер по Сочи. Автоматический расчёт стоимости при оформлении заказа.</p>
+                </div>
+                <div class="card">
+                    <div class="text-emerald-400 text-5xl font-bold mb-4">05</div>
+                    <h3 class="text-2xl font-semibold text-white mb-4">SEO-оптимизация</h3>
+                    <p>Настроим мета-теги, заголовки, URL для Google и Яндекс. Ваши товары будут находить в поиске.</p>
+                </div>
+                <div class="card">
+                    <div class="text-emerald-400 text-5xl font-bold mb-4">06</div>
+                    <h3 class="text-2xl font-semibold text-white mb-4">Обучение и поддержка</h3>
+                    <p>Покажем, как добавлять товары, обрабатывать заказы, смотреть аналитику. 1 месяц поддержки бесплатно.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Case Study -->
+    <section class="py-20 px-6">
+        <div class="max-w-4xl mx-auto">
+            <h2 class="text-3xl md:text-4xl font-bold mb-10 text-center">Как это работает: пример из Сочи</h2>
+            <div class="card p-10">
+                <p class="text-xl text-gray-300 mb-6">
+                    Мастер по химчистке автомобилей продавал услуги через Авито. Комиссия платформы росла, 
+                    отзывы удалялись «по непонятным причинам», клиенты уходили к конкурентам.
+                </p>
+                <p class="text-xl text-gray-300 mb-8">
+                    Мы перенесли всё на Яндекс.Кит за 4 дня. Клиенты теперь заказывают и платят напрямую, 
+                    без посредников. Владелец получил <strong class="text-emerald-400">контроль над клиентской базой</strong> и возможность рассылать акции.
+                </p>
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-6 text-center">
+                    <div>
+                        <div class="text-4xl font-bold gradient-text">−0%</div>
+                        <p class="text-gray-400 text-sm mt-2">Комиссия площадки</p>
+                    </div>
+                    <div>
+                        <div class="text-4xl font-bold gradient-text">+45%</div>
+                        <p class="text-gray-400 text-sm mt-2">Повторные продажи</p>
+                    </div>
+                    <div>
+                        <div class="text-4xl font-bold gradient-text">4 дня</div>
+                        <p class="text-gray-400 text-sm mt-2">Срок запуска</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing -->
+    <section class="py-20 bg-[#0D0D12] px-6">
+        <div class="max-w-4xl mx-auto text-center">
+            <h2 class="text-4xl md:text-5xl font-bold mb-12" style="letter-spacing: -0.02em;">
+                Сколько это стоит?
+            </h2>
+            <div class="card p-10 max-w-2xl mx-auto">
+                <p class="text-3xl font-bold text-white mb-4">
+                    <span class="gradient-text">от 15 000 ₽</span>
+                </p>
+                <p class="text-lg text-gray-300 mb-8">
+                    Полный запуск магазина: каталог, оплата, доставка, SEO, обучние
+                </p>
+                <div class="space-y-4 text-left mb-10">
+                    <div class="flex items-center gap-3">
+                        <span class="text-emerald-400 text-xl">✓</span>
+                        <p class="text-gray-300">Каталог до 200 товаров</p>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="text-emerald-400 text-xl">✓</span>
+                        <p class="text-gray-300">Подключение оплаты (ЮKassa и т.д.)</p>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="text-emerald-400 text-xl">✓</span>
+                        <p class="text-gray-300">Настройка доставки</p>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="text-emerald-400 text-xl">✓</span>
+                        <p class="text-gray-300">SEO-оптимизация</p>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="text-emerald-400 text-xl">✓</span>
+                        <p class="text-gray-300">1 месяц поддержки бесплатно</p>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="text-emerald-400 text-xl">✓</span>
+                        <p class="text-gray-300">Обучение работе с магазином</p>
+                    </div>
+                </div>
+                <a href="tel:+79153138254" class="btn-primary text-white font-bold py-4 px-10 rounded-full text-lg inline-block shadow-2xl">
+                    Получить точный расчёт
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Objections -->
+    <section class="py-20 px-6">
+        <div class="max-w-4xl mx-auto">
+            <h2 class="text-3xl md:text-4xl font-bold mb-12 text-center">Ответы на ваши вопросы</h2>
+            <div class="space-y-6">
+                <div class="card">
+                    <h3 class="text-xl font-semibold text-white mb-3">«Это сложно, я не разбираюсь»</h3>
+                    <p class="text-gray-300">Мы всё настроим и дадим простую инструкцию в картинках. Если что-то непонятно — позвоните, объясним по телефону.</p>
+                </div>
+                <div class="card">
+                    <h3 class="text-xl font-semibold text-white mb-3">«А вдруг не будет продаж?»</h3>
+                    <p class="text-gray-300">Маркетплейсы не дают вам продаж — они <em>показывают</em> ваши товары своей аудитории. Яндекс.Кит работает так же, только 0% комиссии. Плюс мы подключим SEO — клиенты найдут вас в поиске.</p>
+                </div>
+                <div class="card">
+                    <h3 class="text-xl font-semibold text-white mb-3">«У меня мало товаров»</h3>
+                    <p class="text-gray-300">Даже 10 товаров — это полноценный магазин. Главное — правильно оформить витрину и настроить SEO под ваш регион.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Final -->
+    <section class="py-20 px-6">
+        <div class="max-w-4xl mx-auto text-center">
+            <h2 class="text-4xl md:text-5xl font-bold mb-8" style="letter-spacing: -0.02em;">
+                Готовы выйти из-под контроля маркетплейсов?
+            </h2>
+            <p class="text-xl text-gray-300 mb-10 max-w-2xl mx-auto">
+                Получите бесплатную консультацию. Расскажу, как перенести ваш магазин за 5 дней и начать экономить на комиссиях уже сейчас.
+            </p>
+            <a href="tel:+79153138254" class="btn-primary text-white font-bold py-5 px-12 rounded-full text-2xl inline-block shadow-2xl">
+                +7 915 313-82-54
+            </a>
+            <p class="text-sm text-gray-400 mt-6">Работаем по всей России • Сочи — приоритет</p>
+        </div>
+    </section>
+
+    <footer class="bg-black py-10 text-center text-gray-500 border-t border-white/5">
+        <p>&copy; 2026 Яндекс Кит Мастер. Настройка интернет-магазинов.</p>
+        <p class="mt-2">Сочи, Россия • +7 915 313-82-54</p>
+    </footer>
+</body>
+</html>
