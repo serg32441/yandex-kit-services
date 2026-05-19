@@ -6,322 +6,660 @@
     <title>Яндекс Кит — Настройка интернет-магазина | Перенос с маркетплейсов в Сочи</title>
     <meta name="description" content="Профессиональная настройка Яндекс Кит: интернет-магазин за 5 дней. Перенос товаров с Wildberries, Ozon, Авито. Ваш личный бренд без комиссий.">
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; }
-        .btn-primary { 
-            background-color: #10B981; 
-            transition: all 0.3s ease; 
+        :root {
+            --green: #10B981;
+            --green-dark: #059669;
+            --green-light: #34D399;
+            --bg: #080810;
+            --bg-2: #0C0C18;
+            --surface: rgba(255,255,255,0.03);
+            --surface-hover: rgba(255,255,255,0.06);
+            --border: rgba(255,255,255,0.07);
+            --text-muted: #6B7280;
+            --text-secondary: #9CA3AF;
         }
-        .btn-primary:hover { 
-            background-color: #059669; 
-            transform: translateY(-2px);
-            box-shadow: 0 20px 40px rgba(16, 185, 129, 0.3);
+
+        * { box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: #fff; overflow-x: hidden; }
+
+        /* ── Noise overlay ── */
+        body::before {
+            content: '';
+            position: fixed; inset: 0; z-index: 0; pointer-events: none;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+            opacity: .4;
         }
+
+        /* ── Gradient mesh background ── */
+        .hero-mesh {
+            position: absolute; inset: 0; overflow: hidden; pointer-events: none;
+        }
+        .hero-mesh::before {
+            content: '';
+            position: absolute;
+            width: 800px; height: 800px;
+            top: -200px; left: 50%; transform: translateX(-50%);
+            background: radial-gradient(ellipse at center, rgba(16,185,129,.13) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: meshFloat 8s ease-in-out infinite;
+        }
+        .hero-mesh::after {
+            content: '';
+            position: absolute;
+            width: 600px; height: 600px;
+            top: 40%; right: -100px;
+            background: radial-gradient(ellipse at center, rgba(52,211,153,.07) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: meshFloat 12s ease-in-out infinite reverse;
+        }
+        .mesh-third {
+            position: absolute;
+            width: 500px; height: 500px;
+            bottom: 0; left: -100px;
+            background: radial-gradient(ellipse at center, rgba(5,150,105,.08) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: meshFloat 10s ease-in-out infinite 3s;
+            pointer-events: none;
+        }
+        @keyframes meshFloat { 0%,100%{transform:translateY(0) scale(1)} 50%{transform:translateY(-30px) scale(1.05)} }
+
+        /* ── Typography ── */
         .gradient-text {
-            background: linear-gradient(135deg, #10B981 0%, #059669 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            background: linear-gradient(135deg, #34D399 0%, #10B981 50%, #059669 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
         }
+        .gradient-text-warm {
+            background: linear-gradient(135deg, #F87171 0%, #EF4444 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+
+        /* ── Buttons ── */
+        .btn-primary {
+            display: inline-flex; align-items: center; gap: 10px;
+            background: linear-gradient(135deg, #10B981, #059669);
+            color: #fff; font-weight: 700; border-radius: 100px;
+            padding: 16px 36px; font-size: 18px;
+            box-shadow: 0 0 0 0 rgba(16,185,129,.4);
+            transition: transform .25s ease, box-shadow .25s ease;
+            position: relative; overflow: hidden;
+            text-decoration: none;
+        }
+        .btn-primary::before {
+            content: '';
+            position: absolute; inset: 0;
+            background: linear-gradient(135deg, #34D399, #10B981);
+            opacity: 0; transition: opacity .25s;
+        }
+        .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 20px 50px rgba(16,185,129,.35); }
+        .btn-primary:hover::before { opacity: 1; }
+        .btn-primary span { position: relative; }
+
+        .btn-outline {
+            display: inline-flex; align-items: center; gap: 8px;
+            border: 1px solid rgba(16,185,129,.4); color: var(--green-light);
+            font-weight: 600; border-radius: 100px; padding: 14px 32px; font-size: 16px;
+            transition: all .25s; text-decoration: none;
+        }
+        .btn-outline:hover { background: rgba(16,185,129,.1); border-color: var(--green); }
+
+        /* ── Cards ── */
         .card {
-            background: rgba(20, 20, 25, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 16px;
-            padding: 32px;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 20px; padding: 32px;
+            transition: transform .3s ease, box-shadow .3s ease, border-color .3s ease, background .3s ease;
+            position: relative; overflow: hidden;
         }
-        .card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        .card::before {
+            content: '';
+            position: absolute; inset: 0;
+            background: linear-gradient(135deg, rgba(16,185,129,.05) 0%, transparent 60%);
+            opacity: 0; transition: opacity .3s;
+            border-radius: inherit;
         }
+        .card:hover { transform: translateY(-6px); box-shadow: 0 24px 60px rgba(0,0,0,.4); border-color: rgba(16,185,129,.2); background: var(--surface-hover); }
+        .card:hover::before { opacity: 1; }
+
+        .card-featured {
+            background: linear-gradient(135deg, rgba(16,185,129,.12) 0%, rgba(5,150,105,.06) 100%);
+            border-color: rgba(16,185,129,.25);
+        }
+
+        /* ── Nav ── */
+        .nav-scrolled { background: rgba(8,8,16,.92) !important; box-shadow: 0 1px 0 rgba(255,255,255,.05) !important; }
+
+        /* ── Badge ── */
+        .badge {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 8px 20px; border-radius: 100px; font-size: 13px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase;
+        }
+        .badge-green { background: rgba(16,185,129,.12); border: 1px solid rgba(16,185,129,.3); color: #34D399; }
+        .badge-red { background: rgba(239,68,68,.1); border: 1px solid rgba(239,68,68,.25); color: #F87171; }
+
+        .badge-dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; animation: pulseDot 2s infinite; }
+        @keyframes pulseDot { 0%,100%{transform:scale(1);opacity:1} 50%{transform:scale(1.5);opacity:.6} }
+
+        /* ── Problem list ── */
+        .problem-item { display: flex; align-items: flex-start; gap: 16px; padding: 20px 0; border-bottom: 1px solid var(--border); }
+        .problem-item:last-child { border-bottom: none; }
+        .problem-icon { width: 36px; height: 36px; border-radius: 10px; background: rgba(239,68,68,.12); border: 1px solid rgba(239,68,68,.2); display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: #F87171; font-size: 16px; }
+        .solution-icon { background: rgba(16,185,129,.12); border-color: rgba(16,185,129,.2); color: #34D399; }
+
+        /* ── Step numbers ── */
+        .step-num {
+            width: 56px; height: 56px; border-radius: 16px; flex-shrink: 0;
+            background: linear-gradient(135deg, rgba(16,185,129,.2), rgba(5,150,105,.1));
+            border: 1px solid rgba(16,185,129,.25);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 20px; font-weight: 800; color: var(--green-light);
+        }
+
+        /* ── Stats ── */
         .stat-number {
-            font-size: 72px;
-            font-weight: 800;
-            letter-spacing: -0.04em;
-            line-height: 1.0;
+            font-size: 80px; font-weight: 900; letter-spacing: -.05em; line-height: 1;
+            background: linear-gradient(135deg, #fff 30%, #9CA3AF 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
         }
+        .stat-accent { color: var(--green-light); -webkit-text-fill-color: var(--green-light); }
+
+        /* ── Divider ── */
+        .section-divider { width: 48px; height: 3px; background: linear-gradient(90deg, var(--green), transparent); border-radius: 2px; margin: 0 auto 48px; }
+
+        /* ── Accordion ── */
+        .accordion-item { border-bottom: 1px solid var(--border); }
+        .accordion-trigger { width: 100%; text-align: left; padding: 24px 0; display: flex; align-items: center; justify-content: space-between; gap: 16px; cursor: pointer; background: none; border: none; color: #fff; }
+        .accordion-trigger h3 { font-size: 18px; font-weight: 600; margin: 0; }
+        .accordion-icon { width: 32px; height: 32px; border-radius: 50%; border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: transform .3s, background .3s, border-color .3s; }
+        .accordion-item.open .accordion-icon { transform: rotate(45deg); background: rgba(16,185,129,.15); border-color: rgba(16,185,129,.3); }
+        .accordion-body { max-height: 0; overflow: hidden; transition: max-height .4s ease, padding .3s ease; }
+        .accordion-body-inner { padding-bottom: 24px; color: var(--text-secondary); line-height: 1.7; font-size: 16px; }
+
+        /* ── Price card ── */
+        .price-tag { font-size: 56px; font-weight: 900; letter-spacing: -.04em; }
+        .checklist li { display: flex; align-items: center; gap: 14px; padding: 12px 0; border-bottom: 1px solid var(--border); font-size: 15px; color: #D1D5DB; }
+        .checklist li:last-child { border-bottom: none; }
+        .checklist .check { width: 24px; height: 24px; border-radius: 8px; background: rgba(16,185,129,.15); border: 1px solid rgba(16,185,129,.3); display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: var(--green-light); font-size: 12px; }
+
+        /* ── Floating CTA ── */
+        .floating-cta {
+            position: fixed; bottom: 28px; right: 28px; z-index: 100;
+            background: linear-gradient(135deg, #25D366, #128C7E);
+            color: #fff; border-radius: 100px;
+            padding: 14px 24px; font-weight: 700; font-size: 15px;
+            box-shadow: 0 8px 32px rgba(37,211,102,.35);
+            display: flex; align-items: center; gap: 10px;
+            text-decoration: none;
+            transition: transform .25s, box-shadow .25s;
+            animation: floatIn .6s ease .5s both;
+        }
+        .floating-cta:hover { transform: translateY(-3px) scale(1.03); box-shadow: 0 16px 48px rgba(37,211,102,.45); }
+        @keyframes floatIn { from{transform:translateY(20px);opacity:0} to{transform:translateY(0);opacity:1} }
+
+        /* ── Reveal ── */
+        .reveal { opacity: 0; transform: translateY(28px); transition: opacity .6s ease, transform .6s ease; }
+        .reveal.visible { opacity: 1; transform: none; }
+        .reveal-delay-1 { transition-delay: .1s; }
+        .reveal-delay-2 { transition-delay: .2s; }
+        .reveal-delay-3 { transition-delay: .3s; }
+        .reveal-delay-4 { transition-delay: .4s; }
+        .reveal-delay-5 { transition-delay: .5s; }
+
+        /* ── Gradient line ── */
+        .gradient-line { width: 100%; height: 1px; background: linear-gradient(90deg, transparent, rgba(16,185,129,.4), transparent); }
+
+        /* ── Mobile ── */
         @media (max-width: 768px) {
-            h1 { font-size: 36px !important; }
-            h2 { font-size: 28px !important; }
-            .stat-number { font-size: 48px; }
-            .cards-grid { grid-template-columns: 1fr !important; }
-            .container { padding: 0 24px; }
-            section { padding: 32px 0 !important; }
-            .btn-primary { padding: 12px 24px; font-size: 16px; }
+            h1 { font-size: 38px !important; }
+            h2 { font-size: 30px !important; }
+            .stat-number { font-size: 56px; }
+            .price-tag { font-size: 40px; }
+            section { padding-top: 64px !important; padding-bottom: 64px !important; }
+            .floating-cta { bottom: 20px; right: 16px; padding: 12px 18px; font-size: 14px; }
+            .floating-cta .cta-label { display: none; }
         }
         @media (max-width: 480px) {
-            h1 { font-size: 30px !important; }
+            h1 { font-size: 32px !important; }
         }
-        .guarantee-badge {
-            animation: pulse 2s infinite;
-        }
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.8; } }
     </style>
 </head>
-<body class="bg-[#0A0A0F] text-white">
-    <!-- Nav -->
-    <nav class="fixed w-full z-50 bg-[#0A0A0F]/80 backdrop-blur-md border-b border-white/5" style="height: 72px;">
-        <div class="max-w-7xl mx-auto px-6 h-full flex items-center justify-between">
-            <div class="text-xl font-bold">Яндекс Кит <span class="text-emerald-400">Мастер</span></div>
-            <a href="#services" class="text-sm text-gray-300 hover:text-white transition">Услуги</a>
+<body>
+
+    <!-- ── Floating WhatsApp ── -->
+    <a href="https://wa.me/79153138254" target="_blank" rel="noopener" class="floating-cta" aria-label="Написать в WhatsApp">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        <span class="cta-label">Написать в WhatsApp</span>
+    </a>
+
+    <!-- ── Nav ── -->
+    <nav id="navbar" class="fixed w-full z-50 transition-all duration-300" style="background: transparent; padding: 0 24px;">
+        <div class="max-w-7xl mx-auto flex items-center justify-between" style="height: 72px;">
+            <div class="flex items-center gap-2">
+                <div style="width:32px;height:32px;background:linear-gradient(135deg,#10B981,#059669);border-radius:10px;display:flex;align-items:center;justify-content:center;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                </div>
+                <span class="text-white font-bold text-lg">Яндекс Кит <span class="text-emerald-400">Мастер</span></span>
+            </div>
+            <div class="hidden md:flex items-center gap-8">
+                <a href="#services" class="text-sm text-gray-400 hover:text-white transition-colors">Услуги</a>
+                <a href="#pricing" class="text-sm text-gray-400 hover:text-white transition-colors">Цены</a>
+                <a href="#faq" class="text-sm text-gray-400 hover:text-white transition-colors">FAQ</a>
+                <a href="tel:+79153138254" class="btn-outline" style="padding:8px 20px;font-size:14px;">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 8.81 19.79 19.79 0 01.12 2.2 2 2 0 012.11 0h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.91 7.91a16 16 0 006.06 6.06l1.27-.63a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg>
+                    <span>Позвонить</span>
+                </a>
+            </div>
         </div>
     </nav>
 
-    <!-- Hero -->
-    <section class="min-h-screen flex items-center justify-center px-6" style="padding-top: 120px;">
-        <div class="max-w-5xl mx-auto text-center">
-            <div class="mb-6">
-                <span class="inline-block px-4 py-2 bg-emerald-900/30 border border-emerald-500/30 rounded-full text-sm text-emerald-400">
-                    ИНТЕРНЕТ-МАГАЗИН ЗА 5 ДНЕЙ
+    <!-- ── Hero ── -->
+    <section class="relative min-h-screen flex items-center justify-center px-6" style="padding-top: 100px; padding-bottom: 80px;">
+        <div class="hero-mesh"></div>
+        <div class="mesh-third"></div>
+        <div class="max-w-5xl mx-auto text-center relative z-10">
+
+            <div class="reveal mb-8 flex flex-wrap items-center justify-center gap-3">
+                <span class="badge badge-green">
+                    <span class="badge-dot"></span>
+                    Интернет-магазин за 5 дней
+                </span>
+                <span class="badge badge-red">
+                    <span class="badge-dot"></span>
+                    WB повышает комиссии до 25%
                 </span>
             </div>
-            <h1 class="text-5xl md:text-7xl font-bold mb-8 leading-tight" style="font-weight: 800; letter-spacing: -0.04em;">
+
+            <h1 class="reveal reveal-delay-1 font-black mb-8 leading-none" style="font-size: clamp(40px, 8vw, 80px); letter-spacing: -0.05em;">
                 Перестаньте кормить<br>
-                <span class="gradient-text">маркетплейсы</span><br>
-                <span class="text-4xl md:text-5xl font-light text-gray-300">— стройте свой бренд</span>
+                <span class="gradient-text">маркетплейсы</span>
             </h1>
-            <p class="text-xl md:text-2xl text-gray-300 mb-10 max-w-3xl mx-auto leading-relaxed">
-                Настрою интернет-магазин на Яндекс.Кит. Перенесу товары с Wildberries, Ozon, Авито. 
-                <strong class="text-emerald-400">Без комиссий площадки. Без риска блокировки</strong> вашего аккаунта.
+            <p class="reveal reveal-delay-2" style="font-size: clamp(22px, 4vw, 40px); font-weight: 300; color: #9CA3AF; margin-bottom: 32px; letter-spacing: -0.02em;">
+                — стройте свой бренд
             </p>
-            
-            <div class="guarantee-badge bg-red-900/20 border border-red-500/30 rounded-lg p-4 mb-10 max-w-lg mx-auto">
-                <p class="text-red-400 font-semibold text-sm">⚠️ Wildberries повышает комиссии до 25%. Ozon — растёт конкуренция. Вы теряете деньги каждый день.</p>
+
+            <p class="reveal reveal-delay-3 text-lg text-gray-400 mb-12 max-w-2xl mx-auto leading-relaxed">
+                Настрою магазин на <strong class="text-white">Яндекс.Кит</strong>. Перенесу товары с Wildberries, Ozon, Авито.<br>
+                <span class="text-emerald-400 font-semibold">Без комиссий. Без риска блокировки.</span>
+            </p>
+
+            <div class="reveal reveal-delay-4 flex flex-wrap items-center justify-center gap-4 mb-12">
+                <a href="tel:+79153138254" class="btn-primary">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 8.81 19.79 19.79 0 01.12 2.2 2 2 0 012.11 0h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.91 7.91a16 16 0 006.06 6.06l1.27-.63a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg>
+                    <span>Бесплатная консультация</span>
+                </a>
+                <a href="#services" class="btn-outline">
+                    <span>Что входит в услугу</span>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>
+                </a>
             </div>
-            
-            <a href="tel:+79153138254" class="btn-primary text-white font-bold py-4 px-10 rounded-full text-lg inline-block shadow-2xl">
-                Получить бесплатную консультацию
-            </a>
-            <p class="text-sm text-gray-500 mt-4">Ответим в течение 15 минут • +7 915 313-82-54</p>
+
+            <p class="reveal reveal-delay-5 text-sm text-gray-600">Ответим в течение 15 минут&ensp;·&ensp;+7 915 313-82-54&ensp;·&ensp;Работаем по всей России</p>
+
+            <!-- Mini stats row -->
+            <div class="reveal reveal-delay-5 grid grid-cols-3 gap-4 mt-16 max-w-xl mx-auto">
+                <div class="card" style="padding:20px 12px;text-align:center;">
+                    <div class="text-3xl font-black gradient-text" data-count="0" data-suffix="%">0%</div>
+                    <p class="text-xs text-gray-500 mt-1">комиссии</p>
+                </div>
+                <div class="card" style="padding:20px 12px;text-align:center;">
+                    <div class="text-3xl font-black gradient-text" data-count="5" data-suffix=" дн">5 дн</div>
+                    <p class="text-xs text-gray-500 mt-1">запуск</p>
+                </div>
+                <div class="card" style="padding:20px 12px;text-align:center;">
+                    <div class="text-3xl font-black gradient-text" data-count="100" data-suffix="%">100%</div>
+                    <p class="text-xs text-gray-500 mt-1">перенос товаров</p>
+                </div>
+            </div>
         </div>
     </section>
 
-    <!-- Stats -->
-    <section class="py-20 bg-[#0D0D12]">
-        <div class="max-w-6xl mx-auto px-6">
-            <div class="grid md:grid-cols-3 gap-10">
-                <div class="text-center">
-                    <div class="stat-number gradient-text">0%</div>
-                    <p class="text-gray-300 mt-4">Комиссия площадки — ваши деньги остаются у вас</p>
-                </div>
-                <div class="text-center">
-                    <div class="stat-number gradient-text">5</div>
-                    <p class="text-gray-300 mt-4">Дней — средний срок запуска магазина под ключ</p>
-                </div>
-                <div class="text-center">
-                    <div class="stat-number gradient-text">100%</div>
-                    <p class="text-gray-300 mt-4">Перенос всех товаров: фото, цены, описания, категории</p>
-                </div>
-            </div>
-        </div>
-    </section>
+    <div class="gradient-line"></div>
 
-    <!-- Problem / Solution -->
-    <section class="py-20 px-6">
-        <div class="max-w-4xl mx-auto">
-            <h2 class="text-4xl md:text-5xl font-bold mb-12 text-center" style="letter-spacing: -0.02em;">
-                Почему маркетплейс — это ловушка
-            </h2>
-            
-            <div class="space-y-8 text-lg text-gray-300 leading-relaxed">
-                <div class="card">
-                    <p class="text-xl text-gray-300 mb-4">
-                        Вы продаёте на Wildberries или Ozon, думаете, что бизнес под контролем. Но посмотрите правде в глаза:
-                    </p>
-                    <div class="space-y-4">
-                        <div class="flex items-start gap-4">
-                            <span class="text-red-400 font-bold text-xl">✗</span>
-                            <p><strong class="text-white">Комиссия 15-25%</strong> — каждый четвёртый товар уходит площадке</p>
-                        </div>
-                        <div class="flex items-start gap-4">
-                            <span class="text-red-400 font-bold text-xl">✗</span>
-                            <p><strong class="text-white">Блокировка без предупреждения</strong> — аккаунт могут закрыть за один отзыв</p>
-                        </div>
-                        <div class="flex items-start gap-4">
-                            <span class="text-red-400 font-bold text-xl">✗</span>
-                            <p><strong class="text-white">Вы не владеете клиентами</strong> — они клиенты площадки, а не ваши</p>
-                        </div>
-                        <div class="flex items-start gap-4">
-                            <span class="text-red-400 font-bold text-xl">✗</span>
-                            <p><strong class="text-white">Нет базы для повторных продаж</strong> — клиент купил в другом месте, вы не вернёте его</p>
-                        </div>
+    <!-- ── Problem vs Solution ── -->
+    <section class="py-24 px-6">
+        <div class="max-w-5xl mx-auto">
+            <div class="text-center mb-16">
+                <div class="section-divider"></div>
+                <h2 class="reveal font-black" style="font-size: clamp(30px, 5vw, 52px); letter-spacing: -0.03em;">
+                    Маркетплейс — это<br><span class="gradient-text-warm">ловушка</span>
+                </h2>
+                <p class="reveal reveal-delay-1 text-gray-400 mt-4 text-lg max-w-xl mx-auto">Вы работаете, площадка зарабатывает. Посмотрите на цифры.</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-8">
+                <!-- Problems -->
+                <div class="reveal card" style="padding:36px;">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div style="width:10px;height:10px;border-radius:50%;background:#EF4444;box-shadow:0 0 8px #EF4444;"></div>
+                        <span class="text-sm font-semibold text-red-400 uppercase tracking-widest">Сейчас на маркетплейсе</span>
+                    </div>
+                    <div class="problem-item">
+                        <div class="problem-icon">✗</div>
+                        <div><strong class="text-white">Комиссия 15–25%</strong><p class="text-gray-400 text-sm mt-1">Каждый четвёртый товар уходит площадке</p></div>
+                    </div>
+                    <div class="problem-item">
+                        <div class="problem-icon">✗</div>
+                        <div><strong class="text-white">Блокировка без предупреждения</strong><p class="text-gray-400 text-sm mt-1">Аккаунт могут закрыть за один отзыв</p></div>
+                    </div>
+                    <div class="problem-item">
+                        <div class="problem-icon">✗</div>
+                        <div><strong class="text-white">Клиенты — не ваши</strong><p class="text-gray-400 text-sm mt-1">Они принадлежат площадке, не вам</p></div>
+                    </div>
+                    <div class="problem-item">
+                        <div class="problem-icon">✗</div>
+                        <div><strong class="text-white">Нет повторных продаж</strong><p class="text-gray-400 text-sm mt-1">Клиент купил — вы не можете с ним связаться</p></div>
                     </div>
                 </div>
 
-                <div class="card bg-gradient-to-br from-emerald-900/20 to-transparent border-emerald-500/20">
-                    <div class="border-l-4 border-emerald-500 pl-6 mb-6">
-                        <p class="text-2xl font-semibold text-emerald-400">
-                            Яндекс.Кит решает все эти проблемы. Ваш магазин. Ваши клиенты. Ваши деньги.
-                        </p>
+                <!-- Solutions -->
+                <div class="reveal reveal-delay-2 card card-featured" style="padding:36px;">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div style="width:10px;height:10px;border-radius:50%;background:#10B981;box-shadow:0 0 8px #10B981;"></div>
+                        <span class="text-sm font-semibold text-emerald-400 uppercase tracking-widest">С Яндекс.Кит</span>
                     </div>
-                    <p>
-                        Мы перенесём все ваши товары каталогом, настроим витрину, подключим оплату и доставку. 
-                        Вы получаете <strong class="text-white">полностью рабочий интернет-магазин</strong>, а не зависимость от комиссии площадки.
-                    </p>
+                    <div class="problem-item" style="border-color:rgba(16,185,129,.15)">
+                        <div class="problem-icon solution-icon">✓</div>
+                        <div><strong class="text-white">0% комиссии площадки</strong><p class="text-gray-400 text-sm mt-1">Весь доход — ваш, без вычетов</p></div>
+                    </div>
+                    <div class="problem-item" style="border-color:rgba(16,185,129,.15)">
+                        <div class="problem-icon solution-icon">✓</div>
+                        <div><strong class="text-white">Полный контроль над магазином</strong><p class="text-gray-400 text-sm mt-1">Никто не может вас заблокировать</p></div>
+                    </div>
+                    <div class="problem-item" style="border-color:rgba(16,185,129,.15)">
+                        <div class="problem-icon solution-icon">✓</div>
+                        <div><strong class="text-white">Ваша клиентская база</strong><p class="text-gray-400 text-sm mt-1">Email, телефоны — в вашем распоряжении</p></div>
+                    </div>
+                    <div class="problem-item" style="border-color:rgba(16,185,129,.15);">
+                        <div class="problem-icon solution-icon">✓</div>
+                        <div><strong class="text-white">Рассылки и акции</strong><p class="text-gray-400 text-sm mt-1">Возвращайте клиентов напрямую</p></div>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Services / Benefits -->
-    <section id="services" class="py-20 bg-[#0D0D12] px-6">
+    <div class="gradient-line"></div>
+
+    <!-- ── Services ── -->
+    <section id="services" class="py-24 px-6" style="background: var(--bg-2);">
         <div class="max-w-6xl mx-auto">
-            <h2 class="text-4xl md:text-5xl font-bold mb-16 text-center" style="letter-spacing: -0.02em;">
-                Что вы получите
-            </h2>
-            <div class="grid md:grid-cols-3 gap-8 cards-grid">
-                <div class="card">
-                    <div class="text-emerald-400 text-5xl font-bold mb-4">01</div>
-                    <h3 class="text-2xl font-semibold text-white mb-4">Создание магазина</h3>
-                    <p>Каталог товаров в Яндекс.Кит с фото, описаниями, ценами. Профессиональная витрина, адаптивная под мобильные устройства.</p>
+            <div class="text-center mb-16">
+                <div class="section-divider"></div>
+                <h2 class="reveal font-black" style="font-size: clamp(30px, 5vw, 52px); letter-spacing: -0.03em;">Что вы получите</h2>
+                <p class="reveal reveal-delay-1 text-gray-400 mt-4 text-lg">Полный запуск магазина под ключ — от каталога до первого заказа</p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="reveal card">
+                    <div class="step-num mb-5">01</div>
+                    <h3 class="text-xl font-bold text-white mb-3">Создание магазина</h3>
+                    <p class="text-gray-400 leading-relaxed text-sm">Каталог товаров в Яндекс.Кит с фото, описаниями, ценами. Профессиональная витрина, адаптивная под мобильные.</p>
                 </div>
-                <div class="card">
-                    <div class="text-emerald-400 text-5xl font-bold mb-4">02</div>
-                    <h3 class="text-2xl font-semibold text-white mb-4">Перенос с маркетплейсов</h3>
-                    <p>Заберём все товары с Wildberries, Ozon, Авито. Фото, характеристики, цены — всё сохранено и аккуратно перенесено.</p>
+                <div class="reveal reveal-delay-1 card">
+                    <div class="step-num mb-5">02</div>
+                    <h3 class="text-xl font-bold text-white mb-3">Перенос с маркетплейсов</h3>
+                    <p class="text-gray-400 leading-relaxed text-sm">Заберём все товары с Wildberries, Ozon, Авито. Фото, характеристики, цены — всё сохранено и аккуратно перенесено.</p>
                 </div>
-                <div class="card">
-                    <div class="text-emerald-400 text-5xl font-bold mb-4">03</div>
-                    <h3 class="text-2xl font-semibold text-white mb-4">Подключение оплаты</h3>
-                    <p>ЮKassa, Тинькофф, Сбербанк. Клиент платит на сайте — деньги сразу вам, без комиссии площадки.</p>
+                <div class="reveal reveal-delay-2 card">
+                    <div class="step-num mb-5">03</div>
+                    <h3 class="text-xl font-bold text-white mb-3">Подключение оплаты</h3>
+                    <p class="text-gray-400 leading-relaxed text-sm">ЮKassa, Тинькофф, Сбербанк. Клиент платит на сайте — деньги сразу вам, без комиссии площадки.</p>
                 </div>
-                <div class="card">
-                    <div class="text-emerald-400 text-5xl font-bold mb-4">04</div>
-                    <h3 class="text-2xl font-semibold text-white mb-4">Настройка доставки</h3>
-                    <p>СДЭК, Boxberry, Почта России, курьер по Сочи. Автоматический расчёт стоимости при оформлении заказа.</p>
+                <div class="reveal reveal-delay-1 card">
+                    <div class="step-num mb-5">04</div>
+                    <h3 class="text-xl font-bold text-white mb-3">Настройка доставки</h3>
+                    <p class="text-gray-400 leading-relaxed text-sm">СДЭК, Boxberry, Почта России, курьер по Сочи. Автоматический расчёт стоимости при оформлении.</p>
                 </div>
-                <div class="card">
-                    <div class="text-emerald-400 text-5xl font-bold mb-4">05</div>
-                    <h3 class="text-2xl font-semibold text-white mb-4">SEO-оптимизация</h3>
-                    <p>Настроим мета-теги, заголовки, URL для Google и Яндекс. Ваши товары будут находить в поиске.</p>
+                <div class="reveal reveal-delay-2 card">
+                    <div class="step-num mb-5">05</div>
+                    <h3 class="text-xl font-bold text-white mb-3">SEO-оптимизация</h3>
+                    <p class="text-gray-400 leading-relaxed text-sm">Настроим мета-теги, заголовки, URL для Google и Яндекс. Ваши товары будут находить в поиске.</p>
                 </div>
-                <div class="card">
-                    <div class="text-emerald-400 text-5xl font-bold mb-4">06</div>
-                    <h3 class="text-2xl font-semibold text-white mb-4">Обучение и поддержка</h3>
-                    <p>Покажем, как добавлять товары, обрабатывать заказы, смотреть аналитику. 1 месяц поддержки бесплатно.</p>
+                <div class="reveal reveal-delay-3 card card-featured">
+                    <div class="step-num mb-5">06</div>
+                    <h3 class="text-xl font-bold text-white mb-3">Обучение и поддержка</h3>
+                    <p class="text-gray-400 leading-relaxed text-sm">Покажем, как добавлять товары, обрабатывать заказы, смотреть аналитику.</p>
+                    <div class="mt-4 inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold text-emerald-300" style="background:rgba(16,185,129,.15);border:1px solid rgba(16,185,129,.25)">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                        1 месяц поддержки бесплатно
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Case Study -->
-    <section class="py-20 px-6">
+    <div class="gradient-line"></div>
+
+    <!-- ── Case Study ── -->
+    <section class="py-24 px-6">
         <div class="max-w-4xl mx-auto">
-            <h2 class="text-3xl md:text-4xl font-bold mb-10 text-center">Как это работает: пример из Сочи</h2>
-            <div class="card p-10">
-                <p class="text-xl text-gray-300 mb-6">
-                    Мастер по химчистке автомобилей продавал услуги через Авито. Комиссия платформы росла, 
-                    отзывы удалялись «по непонятным причинам», клиенты уходили к конкурентам.
-                </p>
-                <p class="text-xl text-gray-300 mb-8">
-                    Мы перенесли всё на Яндекс.Кит за 4 дня. Клиенты теперь заказывают и платят напрямую, 
-                    без посредников. Владелец получил <strong class="text-emerald-400">контроль над клиентской базой</strong> и возможность рассылать акции.
-                </p>
-                <div class="grid grid-cols-2 md:grid-cols-3 gap-6 text-center">
-                    <div>
-                        <div class="text-4xl font-bold gradient-text">−0%</div>
-                        <p class="text-gray-400 text-sm mt-2">Комиссия площадки</p>
+            <div class="text-center mb-16">
+                <div class="section-divider"></div>
+                <h2 class="reveal font-black" style="font-size: clamp(28px, 4vw, 44px); letter-spacing: -0.03em;">Реальный кейс из Сочи</h2>
+            </div>
+
+            <div class="reveal card" style="padding: 48px;">
+                <div class="flex items-start gap-4 mb-8">
+                    <div style="width:48px;height:48px;border-radius:14px;background:linear-gradient(135deg,rgba(16,185,129,.2),rgba(5,150,105,.1));border:1px solid rgba(16,185,129,.25);flex-shrink:0;display:flex;align-items:center;justify-content:center;">
+                        🚗
                     </div>
                     <div>
-                        <div class="text-4xl font-bold gradient-text">+45%</div>
-                        <p class="text-gray-400 text-sm mt-2">Повторные продажи</p>
+                        <h3 class="text-lg font-bold text-white">Химчистка автомобилей, Сочи</h3>
+                        <p class="text-gray-500 text-sm">Продажи через Авито → переход на Яндекс.Кит</p>
                     </div>
-                    <div>
-                        <div class="text-4xl font-bold gradient-text">4 дня</div>
-                        <p class="text-gray-400 text-sm mt-2">Срок запуска</p>
+                </div>
+
+                <p class="text-lg text-gray-300 mb-4 leading-relaxed">
+                    Мастер продавал услуги через Авито. Комиссия росла, отзывы удалялись «по непонятным причинам»,
+                    клиенты уходили к конкурентам.
+                </p>
+                <p class="text-lg text-gray-300 mb-10 leading-relaxed">
+                    Мы перенесли всё на Яндекс.Кит за <strong class="text-white">4 дня</strong>. Теперь клиенты заказывают и платят напрямую,
+                    владелец получил контроль над клиентской базой и может рассылать акции.
+                </p>
+
+                <div class="grid grid-cols-3 gap-4">
+                    <div class="text-center p-4 rounded-2xl" style="background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.15)">
+                        <div class="text-4xl font-black gradient-text">0%</div>
+                        <p class="text-gray-500 text-xs mt-2">Комиссия площадки</p>
+                    </div>
+                    <div class="text-center p-4 rounded-2xl" style="background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.15)">
+                        <div class="text-4xl font-black gradient-text">+45%</div>
+                        <p class="text-gray-500 text-xs mt-2">Повторные продажи</p>
+                    </div>
+                    <div class="text-center p-4 rounded-2xl" style="background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.15)">
+                        <div class="text-4xl font-black gradient-text">4 дня</div>
+                        <p class="text-gray-500 text-xs mt-2">Срок запуска</p>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Pricing -->
-    <section class="py-20 bg-[#0D0D12] px-6">
+    <div class="gradient-line"></div>
+
+    <!-- ── Pricing ── -->
+    <section id="pricing" class="py-24 px-6" style="background: var(--bg-2);">
         <div class="max-w-4xl mx-auto text-center">
-            <h2 class="text-4xl md:text-5xl font-bold mb-12" style="letter-spacing: -0.02em;">
-                Сколько это стоит?
-            </h2>
-            <div class="card p-10 max-w-2xl mx-auto">
-                <p class="text-3xl font-bold text-white mb-4">
-                    <span class="gradient-text">от 15 000 ₽</span>
-                </p>
-                <p class="text-lg text-gray-300 mb-8">
-                    Полный запуск магазина: каталог, оплата, доставка, SEO, обучние
-                </p>
-                <div class="space-y-4 text-left mb-10">
-                    <div class="flex items-center gap-3">
-                        <span class="text-emerald-400 text-xl">✓</span>
-                        <p class="text-gray-300">Каталог до 200 товаров</p>
-                    </div>
-                    <div class="flex items-center gap-3">
-                        <span class="text-emerald-400 text-xl">✓</span>
-                        <p class="text-gray-300">Подключение оплаты (ЮKassa и т.д.)</p>
-                    </div>
-                    <div class="flex items-center gap-3">
-                        <span class="text-emerald-400 text-xl">✓</span>
-                        <p class="text-gray-300">Настройка доставки</p>
-                    </div>
-                    <div class="flex items-center gap-3">
-                        <span class="text-emerald-400 text-xl">✓</span>
-                        <p class="text-gray-300">SEO-оптимизация</p>
-                    </div>
-                    <div class="flex items-center gap-3">
-                        <span class="text-emerald-400 text-xl">✓</span>
-                        <p class="text-gray-300">1 месяц поддержки бесплатно</p>
-                    </div>
-                    <div class="flex items-center gap-3">
-                        <span class="text-emerald-400 text-xl">✓</span>
-                        <p class="text-gray-300">Обучение работе с магазином</p>
+            <div class="section-divider"></div>
+            <h2 class="reveal font-black mb-4" style="font-size: clamp(30px, 5vw, 52px); letter-spacing: -0.03em;">Сколько стоит?</h2>
+            <p class="reveal reveal-delay-1 text-gray-400 text-lg mb-12">Фиксированная цена, никаких скрытых платежей</p>
+
+            <div class="reveal reveal-delay-2 card card-featured max-w-xl mx-auto text-left" style="padding: 48px;">
+                <div class="flex items-end gap-3 mb-2">
+                    <div class="price-tag gradient-text">от 15 000 ₽</div>
+                </div>
+                <p class="text-gray-400 mb-8">Полный запуск магазина под ключ</p>
+
+                <ul class="checklist mb-10">
+                    <li><span class="check">✓</span> Каталог до 200 товаров</li>
+                    <li><span class="check">✓</span> Перенос с маркетплейсов</li>
+                    <li><span class="check">✓</span> Подключение оплаты (ЮKassa и др.)</li>
+                    <li><span class="check">✓</span> Настройка доставки</li>
+                    <li><span class="check">✓</span> SEO-оптимизация</li>
+                    <li><span class="check">✓</span> Обучение работе с магазином</li>
+                    <li><span class="check">✓</span> <strong class="text-white">1 месяц поддержки бесплатно</strong></li>
+                </ul>
+
+                <a href="tel:+79153138254" class="btn-primary w-full justify-center" style="font-size:17px;">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 8.81 19.79 19.79 0 01.12 2.2 2 2 0 012.11 0h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.91 7.91a16 16 0 006.06 6.06l1.27-.63a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg>
+                    <span>Получить точный расчёт</span>
+                </a>
+                <p class="text-center text-gray-600 text-sm mt-4">Рассчитаем стоимость бесплатно за 15 минут</p>
+            </div>
+        </div>
+    </section>
+
+    <div class="gradient-line"></div>
+
+    <!-- ── FAQ ── -->
+    <section id="faq" class="py-24 px-6">
+        <div class="max-w-3xl mx-auto">
+            <div class="text-center mb-16">
+                <div class="section-divider"></div>
+                <h2 class="reveal font-black" style="font-size: clamp(28px, 4vw, 44px); letter-spacing: -0.03em;">Ответы на вопросы</h2>
+            </div>
+
+            <div id="faq-list" class="reveal">
+                <div class="accordion-item">
+                    <button class="accordion-trigger" onclick="toggleAccordion(this)">
+                        <h3>«Это сложно, я не разбираюсь в сайтах»</h3>
+                        <div class="accordion-icon">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+                        </div>
+                    </button>
+                    <div class="accordion-body">
+                        <div class="accordion-body-inner">Мы всё настроим и дадим простую инструкцию в картинках. Если что-то непонятно — позвоните, объясним по телефону. У нас нет клиентов, которые «не разобрались» — только те, кто теперь работает сам.</div>
                     </div>
                 </div>
-                <a href="tel:+79153138254" class="btn-primary text-white font-bold py-4 px-10 rounded-full text-lg inline-block shadow-2xl">
-                    Получить точный расчёт
+                <div class="accordion-item">
+                    <button class="accordion-trigger" onclick="toggleAccordion(this)">
+                        <h3>«А вдруг не будет продаж?»</h3>
+                        <div class="accordion-icon">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+                        </div>
+                    </button>
+                    <div class="accordion-body">
+                        <div class="accordion-body-inner">Маркетплейсы не дают вам продаж — они <em>показывают</em> ваши товары своей аудитории. Яндекс.Кит работает так же, только с 0% комиссии. Плюс мы настраиваем SEO — клиенты будут находить вас через поиск Google и Яндекс.</div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <button class="accordion-trigger" onclick="toggleAccordion(this)">
+                        <h3>«У меня мало товаров»</h3>
+                        <div class="accordion-icon">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+                        </div>
+                    </button>
+                    <div class="accordion-body">
+                        <div class="accordion-body-inner">Даже 10 товаров — это полноценный магазин. Главное — правильно оформить витрину и настроить SEO под ваш регион. Лучше небольшой, но ваш магазин, чем кормить площадку с каждой продажи.</div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <button class="accordion-trigger" onclick="toggleAccordion(this)">
+                        <h3>«Сколько займёт запуск?»</h3>
+                        <div class="accordion-icon">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+                        </div>
+                    </button>
+                    <div class="accordion-body">
+                        <div class="accordion-body-inner">В среднем 3–5 рабочих дней. За это время: создаём магазин, переносим товары, подключаем оплату и доставку, настраиваем SEO, обучаем вас. Точный срок зависит от количества товаров — уточним на консультации.</div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <button class="accordion-trigger" onclick="toggleAccordion(this)">
+                        <h3>«Работаете только в Сочи?»</h3>
+                        <div class="accordion-icon">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+                        </div>
+                    </button>
+                    <div class="accordion-body">
+                        <div class="accordion-body-inner">Нет, работаем по всей России. Всё общение и настройка — удалённо. Сочи — наш приоритетный регион, но клиенты есть в Москве, Краснодаре, Ростове и других городах.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="gradient-line"></div>
+
+    <!-- ── Final CTA ── -->
+    <section class="relative py-28 px-6 overflow-hidden">
+        <div class="hero-mesh" style="opacity:.5;"></div>
+        <div class="max-w-3xl mx-auto text-center relative z-10">
+            <div class="reveal mb-6">
+                <span class="badge badge-green">
+                    <span class="badge-dot"></span>
+                    Готовы к запуску
+                </span>
+            </div>
+            <h2 class="reveal reveal-delay-1 font-black mb-6" style="font-size: clamp(30px, 5vw, 56px); letter-spacing: -0.04em;">
+                Готовы выйти из-под<br>контроля маркетплейсов?
+            </h2>
+            <p class="reveal reveal-delay-2 text-xl text-gray-400 mb-10 max-w-xl mx-auto leading-relaxed">
+                Расскажем, как перенести ваш магазин за 5 дней и начать экономить на комиссиях уже сейчас.
+            </p>
+            <div class="reveal reveal-delay-3 flex flex-wrap items-center justify-center gap-4">
+                <a href="tel:+79153138254" class="btn-primary" style="font-size:20px;padding:18px 44px;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 8.81 19.79 19.79 0 01.12 2.2 2 2 0 012.11 0h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.91 7.91a16 16 0 006.06 6.06l1.27-.63a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg>
+                    <span>+7 915 313-82-54</span>
+                </a>
+                <a href="https://wa.me/79153138254" target="_blank" rel="noopener" class="btn-outline" style="border-color:rgba(37,211,102,.4);color:#25D366;">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                    <span>WhatsApp</span>
                 </a>
             </div>
         </div>
     </section>
 
-    <!-- Objections -->
-    <section class="py-20 px-6">
-        <div class="max-w-4xl mx-auto">
-            <h2 class="text-3xl md:text-4xl font-bold mb-12 text-center">Ответы на ваши вопросы</h2>
-            <div class="space-y-6">
-                <div class="card">
-                    <h3 class="text-xl font-semibold text-white mb-3">«Это сложно, я не разбираюсь»</h3>
-                    <p class="text-gray-300">Мы всё настроим и дадим простую инструкцию в картинках. Если что-то непонятно — позвоните, объясним по телефону.</p>
+    <!-- ── Footer ── -->
+    <footer style="background:#05050A;border-top:1px solid rgba(255,255,255,.05);padding:40px 24px;">
+        <div class="max-w-6xl mx-auto flex flex-wrap items-center justify-between gap-6">
+            <div>
+                <div class="flex items-center gap-2 mb-2">
+                    <div style="width:28px;height:28px;background:linear-gradient(135deg,#10B981,#059669);border-radius:8px;display:flex;align-items:center;justify-content:center;">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                    </div>
+                    <span class="text-white font-bold">Яндекс Кит Мастер</span>
                 </div>
-                <div class="card">
-                    <h3 class="text-xl font-semibold text-white mb-3">«А вдруг не будет продаж?»</h3>
-                    <p class="text-gray-300">Маркетплейсы не дают вам продаж — они <em>показывают</em> ваши товары своей аудитории. Яндекс.Кит работает так же, только 0% комиссии. Плюс мы подключим SEO — клиенты найдут вас в поиске.</p>
-                </div>
-                <div class="card">
-                    <h3 class="text-xl font-semibold text-white mb-3">«У меня мало товаров»</h3>
-                    <p class="text-gray-300">Даже 10 товаров — это полноценный магазин. Главное — правильно оформить витрину и настроить SEO под ваш регион.</p>
-                </div>
+                <p class="text-gray-600 text-sm">Настройка интернет-магазинов &copy; 2026</p>
+            </div>
+            <div class="text-right">
+                <a href="tel:+79153138254" class="text-gray-300 hover:text-white transition-colors font-semibold block">+7 915 313-82-54</a>
+                <p class="text-gray-600 text-sm mt-1">Сочи, Россия · Работаем по всей России</p>
             </div>
         </div>
-    </section>
-
-    <!-- CTA Final -->
-    <section class="py-20 px-6">
-        <div class="max-w-4xl mx-auto text-center">
-            <h2 class="text-4xl md:text-5xl font-bold mb-8" style="letter-spacing: -0.02em;">
-                Готовы выйти из-под контроля маркетплейсов?
-            </h2>
-            <p class="text-xl text-gray-300 mb-10 max-w-2xl mx-auto">
-                Получите бесплатную консультацию. Расскажу, как перенести ваш магазин за 5 дней и начать экономить на комиссиях уже сейчас.
-            </p>
-            <a href="tel:+79153138254" class="btn-primary text-white font-bold py-5 px-12 rounded-full text-2xl inline-block shadow-2xl">
-                +7 915 313-82-54
-            </a>
-            <p class="text-sm text-gray-400 mt-6">Работаем по всей России • Сочи — приоритет</p>
-        </div>
-    </section>
-
-    <footer class="bg-black py-10 text-center text-gray-500 border-t border-white/5">
-        <p>&copy; 2026 Яндекс Кит Мастер. Настройка интернет-магазинов.</p>
-        <p class="mt-2">Сочи, Россия • +7 915 313-82-54</p>
     </footer>
+
+    <script>
+        // ── Nav scroll state ──
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) navbar.classList.add('nav-scrolled');
+            else navbar.classList.remove('nav-scrolled');
+        }, { passive: true });
+
+        // ── Reveal on scroll ──
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+        }, { threshold: 0.12 });
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+        // ── Accordion ──
+        function toggleAccordion(btn) {
+            const item = btn.closest('.accordion-item');
+            const body = item.querySelector('.accordion-body');
+            const isOpen = item.classList.contains('open');
+            document.querySelectorAll('.accordion-item.open').forEach(i => {
+                i.classList.remove('open');
+                i.querySelector('.accordion-body').style.maxHeight = '0';
+            });
+            if (!isOpen) {
+                item.classList.add('open');
+                body.style.maxHeight = body.scrollHeight + 'px';
+            }
+        }
+    </script>
 </body>
 </html>
