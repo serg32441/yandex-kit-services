@@ -190,20 +190,21 @@ def main() -> None:
         print("TELEGRAM_BOT_TOKEN не задан — бот не запускается.")
         return
 
-    app = Application.builder().token(TELEGRAM_TOKEN).build()
+    app = (
+        Application.builder()
+        .token(TELEGRAM_TOKEN)
+        .get_updates_read_timeout(15)
+        .get_updates_write_timeout(15)
+        .get_updates_connect_timeout(15)
+        .get_updates_pool_timeout(15)
+        .build()
+    )
     app.add_handler(CommandHandler("start", cmd_start))
     app.add_handler(CallbackQueryHandler(handle_callback))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
 
     print("Telegram bot started (long polling)...")
-    app.run_polling(
-        drop_pending_updates=True,
-        timeout=10,
-        read_timeout=15,
-        write_timeout=15,
-        connect_timeout=15,
-        pool_timeout=15,
-    )
+    app.run_polling(drop_pending_updates=True, timeout=10)
 
 
 if __name__ == "__main__":
