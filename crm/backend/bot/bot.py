@@ -196,7 +196,14 @@ def main() -> None:
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
 
     print("Telegram bot started (long polling)...")
-    app.run_polling(drop_pending_updates=True)
+    app.run_polling(
+        drop_pending_updates=True,
+        timeout=10,
+        read_timeout=15,
+        write_timeout=15,
+        connect_timeout=15,
+        pool_timeout=15,
+    )
 
 
 if __name__ == "__main__":
