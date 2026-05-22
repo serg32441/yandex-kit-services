@@ -17,6 +17,10 @@ from telegram.ext import (
 
 TELEGRAM_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "")
 API_URL = os.getenv("BACKEND_URL", "http://backend:8000")
+WEBHOOK_HOST = os.getenv("WEBHOOK_HOST", "")
+WEBHOOK_PORT = 8443
+CERT_FILE = "/app/cert.pem"
+KEY_FILE = "/app/private.key"
 
 STATUS_LABELS = {
     "new": "🆕 Новая",
@@ -203,8 +207,19 @@ def main() -> None:
     app.add_handler(CallbackQueryHandler(handle_callback))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
 
-    print("Telegram bot started (long polling)...")
-    app.run_polling(drop_pending_updates=True, timeout=10)
+    if WEBHOOK_HOST:
+        print(f"Telegram bot started (webhook: https://{WEBHOOK_HOST}:{WEBHOOK_PORT})...")
+        app.run_webhook(
+            listen="0.0.0.0",
+            port=WEBHOOK_PORT,
+            url_path="/webhook",
+            webhook_url=f"https://{WEBHOOK_HOST}:{WEBHOOK_PORT}/webhook",
+            cert=CERT_FILE,
+            key=KEY_FILE,
+        )
+    else:
+        print("Telegram bot started (long polling)...")
+        app.run_polling(drop_pending_updates=True, timeout=10)
 
 
 if __name__ == "__main__":

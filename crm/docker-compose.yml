@@ -29,7 +29,9 @@ services:
       - "8000:8000"
 
   bot:
-    build: ./backend
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.bot
     restart: unless-stopped
     depends_on:
       db:
@@ -38,7 +40,9 @@ services:
       DATABASE_URL: postgresql://crm:${POSTGRES_PASSWORD:-crm_password}@db:5432/crm
       TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN:-}
       BACKEND_URL: http://backend:8000
-    command: python -m bot.bot
+      WEBHOOK_HOST: ${WEBHOOK_HOST:-}
+    ports:
+      - "8443:8443"
 
   frontend:
     build: ./frontend
