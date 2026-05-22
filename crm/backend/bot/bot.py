@@ -216,6 +216,7 @@ def main() -> None:
             webhook_url=f"https://{WEBHOOK_HOST}:{WEBHOOK_PORT}/webhook",
             cert=CERT_FILE,
             key=KEY_FILE,
+            allowed_updates=["message", "callback_query"],
         )
     else:
         print("Telegram bot started (long polling)...")
