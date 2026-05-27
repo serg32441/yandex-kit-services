@@ -4,56 +4,204 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ПартнёрCRM — управление заявками и партнёрами</title>
-  <meta name="description" content="CRM для бизнеса с региональными партнёрами. Принимайте заявки, передавайте партнёрам, отслеживайте через Telegram.">
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; min-height: 100vh; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 60%, #0f3460 100%); color: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 24px; }
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
-    .logo { font-size: .9rem; font-weight: 700; color: #a5a0ff; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 48px; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
+      background: #ffffff;
+      color: #111827;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* NAV */
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 48px;
+      height: 68px;
+      border-bottom: 1px solid #f1f5f9;
+    }
+    .logo {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: #111827;
+      letter-spacing: -0.5px;
+      text-decoration: none;
+    }
     .logo span { color: #6c63ff; }
+    .nav-login {
+      font-size: .875rem;
+      color: #6b7280;
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .nav-login:hover { color: #111827; }
 
-    .badge { display: inline-block; background: rgba(108,99,255,.2); border: 1px solid rgba(108,99,255,.4); color: #a5a0ff; padding: 6px 16px; border-radius: 20px; font-size: .8rem; font-weight: 600; margin-bottom: 24px; }
+    /* HERO */
+    .hero {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 80px 24px 100px;
+    }
 
-    h1 { font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 800; line-height: 1.15; text-align: center; letter-spacing: -1px; margin-bottom: 20px; max-width: 700px; }
-    h1 em { color: #6c63ff; font-style: normal; }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #f0effe;
+      color: #6c63ff;
+      border-radius: 100px;
+      padding: 6px 16px;
+      font-size: .8rem;
+      font-weight: 600;
+      margin-bottom: 32px;
+      letter-spacing: .2px;
+    }
+    .badge-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #6c63ff;
+    }
 
-    p { font-size: 1.1rem; color: #a0b0c8; text-align: center; max-width: 520px; margin-bottom: 16px; line-height: 1.7; }
+    h1 {
+      font-size: clamp(2.2rem, 5vw, 3.8rem);
+      font-weight: 800;
+      line-height: 1.12;
+      letter-spacing: -1.5px;
+      color: #0f172a;
+      max-width: 720px;
+      margin-bottom: 24px;
+    }
+    h1 em {
+      font-style: normal;
+      color: #6c63ff;
+    }
 
-    .features { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-bottom: 40px; }
-    .feat { background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.1); border-radius: 8px; padding: 6px 14px; font-size: .8rem; color: #cbd5e1; }
+    .subtitle {
+      font-size: 1.1rem;
+      color: #6b7280;
+      line-height: 1.7;
+      max-width: 480px;
+      margin-bottom: 48px;
+    }
 
-    .btn { background: #6c63ff; color: #fff; padding: 16px 40px; border-radius: 12px; text-decoration: none; font-weight: 700; font-size: 1.05rem; transition: all .2s; display: inline-block; }
-    .btn:hover { background: #5a52e0; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(108,99,255,.4); }
+    .cta-group {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-bottom: 64px;
+    }
 
-    .login-link { margin-top: 20px; font-size: .85rem; color: #64748b; }
-    .login-link a { color: #6c63ff; text-decoration: none; }
-    .login-link a:hover { text-decoration: underline; }
+    .btn-main {
+      background: #6c63ff;
+      color: #fff;
+      padding: 14px 32px;
+      border-radius: 10px;
+      font-size: .95rem;
+      font-weight: 700;
+      text-decoration: none;
+      transition: background .15s, transform .15s, box-shadow .15s;
+      white-space: nowrap;
+    }
+    .btn-main:hover {
+      background: #5b53e8;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(108,99,255,.3);
+    }
 
-    footer { position: fixed; bottom: 16px; font-size: .75rem; color: #334155; }
+    .btn-login {
+      color: #6b7280;
+      font-size: .9rem;
+      font-weight: 500;
+      text-decoration: none;
+    }
+    .btn-login:hover { color: #111827; }
+
+    /* CHIPS */
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      max-width: 580px;
+    }
+    .chip {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 8px 14px;
+      font-size: .82rem;
+      font-weight: 500;
+      color: #374151;
+    }
+
+    /* FOOTER */
+    footer {
+      text-align: center;
+      padding: 24px;
+      font-size: .8rem;
+      color: #cbd5e1;
+      border-top: 1px solid #f1f5f9;
+    }
+
+    /* MOBILE */
+    @media (max-width: 600px) {
+      nav { padding: 0 20px; }
+      .hero { padding: 60px 20px 80px; }
+      h1 { letter-spacing: -.5px; }
+    }
   </style>
 </head>
 <body>
 
-  <div class="logo">Партнёр<span>CRM</span></div>
+  <nav>
+    <a href="/" class="logo">Партнёр<span>CRM</span></a>
+    <a href="https://crm.chm-sochi.ru/login" class="nav-login">Войти →</a>
+  </nav>
 
-  <div class="badge">🚀 Бесплатно — начните прямо сейчас</div>
+  <section class="hero">
 
-  <h1>CRM для бизнеса<br>с <em>региональными партнёрами</em></h1>
+    <div class="badge">
+      <span class="badge-dot"></span>
+      Бесплатно — без карты
+    </div>
 
-  <p>Принимайте заявки, назначайте партнёров в любых городах и отслеживайте выполнение — всё в одном месте.</p>
+    <h1>CRM для бизнеса<br>с <em>партнёрами</em> в регионах</h1>
 
-  <div class="features">
-    <div class="feat">📋 Учёт заявок</div>
-    <div class="feat">👥 База партнёров</div>
-    <div class="feat">📱 Telegram-бот</div>
-    <div class="feat">💰 Расчёт комиссий</div>
-    <div class="feat">📊 Статистика</div>
-  </div>
+    <p class="subtitle">
+      Принимайте заявки, назначайте исполнителей по городам<br>
+      и следите за выполнением через Telegram-бот.
+    </p>
 
-  <a href="https://crm.chm-sochi.ru/register" class="btn">Зарегистрироваться бесплатно →</a>
+    <div class="cta-group">
+      <a href="https://crm.chm-sochi.ru/register" class="btn-main">Зарегистрироваться бесплатно</a>
+      <a href="https://crm.chm-sochi.ru/login" class="btn-login">Уже есть аккаунт</a>
+    </div>
 
-  <div class="login-link">Уже есть аккаунт? <a href="https://crm.chm-sochi.ru/login">Войти</a></div>
+    <div class="chips">
+      <div class="chip">📋 Учёт заявок</div>
+      <div class="chip">👥 База партнёров</div>
+      <div class="chip">📱 Telegram-бот</div>
+      <div class="chip">💰 Расчёт комиссий</div>
+      <div class="chip">📊 Дашборд</div>
+    </div>
+
+  </section>
 
   <footer>© 2026 ПартнёрCRM</footer>
 
