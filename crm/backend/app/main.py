@@ -6,7 +6,7 @@ from .auth import get_current_user
 
 Base.metadata.create_all(bind=engine)
 
-app = FastAPI(title="Repair CRM API", version="1.0.0")
+app = FastAPI(title="Repair CRM API", version="1.0.0", redirect_slashes=False)
 
 app.add_middleware(
     CORSMiddleware,
