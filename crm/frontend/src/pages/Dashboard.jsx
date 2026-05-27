@@ -56,7 +56,7 @@ export default function Dashboard() {
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         <Link
           to="/requests/new"
-          className="col-start-2 sm:col-start-4 flex items-center justify-center gap-2 bg-blue-600 text-white py-2.5 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors"
+          className="col-start-2 sm:col-start-4 flex items-center justify-center gap-2 bg-blue-600 text-white py-4 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors"
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
             <circle cx="12" cy="12" r="10"/>
