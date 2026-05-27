@@ -8,6 +8,7 @@ import NewRequestPage from "./pages/NewRequestPage";
 import PartnersPage from "./pages/PartnersPage";
 import LoginPage from "./pages/LoginPage";
 import SetupPage from "./pages/SetupPage";
+import RegisterPage from "./pages/RegisterPage";
 import { api } from "./api";
 
 function AuthGate({ children }) {
@@ -62,6 +63,7 @@ export default function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
         <Route path="/setup" element={<SetupPage />} />
         <Route
           path="/*"

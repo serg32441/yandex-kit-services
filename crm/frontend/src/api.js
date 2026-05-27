@@ -48,6 +48,7 @@ export const api = {
   me: () => request("GET", "/auth/me"),
   checkSetup: () => request("GET", "/auth/check-setup"),
   setup: (name, email, password) => request("POST", "/auth/setup", { name, email, password }),
+  register: (email, password) => request("POST", "/auth/register", { name: email, email, password }),
   logout: () => { localStorage.removeItem("token"); window.location.href = "/login"; },
 
   // Requests

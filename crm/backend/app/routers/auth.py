@@ -26,6 +26,21 @@ def check_setup(db: Session = Depends(get_db)):
     return {"needs_setup": db.query(models.User).count() == 0}
 
 
+@router.post("/register", response_model=schemas.Token)
+def register(data: schemas.UserCreate, db: Session = Depends(get_db)):
+    if db.query(models.User).filter(models.User.email == data.email).first():
+        raise HTTPException(status_code=400, detail="Email уже зарегистрирован")
+    user = models.User(
+        email=data.email,
+        name=data.email,
+        hashed_password=hash_password(data.password),
+    )
+    db.add(user)
+    db.commit()
+    db.refresh(user)
+    return {"access_token": create_access_token(user.email), "token_type": "bearer"}
+
+
 @router.post("/setup", response_model=schemas.UserOut)
 def setup(data: schemas.UserCreate, db: Session = Depends(get_db)):
     if db.query(models.User).count() > 0:
