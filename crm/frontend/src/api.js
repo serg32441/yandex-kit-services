@@ -1,12 +1,25 @@
 const BASE = "/api";
 
+function getToken() {
+  return localStorage.getItem("token");
+}
+
 async function request(method, path, body) {
+  const token = getToken();
   const opts = {
     method,
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
   };
   if (body !== undefined) opts.body = JSON.stringify(body);
   const res = await fetch(BASE + path, opts);
+  if (res.status === 401) {
+    localStorage.removeItem("token");
+    window.location.href = "/login";
+    throw new Error("Не авторизован");
+  }
   if (!res.ok) {
     const err = await res.json().catch(() => ({ detail: res.statusText }));
     throw new Error(err.detail || "Ошибка запроса");
@@ -15,7 +28,28 @@ async function request(method, path, body) {
   return res.json();
 }
 
+async function loginRequest(email, password) {
+  const body = new URLSearchParams({ username: email, password });
+  const res = await fetch(`${BASE}/auth/login`, {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body,
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ detail: res.statusText }));
+    throw new Error(err.detail || "Ошибка входа");
+  }
+  return res.json();
+}
+
 export const api = {
+  // Auth
+  login: (email, password) => loginRequest(email, password),
+  me: () => request("GET", "/auth/me"),
+  checkSetup: () => request("GET", "/auth/check-setup"),
+  setup: (name, email, password) => request("POST", "/auth/setup", { name, email, password }),
+  logout: () => { localStorage.removeItem("token"); window.location.href = "/login"; },
+
   // Requests
   getRequests: (params = {}) => {
     const qs = new URLSearchParams(

@@ -140,6 +140,24 @@ class RequestOut(RequestBase):
     model_config = {"from_attributes": True}
 
 
+class UserCreate(BaseModel):
+    email: str
+    name: str
+    password: str
+
+
+class UserOut(BaseModel):
+    id: int
+    email: str
+    name: str
+    model_config = {"from_attributes": True}
+
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+
+
 class DashboardStats(BaseModel):
     total_today: int
     total_active: int

@@ -1,5 +1,6 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
+import { api } from "../api";
 
 const links = [
   { to: "/dashboard", label: "Дашборд", icon: "📊" },
@@ -34,8 +35,14 @@ export default function Sidebar() {
         ))}
       </nav>
 
-      <div className="p-4 border-t border-gray-700 text-xs text-gray-500">
-        Партнёры общаются через Telegram-бота
+      <div className="p-4 border-t border-gray-700 space-y-2">
+        <p className="text-xs text-gray-500">Партнёры общаются через Telegram-бота</p>
+        <button
+          onClick={() => api.logout()}
+          className="w-full text-left text-xs text-gray-400 hover:text-white transition-colors"
+        >
+          Выйти →
+        </button>
       </div>
     </aside>
   );
