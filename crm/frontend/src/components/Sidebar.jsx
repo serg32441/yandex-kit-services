@@ -26,11 +26,8 @@ export default function Sidebar({ isOpen, onClose }) {
           ${isOpen ? "translate-x-0" : "-translate-x-full"}
         `}
       >
-        <div className="p-5 border-b border-gray-700 flex items-center justify-between">
-          <div>
-            <h1 className="font-bold text-lg leading-tight">🔧 Ремонт CRM</h1>
-            <p className="text-gray-400 text-xs mt-0.5">Управление заявками</p>
-          </div>
+        <div className="p-4 border-b border-gray-700 flex items-center justify-between">
+          <span className="text-gray-400 text-xs">Меню</span>
           <button
             onClick={onClose}
             className="md:hidden text-gray-400 hover:text-white text-xl leading-none p-1"

@@ -49,7 +49,11 @@ export default function Dashboard() {
       {/* Top stats */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         <StatCard label="Заявок сегодня" value={stats.total_today} color="border-blue-200" />
-        <StatCard label="Активных" value={stats.total_active} color="border-yellow-200" />
+        <StatCard
+          label={`За ${new Date().toLocaleString("ru", { month: "long" })}`}
+          value={stats.total_this_month}
+          color="border-yellow-200"
+        />
         <StatCard
           label="Ждут запчасти"
           value={stats.by_status?.waiting_parts || 0}

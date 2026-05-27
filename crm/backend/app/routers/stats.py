@@ -32,6 +32,13 @@ def dashboard(db: Session = Depends(get_db)):
     by_status = {s: c for s, c in status_counts}
 
     month_start = datetime(today.year, today.month, 1)
+
+    total_this_month = (
+        db.query(func.count(Request.id))
+        .filter(Request.created_at >= month_start)
+        .scalar()
+    )
+
     commission_row = (
         db.query(func.coalesce(func.sum(Request.commission_amount), 0))
         .filter(Request.status.in_({"done", "closed"}))
@@ -49,6 +56,7 @@ def dashboard(db: Session = Depends(get_db)):
     return DashboardStats(
         total_today=total_today or 0,
         total_active=total_active or 0,
+        total_this_month=total_this_month or 0,
         by_status=by_status,
         recent_requests=recent,
         commission_this_month=float(commission_row or 0),

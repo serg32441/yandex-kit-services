@@ -161,6 +161,7 @@ class Token(BaseModel):
 class DashboardStats(BaseModel):
     total_today: int
     total_active: int
+    total_this_month: int
     by_status: dict
     recent_requests: List[RequestListOut]
     commission_this_month: float

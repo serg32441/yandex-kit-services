@@ -56,7 +56,6 @@ function Layout() {
           >
             ☰
           </button>
-          <span className="font-bold text-gray-800 text-sm">🔧 Ремонт CRM</span>
         </header>
         <main className="flex-1 overflow-y-auto p-4 md:p-6">
           <Routes>
