@@ -4,7 +4,7 @@ import { api } from "../api";
 
 export default function SetupPage() {
   const navigate = useNavigate();
-  const [form, setForm] = useState({ name: "", email: "", password: "", confirm: "" });
+  const [form, setForm] = useState({ email: "", password: "", confirm: "" });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -25,7 +25,7 @@ export default function SetupPage() {
     setLoading(true);
     setError("");
     try {
-      await api.setup(form.name, form.email, form.password);
+      await api.setup(form.email, form.email, form.password);
       navigate("/login");
     } catch (e) {
       setError(e.message);
@@ -49,17 +49,6 @@ export default function SetupPage() {
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-xs font-medium text-gray-600 mb-1">Ваше имя</label>
-            <input
-              type="text"
-              required
-              value={form.name}
-              onChange={set("name")}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Иван Иванов"
-            />
-          </div>
           <div>
             <label className="block text-xs font-medium text-gray-600 mb-1">Email</label>
             <input
