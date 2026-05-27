@@ -12,9 +12,9 @@ const STATUS_LABELS = {
   done: "Готово", closed: "Закрыты",
 };
 
-function StatCard({ label, value, color }) {
+function StatCard({ label, value }) {
   return (
-    <div className={`bg-white rounded-xl border p-5 ${color}`}>
+    <div className="bg-white rounded-xl border border-gray-200 p-5">
       <p className="text-sm text-gray-500">{label}</p>
       <p className="text-3xl font-bold mt-1">{value}</p>
     </div>
@@ -38,29 +38,26 @@ export default function Dashboard() {
     <div className="space-y-6 max-w-5xl">
       {/* Top stats */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        <StatCard label="Заявок сегодня" value={stats.total_today} color="border-blue-200" />
+        <StatCard label="Заявок сегодня" value={stats.total_today} />
         <StatCard
           label={`За ${new Date().toLocaleString("ru", { month: "long" })}`}
           value={stats.total_this_month}
-          color="border-yellow-200"
         />
         <StatCard
           label="Ждут запчасти"
           value={stats.by_status?.waiting_parts || 0}
-          color="border-orange-200"
         />
         <StatCard
           label={`Комиссия (${new Date().toLocaleString("ru", { month: "long" })})`}
           value={`${(stats.commission_this_month || 0).toLocaleString("ru")} ₽`}
-          color="border-green-200"
         />
       </div>
 
       <Link
         to="/requests/new"
-        className="inline-block bg-blue-600 text-white px-5 py-2.5 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors"
+        className="block text-center bg-blue-600 text-white py-2.5 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors"
       >
-        + Новая заявка
+        Новая заявка
       </Link>
 
       {/* Status breakdown */}
