@@ -53,12 +53,19 @@ export default function Dashboard() {
         />
       </div>
 
-      <Link
-        to="/requests/new"
-        className="block text-center bg-blue-600 text-white py-2.5 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors"
-      >
-        Новая заявка
-      </Link>
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+        <Link
+          to="/requests/new"
+          className="col-start-2 sm:col-start-4 flex items-center justify-center gap-2 bg-blue-600 text-white py-2.5 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors"
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" y1="8" x2="12" y2="16"/>
+            <line x1="8" y1="12" x2="16" y2="12"/>
+          </svg>
+          Новая заявка
+        </Link>
+      </div>
 
       {/* Status breakdown */}
       <div className="bg-white rounded-xl border p-5">
