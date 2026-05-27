@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ЧМ Сочи — Ремонт лазерного оборудования для салонов красоты</title>
+  <meta name="description" content="Профессиональный ремонт лазерного оборудования для салонов красоты. Работаем по всей России. Быстро, качественно, с гарантией.">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; color: #1a1a2e; line-height: 1.6; }
+
+    /* NAV */
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); border-bottom: 1px solid #f0f0f0; }
+    .nav-inner { max-width: 1100px; margin: 0 auto; padding: 0 24px; height: 64px; display: flex; align-items: center; justify-content: space-between; }
+    .logo { font-weight: 800; font-size: 1.25rem; color: #1a1a2e; text-decoration: none; letter-spacing: -0.5px; }
+    .logo span { color: #6c63ff; }
+    .nav-cta { background: #6c63ff; color: #fff; padding: 10px 22px; border-radius: 8px; text-decoration: none; font-size: 0.875rem; font-weight: 600; transition: background 0.2s; }
+    .nav-cta:hover { background: #5a52e0; }
+
+    /* HERO */
+    .hero { min-height: 100vh; display: flex; align-items: center; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); color: #fff; padding: 80px 24px 60px; }
+    .hero-inner { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
+    .hero-badge { display: inline-block; background: rgba(108,99,255,0.2); border: 1px solid rgba(108,99,255,0.4); color: #a5a0ff; padding: 6px 14px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; margin-bottom: 20px; letter-spacing: 0.5px; }
+    .hero h1 { font-size: 3rem; font-weight: 800; line-height: 1.15; margin-bottom: 20px; letter-spacing: -1px; }
+    .hero h1 em { color: #6c63ff; font-style: normal; }
+    .hero p { font-size: 1.1rem; color: #a0b0c8; margin-bottom: 36px; max-width: 480px; }
+    .hero-buttons { display: flex; gap: 14px; flex-wrap: wrap; }
+    .btn-primary { background: #6c63ff; color: #fff; padding: 14px 28px; border-radius: 10px; text-decoration: none; font-weight: 700; font-size: 1rem; transition: all 0.2s; }
+    .btn-primary:hover { background: #5a52e0; transform: translateY(-1px); }
+    .btn-secondary { background: rgba(255,255,255,0.1); color: #fff; padding: 14px 28px; border-radius: 10px; text-decoration: none; font-weight: 600; font-size: 1rem; border: 1px solid rgba(255,255,255,0.2); transition: all 0.2s; }
+    .btn-secondary:hover { background: rgba(255,255,255,0.15); }
+    .hero-visual { display: flex; justify-content: center; align-items: center; }
+    .hero-card { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 32px; width: 100%; max-width: 360px; }
+    .hero-card-title { font-size: 0.8rem; color: #a0b0c8; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 20px; }
+    .stat-row { display: flex; justify-content: space-between; margin-bottom: 20px; }
+    .stat { text-align: center; }
+    .stat-num { font-size: 2rem; font-weight: 800; color: #6c63ff; }
+    .stat-label { font-size: 0.75rem; color: #a0b0c8; margin-top: 2px; }
+    .progress-bar { background: rgba(255,255,255,0.1); border-radius: 4px; height: 6px; margin-bottom: 10px; overflow: hidden; }
+    .progress-fill { height: 100%; border-radius: 4px; background: linear-gradient(90deg, #6c63ff, #a78bfa); }
+    .progress-label { display: flex; justify-content: space-between; font-size: 0.75rem; color: #a0b0c8; }
+
+    /* FEATURES */
+    .section { padding: 80px 24px; }
+    .section-inner { max-width: 1100px; margin: 0 auto; }
+    .section-tag { color: #6c63ff; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; }
+    .section-title { font-size: 2.2rem; font-weight: 800; margin-bottom: 16px; letter-spacing: -0.5px; }
+    .section-sub { color: #64748b; font-size: 1rem; max-width: 540px; margin-bottom: 52px; }
+    .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+    .feature-card { background: #f8f9ff; border: 1px solid #e8eaf6; border-radius: 16px; padding: 28px; transition: all 0.2s; }
+    .feature-card:hover { border-color: #6c63ff; box-shadow: 0 4px 24px rgba(108,99,255,0.1); }
+    .feature-icon { width: 48px; height: 48px; background: linear-gradient(135deg, #6c63ff, #a78bfa); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; margin-bottom: 16px; }
+    .feature-title { font-size: 1rem; font-weight: 700; margin-bottom: 8px; }
+    .feature-text { font-size: 0.875rem; color: #64748b; line-height: 1.6; }
+
+    /* HOW IT WORKS */
+    .how { background: #f8f9ff; }
+    .steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; position: relative; }
+    .step { text-align: center; }
+    .step-num { width: 52px; height: 52px; border-radius: 50%; background: linear-gradient(135deg, #6c63ff, #a78bfa); color: #fff; font-weight: 800; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; }
+    .step-title { font-size: 0.95rem; font-weight: 700; margin-bottom: 8px; }
+    .step-text { font-size: 0.825rem; color: #64748b; }
+
+    /* EQUIPMENT */
+    .equipment-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .equip-item { display: flex; align-items: center; gap: 12px; background: #f8f9ff; border: 1px solid #e8eaf6; border-radius: 12px; padding: 16px; }
+    .equip-icon { font-size: 1.5rem; }
+    .equip-name { font-size: 0.875rem; font-weight: 600; }
+
+    /* COVERAGE */
+    .coverage { background: linear-gradient(135deg, #1a1a2e 0%, #0f3460 100%); color: #fff; }
+    .coverage .section-title { color: #fff; }
+    .coverage .section-sub { color: #a0b0c8; }
+    .cities-wrap { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 36px; }
+    .city-tag { background: rgba(108,99,255,0.2); border: 1px solid rgba(108,99,255,0.3); color: #a5a0ff; padding: 6px 14px; border-radius: 20px; font-size: 0.825rem; }
+
+    /* CTA */
+    .cta-section { text-align: center; padding: 80px 24px; }
+    .cta-box { background: linear-gradient(135deg, #6c63ff 0%, #5a52e0 100%); border-radius: 24px; padding: 60px 40px; max-width: 700px; margin: 0 auto; color: #fff; }
+    .cta-title { font-size: 2rem; font-weight: 800; margin-bottom: 14px; }
+    .cta-sub { color: rgba(255,255,255,0.8); margin-bottom: 32px; font-size: 1rem; }
+    .cta-buttons { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+    .btn-white { background: #fff; color: #6c63ff; padding: 14px 28px; border-radius: 10px; text-decoration: none; font-weight: 700; transition: all 0.2s; }
+    .btn-white:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(0,0,0,0.15); }
+    .btn-outline-white { border: 2px solid rgba(255,255,255,0.5); color: #fff; padding: 12px 28px; border-radius: 10px; text-decoration: none; font-weight: 600; transition: all 0.2s; }
+    .btn-outline-white:hover { border-color: #fff; }
+
+    /* FOOTER */
+    footer { background: #1a1a2e; color: #64748b; text-align: center; padding: 32px 24px; font-size: 0.875rem; }
+    footer a { color: #6c63ff; text-decoration: none; }
+
+    @media (max-width: 768px) {
+      .hero-inner { grid-template-columns: 1fr; }
+      .hero h1 { font-size: 2rem; }
+      .hero-visual { display: none; }
+      .features-grid { grid-template-columns: 1fr; }
+      .steps { grid-template-columns: repeat(2, 1fr); }
+      .equipment-grid { grid-template-columns: repeat(2, 1fr); }
+      .section-title { font-size: 1.7rem; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="/" class="logo">ЧМ <span>Сочи</span></a>
+    <a href="https://crm.chm-sochi.ru" class="nav-cta">Войти в систему</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+    <div>
+      <div class="hero-badge">⚡ Сервисный центр №1 в регионе</div>
+      <h1>Ремонт <em>лазерного</em> оборудования для салонов красоты</h1>
+      <p>Восстанавливаем лазеры, IPL-аппараты и косметологическое оборудование. Работаем по всей России — партнёры в 30+ городах.</p>
+      <div class="hero-buttons">
+        <a href="tel:+78001234567" class="btn-primary">Оставить заявку</a>
+        <a href="#how" class="btn-secondary">Как мы работаем</a>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="hero-card">
+        <div class="hero-card-title">Статистика работы</div>
+        <div class="stat-row">
+          <div class="stat"><div class="stat-num">500+</div><div class="stat-label">Ремонтов</div></div>
+          <div class="stat"><div class="stat-num">30+</div><div class="stat-label">Городов</div></div>
+          <div class="stat"><div class="stat-num">98%</div><div class="stat-label">Довольных</div></div>
+        </div>
+        <div>
+          <div class="progress-label"><span>Лазерные аппараты</span><span>45%</span></div>
+          <div class="progress-bar"><div class="progress-fill" style="width:45%"></div></div>
+        </div>
+        <div style="margin-top:10px">
+          <div class="progress-label"><span>IPL / фотоэпиляция</span><span>30%</span></div>
+          <div class="progress-bar"><div class="progress-fill" style="width:30%"></div></div>
+        </div>
+        <div style="margin-top:10px">
+          <div class="progress-label"><span>RF / криолиполиз</span><span>25%</span></div>
+          <div class="progress-bar"><div class="progress-fill" style="width:25%"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="section">
+  <div class="section-inner">
+    <div class="section-tag">Наши преимущества</div>
+    <div class="section-title">Почему выбирают нас</div>
+    <div class="section-sub">Опыт в обслуживании профессионального косметологического оборудования с 2018 года</div>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">⚡</div>
+        <div class="feature-title">Быстрый выезд</div>
+        <div class="feature-text">Партнёр приедет к вам в течение 24 часов в любом из 30+ городов России</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔬</div>
+        <div class="feature-title">Диагностика бесплатно</div>
+        <div class="feature-text">Бесплатно определяем причину поломки и согласуем стоимость до начала работ</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">✅</div>
+        <div class="feature-title">Гарантия на ремонт</div>
+        <div class="feature-text">Даём гарантию на все выполненные работы и установленные запчасти</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔧</div>
+        <div class="feature-title">Оригинальные запчасти</div>
+        <div class="feature-text">Работаем напрямую с поставщиками — только оригинальные или качественные аналоги</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📱</div>
+        <div class="feature-title">Онлайн отслеживание</div>
+        <div class="feature-text">Следите за статусом ремонта в реальном времени через нашу систему</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">💰</div>
+        <div class="feature-title">Честная цена</div>
+        <div class="feature-text">Никаких скрытых платежей. Стоимость согласовывается заранее и не меняется</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EQUIPMENT -->
+<section class="section" style="background:#f8f9ff; padding-top: 0">
+  <div class="section-inner">
+    <div class="section-tag">Оборудование</div>
+    <div class="section-title">Что мы ремонтируем</div>
+    <div class="section-sub">Работаем со всеми типами профессионального лазерного и косметологического оборудования</div>
+    <div class="equipment-grid">
+      <div class="equip-item"><div class="equip-icon">💡</div><div class="equip-name">Диодные лазеры</div></div>
+      <div class="equip-item"><div class="equip-icon">✨</div><div class="equip-name">IPL-аппараты</div></div>
+      <div class="equip-item"><div class="equip-icon">❄️</div><div class="equip-name">Криолиполиз</div></div>
+      <div class="equip-item"><div class="equip-icon">🌊</div><div class="equip-name">RF-лифтинг</div></div>
+      <div class="equip-item"><div class="equip-icon">⚡</div><div class="equip-name">Nd:YAG лазеры</div></div>
+      <div class="equip-item"><div class="equip-icon">🔴</div><div class="equip-name">Александритовые лазеры</div></div>
+      <div class="equip-item"><div class="equip-icon">💫</div><div class="equip-name">CO₂ лазеры</div></div>
+      <div class="equip-item"><div class="equip-icon">📡</div><div class="equip-name">HIFU аппараты</div></div>
+      <div class="equip-item"><div class="equip-icon">🔵</div><div class="equip-name">Кавитация / УЗ</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="section how" id="how">
+  <div class="section-inner">
+    <div class="section-tag">Процесс</div>
+    <div class="section-title">Как мы работаем</div>
+    <div class="section-sub">Простой процесс — от заявки до готового оборудования</div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-title">Заявка</div>
+        <div class="step-text">Вы звоните или пишете нам. Описываете проблему с оборудованием</div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-title">Выезд мастера</div>
+        <div class="step-text">Наш партнёр в вашем городе приезжает для диагностики</div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-title">Согласование</div>
+        <div class="step-text">Называем точную стоимость. Работа начинается после вашего согласия</div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-title">Готово</div>
+        <div class="step-text">Оборудование отремонтировано, выдаём гарантию на выполненные работы</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COVERAGE -->
+<section class="section coverage">
+  <div class="section-inner">
+    <div class="section-tag" style="color:#a5a0ff">География</div>
+    <div class="section-title">Работаем по всей России</div>
+    <div class="section-sub">Партнёры-мастера в 30+ городах — выедем к вам в течение суток</div>
+    <div class="cities-wrap">
+      <span class="city-tag">Сочи</span><span class="city-tag">Краснодар</span>
+      <span class="city-tag">Москва</span><span class="city-tag">Санкт-Петербург</span>
+      <span class="city-tag">Ростов-на-Дону</span><span class="city-tag">Екатеринбург</span>
+      <span class="city-tag">Новосибирск</span><span class="city-tag">Казань</span>
+      <span class="city-tag">Нижний Новгород</span><span class="city-tag">Самара</span>
+      <span class="city-tag">Уфа</span><span class="city-tag">Волгоград</span>
+      <span class="city-tag">Пермь</span><span class="city-tag">Воронеж</span>
+      <span class="city-tag">Челябинск</span><span class="city-tag">Омск</span>
+      <span class="city-tag">Красноярск</span><span class="city-tag">Саратов</span>
+      <span class="city-tag">Тюмень</span><span class="city-tag">Тольятти</span>
+      <span class="city-tag">и другие города...</span>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="cta-box">
+    <div class="cta-title">Нужен ремонт оборудования?</div>
+    <div class="cta-sub">Оставьте заявку — мастер свяжется с вами в течение часа и приедет на диагностику</div>
+    <div class="cta-buttons">
+      <a href="tel:+78001234567" class="btn-white">📞 Позвонить</a>
+      <a href="https://t.me/incomes32_bot" class="btn-outline-white">💬 Написать в Telegram</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>© 2026 ЧМ Сочи — Ремонт лазерного оборудования &nbsp;|&nbsp; <a href="https://crm.chm-sochi.ru">Вход для сотрудников</a></p>
+</footer>
+
+</body>
+</html>
