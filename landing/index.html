@@ -4,500 +4,58 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ПартнёрCRM — управление заявками и партнёрами</title>
-  <meta name="description" content="CRM-система для бизнеса с региональными партнёрами. Принимайте заявки, передавайте партнёрам, отслеживайте через Telegram. Бесплатная регистрация.">
+  <meta name="description" content="CRM для бизнеса с региональными партнёрами. Принимайте заявки, передавайте партнёрам, отслеживайте через Telegram.">
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <style>
-    *{margin:0;padding:0;box-sizing:border-box}
-    body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:#1a1a2e;line-height:1.6}
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; min-height: 100vh; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 60%, #0f3460 100%); color: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 24px; }
 
-    /* NAV */
-    nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(255,255,255,.96);backdrop-filter:blur(10px);border-bottom:1px solid #f0f0f0}
-    .nav-inner{max-width:1100px;margin:0 auto;padding:0 24px;height:64px;display:flex;align-items:center;justify-content:space-between}
-    .logo{font-weight:800;font-size:1.2rem;color:#1a1a2e;text-decoration:none;letter-spacing:-.5px}
-    .logo span{color:#6c63ff}
-    .nav-links{display:flex;align-items:center;gap:28px}
-    .nav-links a{color:#64748b;text-decoration:none;font-size:.875rem;font-weight:500}
-    .nav-links a:hover{color:#1a1a2e}
-    .nav-cta{background:#6c63ff;color:#fff!important;padding:10px 22px;border-radius:8px;font-weight:600!important;transition:background .2s}
-    .nav-cta:hover{background:#5a52e0!important}
+    .logo { font-size: .9rem; font-weight: 700; color: #a5a0ff; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 48px; }
+    .logo span { color: #6c63ff; }
 
-    /* HERO */
-    .hero{min-height:100vh;display:flex;align-items:center;background:linear-gradient(135deg,#1a1a2e 0%,#16213e 60%,#0f3460 100%);color:#fff;padding:80px 24px 60px}
-    .hero-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center}
-    .hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(108,99,255,.2);border:1px solid rgba(108,99,255,.4);color:#a5a0ff;padding:6px 14px;border-radius:20px;font-size:.8rem;font-weight:600;margin-bottom:20px}
-    .hero h1{font-size:3rem;font-weight:800;line-height:1.15;margin-bottom:20px;letter-spacing:-1px}
-    .hero h1 em{color:#6c63ff;font-style:normal}
-    .hero p{font-size:1.05rem;color:#a0b0c8;margin-bottom:36px;max-width:480px}
-    .hero-btns{display:flex;gap:14px;flex-wrap:wrap}
-    .btn-primary{background:#6c63ff;color:#fff;padding:14px 28px;border-radius:10px;text-decoration:none;font-weight:700;font-size:1rem;transition:all .2s;display:inline-block}
-    .btn-primary:hover{background:#5a52e0;transform:translateY(-1px)}
-    .btn-ghost{background:rgba(255,255,255,.08);color:#fff;padding:14px 28px;border-radius:10px;text-decoration:none;font-weight:600;font-size:1rem;border:1px solid rgba(255,255,255,.2);transition:all .2s}
-    .btn-ghost:hover{background:rgba(255,255,255,.14)}
+    .badge { display: inline-block; background: rgba(108,99,255,.2); border: 1px solid rgba(108,99,255,.4); color: #a5a0ff; padding: 6px 16px; border-radius: 20px; font-size: .8rem; font-weight: 600; margin-bottom: 24px; }
 
-    /* HERO DEMO CARD */
-    .demo-card{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:20px;padding:24px;width:100%}
-    .demo-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
-    .demo-title{font-size:.75rem;color:#a0b0c8;text-transform:uppercase;letter-spacing:1px}
-    .demo-dot{width:8px;height:8px;border-radius:50%;background:#4ade80;box-shadow:0 0 0 3px rgba(74,222,128,.2)}
-    .demo-row{display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.05);border-radius:10px;padding:12px;margin-bottom:8px}
-    .demo-num{width:24px;height:24px;border-radius:6px;background:linear-gradient(135deg,#6c63ff,#a78bfa);font-size:.7rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-    .demo-info{flex:1}
-    .demo-name{font-size:.8rem;font-weight:600}
-    .demo-sub{font-size:.7rem;color:#a0b0c8;margin-top:1px}
-    .demo-badge{font-size:.65rem;font-weight:600;padding:3px 8px;border-radius:10px}
-    .badge-new{background:rgba(108,99,255,.3);color:#a5a0ff}
-    .badge-progress{background:rgba(59,130,246,.3);color:#93c5fd}
-    .badge-done{background:rgba(74,222,128,.2);color:#86efac}
-    .demo-tg{margin-top:16px;background:rgba(37,211,102,.1);border:1px solid rgba(37,211,102,.2);border-radius:10px;padding:12px;font-size:.75rem;color:#86efac}
-    .demo-tg strong{display:block;margin-bottom:4px}
+    h1 { font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 800; line-height: 1.15; text-align: center; letter-spacing: -1px; margin-bottom: 20px; max-width: 700px; }
+    h1 em { color: #6c63ff; font-style: normal; }
 
-    /* LOGOS / SOCIAL PROOF */
-    .proof{background:#f8f9ff;padding:40px 24px}
-    .proof-inner{max-width:1100px;margin:0 auto;text-align:center}
-    .proof-label{font-size:.8rem;color:#94a3b8;text-transform:uppercase;letter-spacing:1px;margin-bottom:24px}
-    .proof-industries{display:flex;flex-wrap:wrap;justify-content:center;gap:12px}
-    .proof-item{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:10px 18px;font-size:.85rem;font-weight:500;color:#475569}
+    p { font-size: 1.1rem; color: #a0b0c8; text-align: center; max-width: 520px; margin-bottom: 16px; line-height: 1.7; }
 
-    /* PROBLEM */
-    .section{padding:80px 24px}
-    .section-inner{max-width:1100px;margin:0 auto}
-    .tag{color:#6c63ff;font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px}
-    .section-title{font-size:2.2rem;font-weight:800;margin-bottom:16px;letter-spacing:-.5px}
-    .section-sub{color:#64748b;font-size:1rem;max-width:560px;margin-bottom:48px}
-    .problems{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
-    .problem-card{border:1px solid #fee2e2;background:#fff5f5;border-radius:14px;padding:24px}
-    .problem-icon{font-size:1.8rem;margin-bottom:12px}
-    .problem-title{font-size:.95rem;font-weight:700;color:#dc2626;margin-bottom:6px}
-    .problem-text{font-size:.85rem;color:#64748b;line-height:1.6}
+    .features { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-bottom: 40px; }
+    .feat { background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.1); border-radius: 8px; padding: 6px 14px; font-size: .8rem; color: #cbd5e1; }
 
-    /* FEATURES */
-    .features-bg{background:#f8f9ff}
-    .features-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
-    .feature-card{background:#fff;border:1px solid #e8eaf6;border-radius:16px;padding:28px;transition:all .2s}
-    .feature-card:hover{border-color:#6c63ff;box-shadow:0 4px 24px rgba(108,99,255,.1)}
-    .feature-icon{width:48px;height:48px;background:linear-gradient(135deg,#6c63ff,#a78bfa);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;margin-bottom:16px}
-    .feature-title{font-size:1rem;font-weight:700;margin-bottom:8px}
-    .feature-text{font-size:.875rem;color:#64748b;line-height:1.6}
+    .btn { background: #6c63ff; color: #fff; padding: 16px 40px; border-radius: 12px; text-decoration: none; font-weight: 700; font-size: 1.05rem; transition: all .2s; display: inline-block; }
+    .btn:hover { background: #5a52e0; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(108,99,255,.4); }
 
-    /* WHO */
-    .who-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
-    .who-card{background:#f8f9ff;border:1px solid #e8eaf6;border-radius:14px;padding:20px;text-align:center}
-    .who-emoji{font-size:2rem;margin-bottom:10px}
-    .who-title{font-size:.875rem;font-weight:700;margin-bottom:4px}
-    .who-sub{font-size:.775rem;color:#64748b}
+    .login-link { margin-top: 20px; font-size: .85rem; color: #64748b; }
+    .login-link a { color: #6c63ff; text-decoration: none; }
+    .login-link a:hover { text-decoration: underline; }
 
-    /* HOW */
-    .how-bg{background:linear-gradient(135deg,#1a1a2e,#0f3460);color:#fff}
-    .how-bg .section-title{color:#fff}
-    .how-bg .section-sub{color:#a0b0c8}
-    .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;position:relative}
-    .steps::before{content:'';position:absolute;top:26px;left:10%;right:10%;height:2px;background:linear-gradient(90deg,#6c63ff,#a78bfa);opacity:.3}
-    .step{text-align:center;position:relative}
-    .step-num{width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#6c63ff,#a78bfa);color:#fff;font-weight:800;font-size:1.2rem;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;position:relative;z-index:1}
-    .step-title{font-size:.95rem;font-weight:700;margin-bottom:6px}
-    .step-text{font-size:.8rem;color:#a0b0c8}
-
-    /* TELEGRAM */
-    .tg-section{background:#f8f9ff}
-    .tg-inner{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center}
-    .tg-chat{background:#1a1a2e;border-radius:20px;padding:24px;max-width:360px}
-    .tg-header{display:flex;align-items:center;gap:10px;margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid rgba(255,255,255,.1)}
-    .tg-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#6c63ff,#a78bfa);display:flex;align-items:center;justify-content:center;font-size:.9rem}
-    .tg-botname{font-size:.875rem;font-weight:600;color:#fff}
-    .tg-status{font-size:.7rem;color:#4ade80}
-    .msg{margin-bottom:10px}
-    .msg-bubble{display:inline-block;padding:10px 14px;border-radius:14px;font-size:.8rem;max-width:240px;line-height:1.5}
-    .msg-in .msg-bubble{background:rgba(255,255,255,.08);color:#e2e8f0;border-bottom-left-radius:4px}
-    .msg-out{text-align:right}
-    .msg-out .msg-bubble{background:linear-gradient(135deg,#6c63ff,#a78bfa);color:#fff;border-bottom-right-radius:4px}
-    .tg-buttons{display:flex;flex-direction:column;gap:6px;margin-top:12px}
-    .tg-btn{background:rgba(108,99,255,.25);border:1px solid rgba(108,99,255,.4);color:#a5a0ff;border-radius:8px;padding:8px;text-align:center;font-size:.75rem;font-weight:600}
-
-    /* PRICING */
-    .pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;max-width:900px;margin:0 auto}
-    .price-card{background:#fff;border:1px solid #e8eaf6;border-radius:20px;padding:32px;text-align:center}
-    .price-card.popular{border:2px solid #6c63ff;position:relative}
-    .popular-badge{position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#6c63ff,#a78bfa);color:#fff;padding:4px 16px;border-radius:12px;font-size:.75rem;font-weight:700;white-space:nowrap}
-    .price-name{font-size:.9rem;font-weight:600;color:#64748b;margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px}
-    .price-amount{font-size:2.5rem;font-weight:800;color:#1a1a2e;line-height:1}
-    .price-period{font-size:.85rem;color:#94a3b8;margin:6px 0 20px}
-    .price-features{text-align:left;margin-bottom:24px;space-y:8px}
-    .price-feat{display:flex;align-items:flex-start;gap:8px;font-size:.875rem;color:#475569;margin-bottom:10px}
-    .price-feat::before{content:'✓';color:#6c63ff;font-weight:700;flex-shrink:0}
-    .price-btn{display:block;padding:12px;border-radius:10px;font-weight:600;font-size:.875rem;text-decoration:none;transition:all .2s}
-    .price-btn-primary{background:#6c63ff;color:#fff}
-    .price-btn-primary:hover{background:#5a52e0}
-    .price-btn-outline{border:1.5px solid #e2e8f0;color:#475569}
-    .price-btn-outline:hover{border-color:#6c63ff;color:#6c63ff}
-
-    /* CTA */
-    .cta-section{padding:80px 24px;text-align:center}
-    .cta-box{background:linear-gradient(135deg,#6c63ff,#5a52e0);border-radius:24px;padding:60px 40px;max-width:700px;margin:0 auto;color:#fff}
-    .cta-title{font-size:2rem;font-weight:800;margin-bottom:14px}
-    .cta-sub{color:rgba(255,255,255,.8);margin-bottom:32px;font-size:1rem}
-    .cta-btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
-    .btn-white{background:#fff;color:#6c63ff;padding:14px 32px;border-radius:10px;text-decoration:none;font-weight:700;transition:all .2s;display:inline-block}
-    .btn-white:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(0,0,0,.15)}
-
-    /* FOOTER */
-    footer{background:#1a1a2e;color:#64748b;text-align:center;padding:32px 24px;font-size:.875rem}
-    footer a{color:#6c63ff;text-decoration:none}
-
-    @media(max-width:768px){
-      .hero-inner,.tg-inner{grid-template-columns:1fr}
-      .hero h1{font-size:2rem}
-      .hero-visual,.tg-chat{display:none}
-      .features-grid,.problems,.who-grid{grid-template-columns:1fr}
-      .steps{grid-template-columns:repeat(2,1fr)}
-      .steps::before{display:none}
-      .pricing-grid{grid-template-columns:1fr}
-      .section-title{font-size:1.7rem}
-      .nav-links a:not(.nav-cta){display:none}
-    }
+    footer { position: fixed; bottom: 16px; font-size: .75rem; color: #334155; }
   </style>
 </head>
 <body>
 
-<nav>
-  <div class="nav-inner">
-    <a href="/" class="logo">Партнёр<span>CRM</span></a>
-    <div class="nav-links">
-      <a href="#features">Возможности</a>
-      <a href="#who">Кому подходит</a>
-      <a href="#pricing">Тарифы</a>
-      <a href="https://crm.chm-sochi.ru/register" class="nav-cta">Попробовать бесплатно</a>
-    </div>
-  </div>
-</nav>
+  <div class="logo">Партнёр<span>CRM</span></div>
 
-<!-- HERO -->
-<section class="hero">
-  <div class="hero-inner">
-    <div>
-      <div class="hero-badge">🚀 Уже используют 50+ компаний</div>
-      <h1>CRM для бизнеса с <em>региональными партнёрами</em></h1>
-      <p>Принимайте заявки, распределяйте по партнёрам в любых городах и отслеживайте выполнение прямо в Telegram. Всё в одном месте.</p>
-      <div class="hero-btns">
-        <a href="https://crm.chm-sochi.ru/register" class="btn-primary">Начать бесплатно →</a>
-        <a href="#how" class="btn-ghost">Как это работает</a>
-      </div>
-    </div>
-    <div class="hero-visual">
-      <div class="demo-card">
-        <div class="demo-header">
-          <div class="demo-title">Активные заявки</div>
-          <div class="demo-dot"></div>
-        </div>
-        <div class="demo-row">
-          <div class="demo-num">1</div>
-          <div class="demo-info">
-            <div class="demo-name">Салон "Люкс" — Краснодар</div>
-            <div class="demo-sub">Ремонт лазера · Партнёр: Алексей</div>
-          </div>
-          <div class="demo-badge badge-progress">В работе</div>
-        </div>
-        <div class="demo-row">
-          <div class="demo-num">2</div>
-          <div class="demo-info">
-            <div class="demo-name">Beauty Studio — Сочи</div>
-            <div class="demo-sub">Новая заявка · Не назначена</div>
-          </div>
-          <div class="demo-badge badge-new">Новая</div>
-        </div>
-        <div class="demo-row">
-          <div class="demo-num">3</div>
-          <div class="demo-info">
-            <div class="demo-name">Nail Bar — Ростов</div>
-            <div class="demo-sub">Комиссия: 1 500 ₽</div>
-          </div>
-          <div class="demo-badge badge-done">Готово</div>
-        </div>
-        <div class="demo-tg">
-          <strong>📱 Telegram-бот партнёру:</strong>
-          Новая заявка #3 · Nail Bar, Ростов · Примите в работу?
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
+  <div class="badge">🚀 Бесплатно — начните прямо сейчас</div>
 
-<!-- SOCIAL PROOF -->
-<div class="proof">
-  <div class="proof-inner">
-    <div class="proof-label">Подходит для любого сервисного бизнеса с партнёрской сетью</div>
-    <div class="proof-industries">
-      <div class="proof-item">🔧 Ремонт оборудования</div>
-      <div class="proof-item">🧹 Клининг</div>
-      <div class="proof-item">💻 IT-сервис</div>
-      <div class="proof-item">🔒 Безопасность и СКУД</div>
-      <div class="proof-item">🚿 Сантехника / электрика</div>
-      <div class="proof-item">🏥 Медоборудование</div>
-      <div class="proof-item">🍕 Доставка и логистика</div>
-      <div class="proof-item">🎪 Ивент-агентства</div>
-      <div class="proof-item">📦 Вендинг и торговля</div>
-      <div class="proof-item">🔑 Недвижимость</div>
-    </div>
-  </div>
-</div>
+  <h1>CRM для бизнеса<br>с <em>региональными партнёрами</em></h1>
 
-<!-- PROBLEM -->
-<section class="section">
-  <div class="section-inner">
-    <div class="tag">Проблема</div>
-    <div class="section-title">Узнаёте себя?</div>
-    <div class="section-sub">Так выглядит управление партнёрами без специальной системы</div>
-    <div class="problems">
-      <div class="problem-card">
-        <div class="problem-icon">📱</div>
-        <div class="problem-title">Хаос в мессенджерах</div>
-        <div class="problem-text">Заявки теряются в WhatsApp, Telegram и SMS. Непонятно кто взял, кто выполнил, кому позвонить</div>
-      </div>
-      <div class="problem-card">
-        <div class="problem-icon">📊</div>
-        <div class="problem-title">Excel не справляется</div>
-        <div class="problem-text">Таблицы путаются, данные устаревают. Нет актуальной картины: сколько заявок, у кого, в каком статусе</div>
-      </div>
-      <div class="problem-card">
-        <div class="problem-icon">💸</div>
-        <div class="problem-title">Комиссии вручную</div>
-        <div class="problem-text">Каждый месяц вручную считаете кому сколько выплатить и сколько осталось компании — ошибки неизбежны</div>
-      </div>
-    </div>
-  </div>
-</section>
+  <p>Принимайте заявки, назначайте партнёров в любых городах и отслеживайте выполнение — всё в одном месте.</p>
 
-<!-- FEATURES -->
-<section class="section features-bg" id="features">
-  <div class="section-inner">
-    <div class="tag">Возможности</div>
-    <div class="section-title">Всё что нужно — в одной системе</div>
-    <div class="section-sub">Простой интерфейс для менеджеров и удобный Telegram-бот для партнёров</div>
-    <div class="features-grid">
-      <div class="feature-card">
-        <div class="feature-icon">📋</div>
-        <div class="feature-title">Заявки в одном месте</div>
-        <div class="feature-text">Создавайте заявки вручную или принимайте из любых источников. Полная история по каждой заявке</div>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon">👥</div>
-        <div class="feature-title">База партнёров</div>
-        <div class="feature-text">Партнёры по городам, контакты, Telegram-аккаунты, история работы и статистика</div>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon">📱</div>
-        <div class="feature-title">Telegram-бот для партнёров</div>
-        <div class="feature-text">Партнёр получает заявку прямо в Telegram и обновляет статус кнопками — никаких звонков</div>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon">📊</div>
-        <div class="feature-title">Дашборд и статистика</div>
-        <div class="feature-text">Сколько заявок сегодня, в работе, выполнено. Комиссия за месяц — всё на одном экране</div>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon">💰</div>
-        <div class="feature-title">Расчёт комиссий</div>
-        <div class="feature-text">Задайте процент — система автоматически считает долю компании и партнёра по каждой заявке</div>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon">🔩</div>
-        <div class="feature-title">Управление запчастями</div>
-        <div class="feature-text">Партнёр запрашивает нужные материалы, вы подтверждаете и отправляете — всё отслеживается</div>
-      </div>
-    </div>
+  <div class="features">
+    <div class="feat">📋 Учёт заявок</div>
+    <div class="feat">👥 База партнёров</div>
+    <div class="feat">📱 Telegram-бот</div>
+    <div class="feat">💰 Расчёт комиссий</div>
+    <div class="feat">📊 Статистика</div>
   </div>
-</section>
 
-<!-- WHO -->
-<section class="section" id="who">
-  <div class="section-inner">
-    <div class="tag">Кому подходит</div>
-    <div class="section-title">Для любого бизнеса с партнёрской сетью</div>
-    <div class="section-sub">Если вы принимаете заявки и передаёте их подрядчикам или представителям в других городах — это для вас</div>
-    <div class="who-grid">
-      <div class="who-card">
-        <div class="who-emoji">🔧</div>
-        <div class="who-title">Ремонтные сервисы</div>
-        <div class="who-sub">Лазеры, бытовая техника, медоборудование, кассы</div>
-      </div>
-      <div class="who-card">
-        <div class="who-emoji">🧹</div>
-        <div class="who-title">Клининг и уборка</div>
-        <div class="who-sub">Сети клининговых компаний с бригадами в городах</div>
-      </div>
-      <div class="who-card">
-        <div class="who-emoji">💻</div>
-        <div class="who-title">IT и техподдержка</div>
-        <div class="who-sub">Выездной ремонт компьютеров, оргтехники, сетей</div>
-      </div>
-      <div class="who-card">
-        <div class="who-emoji">🔒</div>
-        <div class="who-title">Безопасность</div>
-        <div class="who-sub">Монтаж видеонаблюдения, СКУД, пожарных систем</div>
-      </div>
-      <div class="who-card">
-        <div class="who-emoji">🏠</div>
-        <div class="who-title">Строй и ремонт</div>
-        <div class="who-sub">Сантехника, электрика, отделка, монтажные бригады</div>
-      </div>
-      <div class="who-card">
-        <div class="who-emoji">🚗</div>
-        <div class="who-title">Автосервис</div>
-        <div class="who-sub">Сети СТО и выездного ремонта по городам</div>
-      </div>
-      <div class="who-card">
-        <div class="who-emoji">🎪</div>
-        <div class="who-title">Ивент и аренда</div>
-        <div class="who-sub">Агентства с партнёрами-исполнителями в регионах</div>
-      </div>
-      <div class="who-card">
-        <div class="who-emoji">📦</div>
-        <div class="who-title">Агрегаторы услуг</div>
-        <div class="who-sub">Любой бизнес, координирующий сеть подрядчиков</div>
-      </div>
-    </div>
-  </div>
-</section>
+  <a href="https://crm.chm-sochi.ru/register" class="btn">Зарегистрироваться бесплатно →</a>
 
-<!-- HOW IT WORKS -->
-<section class="section how-bg" id="how">
-  <div class="section-inner">
-    <div class="tag" style="color:#a5a0ff">Как это работает</div>
-    <div class="section-title">Запустить за 10 минут</div>
-    <div class="section-sub">Никакой сложной настройки — регистрируйтесь и сразу начинайте работу</div>
-    <div class="steps">
-      <div class="step">
-        <div class="step-num">1</div>
-        <div class="step-title">Регистрация</div>
-        <div class="step-text">Создайте аккаунт и добавьте партнёров с их городами и Telegram</div>
-      </div>
-      <div class="step">
-        <div class="step-num">2</div>
-        <div class="step-title">Партнёр в боте</div>
-        <div class="step-text">Партнёр пишет /start вашему боту и получает свой ID для привязки</div>
-      </div>
-      <div class="step">
-        <div class="step-num">3</div>
-        <div class="step-title">Создаёте заявку</div>
-        <div class="step-text">Добавляете заявку и назначаете нужного партнёра — он сразу получает уведомление</div>
-      </div>
-      <div class="step">
-        <div class="step-num">4</div>
-        <div class="step-title">Всё под контролем</div>
-        <div class="step-text">Партнёр обновляет статус кнопками в Telegram, вы видите всё в реальном времени</div>
-      </div>
-    </div>
-  </div>
-</section>
+  <div class="login-link">Уже есть аккаунт? <a href="https://crm.chm-sochi.ru/login">Войти</a></div>
 
-<!-- TELEGRAM -->
-<section class="section tg-section">
-  <div class="section-inner">
-    <div class="tg-inner">
-      <div>
-        <div class="tag">Telegram-интеграция</div>
-        <div class="section-title">Партнёры работают там где удобно</div>
-        <p style="color:#64748b;margin-bottom:24px">Не нужно устанавливать приложения и учиться новым системам. Партнёр принимает заявки и обновляет статусы прямо в Telegram — нажатием одной кнопки.</p>
-        <ul style="list-style:none;display:flex;flex-direction:column;gap:12px">
-          <li style="display:flex;align-items:flex-start;gap:10px;font-size:.9rem;color:#475569"><span style="color:#6c63ff;font-weight:700;flex-shrink:0">✓</span> Мгновенные уведомления о новых заявках</li>
-          <li style="display:flex;align-items:flex-start;gap:10px;font-size:.9rem;color:#475569"><span style="color:#6c63ff;font-weight:700;flex-shrink:0">✓</span> Кнопки для обновления статуса</li>
-          <li style="display:flex;align-items:flex-start;gap:10px;font-size:.9rem;color:#475569"><span style="color:#6c63ff;font-weight:700;flex-shrink:0">✓</span> Ввод суммы ремонта прямо в чате</li>
-          <li style="display:flex;align-items:flex-start;gap:10px;font-size:.9rem;color:#475569"><span style="color:#6c63ff;font-weight:700;flex-shrink:0">✓</span> Запрос необходимых материалов</li>
-        </ul>
-      </div>
-      <div style="display:flex;justify-content:center">
-        <div class="tg-chat">
-          <div class="tg-header">
-            <div class="tg-avatar">🔧</div>
-            <div>
-              <div class="tg-botname">CRM Бот</div>
-              <div class="tg-status">● онлайн</div>
-            </div>
-          </div>
-          <div class="msg msg-in">
-            <div class="msg-bubble">📋 <strong>Новая заявка #47</strong><br>Клиент: Beauty Studio<br>Адрес: ул. Ленина 15<br>Задача: Ремонт лазера Soprano</div>
-          </div>
-          <div class="tg-buttons">
-            <div class="tg-btn">✅ Принял в работу</div>
-            <div class="tg-btn">❌ Не могу взять</div>
-          </div>
-          <div class="msg msg-out" style="margin-top:10px">
-            <div class="msg-bubble">✅ Принял в работу</div>
-          </div>
-          <div class="msg msg-in">
-            <div class="msg-bubble">Отлично! Статус обновлён.<br>Укажите стоимость по завершении.</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- PRICING -->
-<section class="section" id="pricing">
-  <div class="section-inner">
-    <div class="tag" style="text-align:center">Тарифы</div>
-    <div class="section-title" style="text-align:center">Простые и честные цены</div>
-    <div class="section-sub" style="text-align:center;margin:0 auto 48px">Начните бесплатно, платите только за рост</div>
-    <div class="pricing-grid">
-      <div class="price-card">
-        <div class="price-name">Старт</div>
-        <div class="price-amount">0 ₽</div>
-        <div class="price-period">навсегда</div>
-        <div class="price-features">
-          <div class="price-feat">До 3 партнёров</div>
-          <div class="price-feat">До 50 заявок в месяц</div>
-          <div class="price-feat">Telegram-бот</div>
-          <div class="price-feat">Базовая статистика</div>
-        </div>
-        <a href="https://crm.chm-sochi.ru/register" class="price-btn price-btn-outline">Начать бесплатно</a>
-      </div>
-      <div class="price-card popular">
-        <div class="popular-badge">Популярный</div>
-        <div class="price-name">Бизнес</div>
-        <div class="price-amount">1 990 ₽</div>
-        <div class="price-period">в месяц</div>
-        <div class="price-features">
-          <div class="price-feat">До 30 партнёров</div>
-          <div class="price-feat">Неограниченно заявок</div>
-          <div class="price-feat">Telegram-бот</div>
-          <div class="price-feat">Расчёт комиссий</div>
-          <div class="price-feat">Запчасти и материалы</div>
-          <div class="price-feat">Расширенная аналитика</div>
-        </div>
-        <a href="https://crm.chm-sochi.ru/register" class="price-btn price-btn-primary">Попробовать 14 дней</a>
-      </div>
-      <div class="price-card">
-        <div class="price-name">Корпоратив</div>
-        <div class="price-amount">4 990 ₽</div>
-        <div class="price-period">в месяц</div>
-        <div class="price-features">
-          <div class="price-feat">Неограниченно партнёров</div>
-          <div class="price-feat">Несколько менеджеров</div>
-          <div class="price-feat">Свой Telegram-бот</div>
-          <div class="price-feat">API интеграция</div>
-          <div class="price-feat">Приоритетная поддержка</div>
-          <div class="price-feat">Индивидуальная настройка</div>
-        </div>
-        <a href="https://crm.chm-sochi.ru/register" class="price-btn price-btn-outline">Связаться с нами</a>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- CTA -->
-<section class="cta-section">
-  <div class="cta-box">
-    <div class="cta-title">Попробуйте прямо сейчас</div>
-    <div class="cta-sub">Регистрация занимает 1 минуту. Первые партнёры и заявки — через 10 минут.</div>
-    <div class="cta-btns">
-      <a href="https://crm.chm-sochi.ru/register" class="btn-white">Зарегистрироваться бесплатно →</a>
-    </div>
-  </div>
-</section>
-
-<footer>
-  <p>© 2026 ПартнёрCRM &nbsp;|&nbsp; <a href="https://crm.chm-sochi.ru">Войти в систему</a> &nbsp;|&nbsp; <a href="mailto:ya.korotkix@yandex.ru">Написать нам</a></p>
-</footer>
+  <footer>© 2026 ПартнёрCRM</footer>
 
 </body>
 </html>
