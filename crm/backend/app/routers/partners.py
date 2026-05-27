@@ -8,7 +8,7 @@ from ..schemas import PartnerCreate, PartnerUpdate, PartnerOut
 router = APIRouter()
 
 
-@router.get("/", response_model=List[PartnerOut])
+@router.get("", response_model=List[PartnerOut])
 def list_partners(
     city_id: Optional[int] = None,
     active_only: bool = False,
@@ -22,7 +22,7 @@ def list_partners(
     return q.order_by(Partner.name).all()
 
 
-@router.post("/", response_model=PartnerOut)
+@router.post("", response_model=PartnerOut)
 def create_partner(payload: PartnerCreate, db: Session = Depends(get_db)):
     partner = Partner(**payload.model_dump())
     db.add(partner)

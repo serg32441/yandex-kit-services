@@ -24,7 +24,7 @@ VALID_STATUSES = {
 }
 
 
-@router.get("/", response_model=List[RequestListOut])
+@router.get("", response_model=List[RequestListOut])
 def list_requests(
     status: Optional[str] = None,
     city_id: Optional[int] = None,
@@ -55,7 +55,7 @@ def list_requests(
     return q.order_by(desc(Request.created_at)).offset(skip).limit(limit).all()
 
 
-@router.post("/", response_model=RequestOut)
+@router.post("", response_model=RequestOut)
 def create_request(payload: RequestCreate, db: Session = Depends(get_db)):
     req = Request(**payload.model_dump())
     if payload.partner_id:

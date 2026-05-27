@@ -8,12 +8,12 @@ from ..schemas import CityCreate, CityOut
 router = APIRouter()
 
 
-@router.get("/", response_model=List[CityOut])
+@router.get("", response_model=List[CityOut])
 def list_cities(db: Session = Depends(get_db)):
     return db.query(City).order_by(City.name).all()
 
 
-@router.post("/", response_model=CityOut)
+@router.post("", response_model=CityOut)
 def create_city(payload: CityCreate, db: Session = Depends(get_db)):
     existing = db.query(City).filter(City.name == payload.name).first()
     if existing:
