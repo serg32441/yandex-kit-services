@@ -97,20 +97,19 @@ export default function Dashboard() {
             <Link
               key={r.id}
               to={`/requests/${r.id}`}
-              className="flex items-center gap-4 px-5 py-3 hover:bg-gray-50 transition-colors"
+              className="flex items-center gap-3 px-5 py-3 hover:bg-gray-50 transition-colors"
             >
-              <span className="text-gray-400 text-sm w-8">#{r.id}</span>
+              <span className="text-gray-300 text-xs w-5 shrink-0 text-right">#{r.id}</span>
               <div className="flex-1 min-w-0">
                 <p className="font-medium truncate">{r.client_name}</p>
-                <p className="text-sm text-gray-500">{r.equipment_type || "—"}</p>
+                <p className="text-xs text-gray-400 truncate">{r.equipment_type || "—"}</p>
               </div>
-              <StatusBadge status={r.status} />
-              <span className="text-xs text-gray-400 hidden sm:block">
-                {r.city?.name || "—"}
-              </span>
-              <span className="text-xs text-gray-400">
-                {new Date(r.created_at).toLocaleDateString("ru")}
-              </span>
+              <div className="flex items-center gap-2 shrink-0">
+                <StatusBadge status={r.status} />
+                <span className="text-xs text-gray-400">
+                  {new Date(r.created_at).toLocaleDateString("ru")}
+                </span>
+              </div>
             </Link>
           ))}
         </div>
