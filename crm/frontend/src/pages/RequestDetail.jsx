@@ -329,19 +329,21 @@ export default function RequestDetail() {
         {req.status_logs.length === 0 ? (
           <p className="text-gray-400 text-sm">История пуста</p>
         ) : (
-          <div className="space-y-2">
+          <div className="space-y-3">
             {[...req.status_logs].reverse().map((log) => (
-              <div key={log.id} className="flex items-start gap-3 text-sm">
-                <span className="text-gray-300 text-xs mt-0.5 w-32 shrink-0">
-                  {new Date(log.created_at).toLocaleString("ru")}
-                </span>
-                <StatusBadge status={log.status} />
+              <div key={log.id} className="text-sm">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <StatusBadge status={log.status} />
+                  <span className="text-gray-400 text-xs">
+                    {new Date(log.created_at).toLocaleString("ru")}
+                  </span>
+                  <span className="text-gray-300 text-xs ml-auto">
+                    {log.changed_by.startsWith("partner:") ? "Партнёр" : log.changed_by}
+                  </span>
+                </div>
                 {log.comment && (
-                  <span className="text-gray-500">{log.comment}</span>
+                  <p className="text-gray-500 text-xs mt-1 pl-1">{log.comment}</p>
                 )}
-                <span className="text-gray-300 text-xs ml-auto">
-                  {log.changed_by.startsWith("partner:") ? "Партнёр (Telegram)" : log.changed_by}
-                </span>
               </div>
             ))}
           </div>
@@ -354,8 +356,8 @@ export default function RequestDetail() {
 function InfoRow({ label, value }) {
   return (
     <div className="flex gap-3 text-sm">
-      <span className="text-gray-400 w-28 shrink-0">{label}</span>
-      <span className="font-medium">{value}</span>
+      <span className="text-gray-400 w-24 shrink-0">{label}</span>
+      <span className="font-medium min-w-0 break-words">{value}</span>
     </div>
   );
 }

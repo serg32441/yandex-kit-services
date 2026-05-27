@@ -8,42 +8,67 @@ const links = [
   { to: "/partners", label: "Партнёры", icon: "👥" },
 ];
 
-export default function Sidebar() {
+export default function Sidebar({ isOpen, onClose }) {
   return (
-    <aside className="w-56 bg-gray-900 text-white flex flex-col shrink-0">
-      <div className="p-5 border-b border-gray-700">
-        <h1 className="font-bold text-lg leading-tight">🔧 Ремонт CRM</h1>
-        <p className="text-gray-400 text-xs mt-0.5">Управление заявками</p>
-      </div>
+    <>
+      {isOpen && (
+        <div
+          className="fixed inset-0 bg-black/40 z-20 md:hidden"
+          onClick={onClose}
+        />
+      )}
 
-      <nav className="flex-1 p-3 space-y-1">
-        {links.map(({ to, label, icon }) => (
-          <NavLink
-            key={to}
-            to={to}
-            className={({ isActive }) =>
-              `flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors ${
-                isActive
-                  ? "bg-blue-600 text-white"
-                  : "text-gray-300 hover:bg-gray-800 hover:text-white"
-              }`
-            }
+      <aside
+        className={`
+          fixed top-0 left-0 h-full w-64 bg-gray-900 text-white flex flex-col z-30
+          transition-transform duration-200
+          md:static md:w-56 md:translate-x-0 md:shrink-0
+          ${isOpen ? "translate-x-0" : "-translate-x-full"}
+        `}
+      >
+        <div className="p-5 border-b border-gray-700 flex items-center justify-between">
+          <div>
+            <h1 className="font-bold text-lg leading-tight">🔧 Ремонт CRM</h1>
+            <p className="text-gray-400 text-xs mt-0.5">Управление заявками</p>
+          </div>
+          <button
+            onClick={onClose}
+            className="md:hidden text-gray-400 hover:text-white text-xl leading-none p-1"
           >
-            <span>{icon}</span>
-            <span>{label}</span>
-          </NavLink>
-        ))}
-      </nav>
+            ✕
+          </button>
+        </div>
 
-      <div className="p-4 border-t border-gray-700 space-y-2">
-        <p className="text-xs text-gray-500">Партнёры общаются через Telegram-бота</p>
-        <button
-          onClick={() => api.logout()}
-          className="w-full text-left text-xs text-gray-400 hover:text-white transition-colors"
-        >
-          Выйти →
-        </button>
-      </div>
-    </aside>
+        <nav className="flex-1 p-3 space-y-1">
+          {links.map(({ to, label, icon }) => (
+            <NavLink
+              key={to}
+              to={to}
+              onClick={onClose}
+              className={({ isActive }) =>
+                `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-colors ${
+                  isActive
+                    ? "bg-blue-600 text-white"
+                    : "text-gray-300 hover:bg-gray-800 hover:text-white"
+                }`
+              }
+            >
+              <span>{icon}</span>
+              <span>{label}</span>
+            </NavLink>
+          ))}
+        </nav>
+
+        <div className="p-4 border-t border-gray-700 space-y-2">
+          <p className="text-xs text-gray-500">Партнёры общаются через Telegram-бота</p>
+          <button
+            onClick={() => api.logout()}
+            className="w-full text-left text-xs text-gray-400 hover:text-white transition-colors py-1"
+          >
+            Выйти →
+          </button>
+        </div>
+      </aside>
+    </>
   );
 }
