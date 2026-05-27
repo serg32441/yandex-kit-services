@@ -17,10 +17,13 @@ from telegram.ext import (
 
 TELEGRAM_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "")
 API_URL = os.getenv("BACKEND_URL", "http://backend:8000")
+BOT_SECRET = os.getenv("BOT_SECRET", "crm-bot-internal-secret")
 WEBHOOK_HOST = os.getenv("WEBHOOK_HOST", "")
 WEBHOOK_PORT = 8443
 CERT_FILE = "/app/cert.pem"
 KEY_FILE = "/app/private.key"
+
+BOT_HEADERS = {"X-Bot-Secret": BOT_SECRET}
 
 STATUS_LABELS = {
     "new": "🆕 Новая",
@@ -102,6 +105,7 @@ async def _update_status(query, request_id: int, new_status: str, telegram_id: s
                     "changed_by": f"partner:{telegram_id}",
                     "comment": "Обновлено через Telegram",
                 },
+                headers=BOT_HEADERS,
                 timeout=10,
             )
             if resp.status_code == 200:
@@ -141,6 +145,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
                     "comment": f"Ремонт завершён. Стоимость: {amount} руб.",
                     "total_amount": amount,
                 },
+                headers=BOT_HEADERS,
                 timeout=10,
             )
 
@@ -167,12 +172,14 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
                     "changed_by": f"partner:{telegram_id}",
                     "comment": "Требуются запчасти",
                 },
+                headers=BOT_HEADERS,
                 timeout=10,
             )
             for part in parts:
                 await client.post(
                     f"{API_URL}/api/requests/{request_id}/spare-parts",
                     json={"part_name": part, "quantity": 1},
+                    headers=BOT_HEADERS,
                     timeout=10,
                 )
 
