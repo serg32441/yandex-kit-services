@@ -36,16 +36,6 @@ export default function Dashboard() {
 
   return (
     <div className="space-y-6 max-w-5xl">
-      <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold">Дашборд</h2>
-        <Link
-          to="/requests/new"
-          className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors"
-        >
-          + Новая заявка
-        </Link>
-      </div>
-
       {/* Top stats */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         <StatCard label="Заявок сегодня" value={stats.total_today} color="border-blue-200" />
@@ -65,6 +55,13 @@ export default function Dashboard() {
           color="border-green-200"
         />
       </div>
+
+      <Link
+        to="/requests/new"
+        className="inline-block bg-blue-600 text-white px-5 py-2.5 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors"
+      >
+        + Новая заявка
+      </Link>
 
       {/* Status breakdown */}
       <div className="bg-white rounded-xl border p-5">
