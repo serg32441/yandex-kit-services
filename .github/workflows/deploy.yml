@@ -12,8 +12,8 @@ jobs:
       - name: Deploy via SSH
         uses: appleboy/ssh-action@v1.0.3
         with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
+          host: 85.198.70.155
+          username: root
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             cd /root/yandex-kit-services
