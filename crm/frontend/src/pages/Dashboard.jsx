@@ -78,7 +78,6 @@ export default function Dashboard() {
 
       {/* Status breakdown */}
       <div className="bg-white rounded-xl border p-5">
-        <h3 className="font-semibold mb-4 text-gray-700">По статусам</h3>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           {STATUS_ORDER.map((s) => (
             <Link
