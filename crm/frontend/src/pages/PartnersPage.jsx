@@ -127,7 +127,7 @@ export default function PartnersPage() {
 
       <button
         onClick={openAdd}
-        className="flex items-center justify-center gap-2 w-full bg-blue-600 text-white py-4 rounded-2xl text-sm font-medium hover:bg-blue-700 transition-colors"
+        className="flex items-center justify-center gap-2 w-full bg-blue-600 text-white py-4 rounded-2xl text-sm font-medium hover:bg-blue-700 transition-colors mb-4"
       >
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
           <circle cx="12" cy="12" r="10"/>
