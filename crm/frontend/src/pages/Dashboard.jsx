@@ -13,7 +13,7 @@ function SmallStatusBadge({ status }) {
 }
 
 const STATUS_ORDER = [
-  "new", "transferred", "in_progress", "waiting_parts", "parts_sent", "done", "closed",
+  "transferred", "in_progress", "waiting_parts", "closed",
 ];
 const STATUS_LABELS = {
   new: "Новые", transferred: "Переданы", in_progress: "В работе",
