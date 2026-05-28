@@ -77,13 +77,13 @@ export default function Dashboard() {
       </div>
 
       {/* Status breakdown */}
-      <div className="bg-white rounded-xl border p-5">
+      <div className="bg-white rounded-2xl border p-5">
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           {STATUS_ORDER.map((s) => (
             <Link
               key={s}
               to={`/requests?status=${s}`}
-              className="text-center p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors"
+              className="text-center p-3 rounded-2xl bg-gray-50 hover:bg-gray-100 transition-colors"
             >
               <p className="text-2xl font-bold">{stats.by_status?.[s] || 0}</p>
               <p className="text-xs text-gray-500 mt-1">{STATUS_LABELS[s]}</p>
