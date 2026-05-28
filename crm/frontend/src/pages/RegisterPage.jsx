@@ -35,7 +35,7 @@ export default function RegisterPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-xl shadow-lg p-8 w-full max-w-md">
+      <div className="bg-white rounded-3xl shadow-lg p-8 w-full max-w-md">
         <div className="mb-6">
           <p className="text-gray-500 text-sm">Создайте аккаунт</p>
         </div>
