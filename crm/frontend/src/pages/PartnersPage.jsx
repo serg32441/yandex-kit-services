@@ -86,15 +86,7 @@ export default function PartnersPage() {
 
   return (
     <div className="max-w-4xl space-y-5">
-      <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold">Партнёры</h2>
-        <button
-          onClick={openAdd}
-          className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors"
-        >
-          + Добавить партнёра
-        </button>
-      </div>
+      <h2 className="text-2xl font-bold">Партнёры</h2>
 
       {error && (
         <div className="bg-red-50 border border-red-200 text-red-700 rounded-lg px-4 py-3 text-sm">
@@ -132,6 +124,18 @@ export default function PartnersPage() {
           </button>
         </form>
       </div>
+
+      <button
+        onClick={openAdd}
+        className="flex items-center justify-center gap-2 w-full bg-blue-600 text-white py-4 rounded-2xl text-sm font-medium hover:bg-blue-700 transition-colors"
+      >
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="12" y1="8" x2="12" y2="16"/>
+          <line x1="8" y1="12" x2="16" y2="12"/>
+        </svg>
+        Добавить партнёра
+      </button>
 
       {/* Partners table */}
       <div className="bg-white rounded-xl border overflow-hidden">
