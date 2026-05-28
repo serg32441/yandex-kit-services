@@ -23,7 +23,7 @@ const STATUS_LABELS = {
 
 function StatCard({ label, value }) {
   return (
-    <div className="bg-white rounded-2xl border border-gray-200 p-5">
+    <div className="bg-white rounded-2xl border border-gray-200 p-5 flex flex-col items-center justify-center text-center">
       <p className="text-sm text-gray-500">{label}</p>
       <p className="text-3xl font-semibold mt-1 text-gray-600">{value}</p>
     </div>
