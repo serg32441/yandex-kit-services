@@ -63,7 +63,7 @@ export default function PartnersPage() {
   }
 
   async function handleDeactivate(id) {
-    if (!confirm("Деактивировать партнёра?")) return;
+    if (!confirm("Удалить партнёра?")) return;
     try {
       await api.deletePartner(id);
       load();
@@ -186,7 +186,7 @@ export default function PartnersPage() {
                           onClick={() => handleDeactivate(p.id)}
                           className="text-red-400 text-xs hover:underline"
                         >
-                          Деактивировать
+                          Удалить
                         </button>
                       )}
                     </div>
