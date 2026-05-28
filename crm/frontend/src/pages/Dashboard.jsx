@@ -6,7 +6,7 @@ import StatusBadge, { STATUS_CONFIG } from "../components/StatusBadge";
 function SmallStatusBadge({ status }) {
   const cfg = STATUS_CONFIG[status] || { label: status, color: "bg-gray-100 text-gray-400" };
   return (
-    <span className={`inline-flex items-center justify-center min-w-[116px] px-1.5 py-0.5 rounded-md text-[10px] font-medium ${cfg.color}`}>
+    <span className={`inline-flex items-center justify-center min-w-[116px] px-1.5 py-1.5 rounded-md text-[10px] font-medium ${cfg.color}`}>
       {cfg.label}
     </span>
   );
