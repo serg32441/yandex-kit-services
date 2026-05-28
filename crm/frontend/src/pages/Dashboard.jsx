@@ -99,7 +99,7 @@ export default function Dashboard() {
             <Link
               key={r.id}
               to={`/requests/${r.id}`}
-              className="flex items-center gap-3 px-5 py-4 hover:bg-gray-50 transition-colors"
+              className="flex items-center gap-3 px-7 py-4 hover:bg-gray-50 transition-colors"
             >
               <div className="flex-1 min-w-0">
                 <p className="font-medium truncate">{r.client_name}</p>
