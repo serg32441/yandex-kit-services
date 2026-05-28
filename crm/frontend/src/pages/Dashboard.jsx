@@ -1,7 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { api } from "../api";
-import StatusBadge from "../components/StatusBadge";
+import StatusBadge, { STATUS_CONFIG } from "../components/StatusBadge";
+
+function SmallStatusBadge({ status }) {
+  const cfg = STATUS_CONFIG[status] || { label: status, color: "bg-gray-100 text-gray-600" };
+  return (
+    <span className={`inline-flex items-center px-1.5 py-0.5 rounded-md text-[10px] font-medium border ${cfg.color}`}>
+      {cfg.label}
+    </span>
+  );
+}
 
 const STATUS_ORDER = [
   "new", "transferred", "in_progress", "waiting_parts", "parts_sent", "done", "closed",
@@ -85,13 +94,7 @@ export default function Dashboard() {
       </div>
 
       {/* Recent requests */}
-      <div className="bg-white rounded-xl border">
-        <div className="px-5 py-4 border-b flex items-center justify-between">
-          <h3 className="font-semibold text-gray-700">Последние заявки</h3>
-          <Link to="/requests" className="text-blue-600 text-sm hover:underline">
-            Все заявки →
-          </Link>
-        </div>
+      <div className="bg-white rounded-2xl border overflow-hidden">
         <div className="divide-y">
           {stats.recent_requests.map((r) => (
             <Link
@@ -104,11 +107,8 @@ export default function Dashboard() {
                 <p className="font-medium truncate">{r.client_name}</p>
                 <p className="text-xs text-gray-400 truncate">{r.equipment_type || "—"}</p>
               </div>
-              <div className="flex items-center gap-2 shrink-0">
-                <StatusBadge status={r.status} />
-                <span className="text-xs text-gray-400">
-                  {new Date(r.created_at).toLocaleDateString("ru")}
-                </span>
+              <div className="shrink-0">
+                <SmallStatusBadge status={r.status} />
               </div>
             </Link>
           ))}
