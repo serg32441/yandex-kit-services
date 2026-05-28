@@ -25,7 +25,7 @@ function StatCard({ label, value }) {
   return (
     <div className="bg-white rounded-2xl border border-gray-200 p-5">
       <p className="text-sm text-gray-500">{label}</p>
-      <p className="text-3xl font-bold mt-1">{value}</p>
+      <p className="text-3xl font-semibold mt-1 text-gray-600">{value}</p>
     </div>
   );
 }
@@ -85,7 +85,7 @@ export default function Dashboard() {
               to={`/requests?status=${s}`}
               className="text-center p-3 rounded-2xl bg-gray-50 hover:bg-gray-100 transition-colors"
             >
-              <p className="text-2xl font-bold">{stats.by_status?.[s] || 0}</p>
+              <p className="text-2xl font-semibold text-gray-600">{stats.by_status?.[s] || 0}</p>
               <p className="text-xs text-gray-500 mt-1">{STATUS_LABELS[s]}</p>
             </Link>
           ))}
