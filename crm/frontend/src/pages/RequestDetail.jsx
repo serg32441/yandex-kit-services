@@ -125,7 +125,7 @@ export default function RequestDetail() {
       </div>
 
       {/* Client info */}
-      <div className="bg-white rounded-xl border p-5 space-y-3">
+      <div className="bg-white rounded-2xl border p-5 space-y-3">
         <h3 className="font-semibold text-gray-700 mb-1">Клиент</h3>
         <InfoRow label="Имя" value={req.client_name} />
         <InfoRow label="Телефон" value={
@@ -147,7 +147,7 @@ export default function RequestDetail() {
       </div>
 
       {/* Partner */}
-      <div className="bg-white rounded-xl border p-5">
+      <div className="bg-white rounded-2xl border p-5">
         <div className="flex items-center justify-between mb-3">
           <h3 className="font-semibold text-gray-700">Партнёр</h3>
           <button
@@ -203,7 +203,7 @@ export default function RequestDetail() {
       </div>
 
       {/* Finance */}
-      <div className="bg-white rounded-xl border p-5">
+      <div className="bg-white rounded-2xl border p-5">
         <h3 className="font-semibold text-gray-700 mb-3">Финансы</h3>
         <div className="flex gap-4 flex-wrap">
           <div>
@@ -224,7 +224,7 @@ export default function RequestDetail() {
       </div>
 
       {/* Status change */}
-      <div className="bg-white rounded-xl border p-5">
+      <div className="bg-white rounded-2xl border p-5">
         <h3 className="font-semibold text-gray-700 mb-3">Изменить статус</h3>
         <form onSubmit={handleStatusUpdate} className="space-y-3">
           <div className="flex gap-2 flex-wrap">
@@ -272,7 +272,7 @@ export default function RequestDetail() {
       </div>
 
       {/* Spare parts */}
-      <div className="bg-white rounded-xl border p-5">
+      <div className="bg-white rounded-2xl border p-5">
         <h3 className="font-semibold text-gray-700 mb-3">Запчасти</h3>
         {req.spare_parts.length === 0 ? (
           <p className="text-gray-400 text-sm">Запчасти не запрашивались</p>
@@ -324,7 +324,7 @@ export default function RequestDetail() {
       </div>
 
       {/* Status history */}
-      <div className="bg-white rounded-xl border p-5">
+      <div className="bg-white rounded-2xl border p-5">
         <h3 className="font-semibold text-gray-700 mb-3">История статусов</h3>
         {req.status_logs.length === 0 ? (
           <p className="text-gray-400 text-sm">История пуста</p>
