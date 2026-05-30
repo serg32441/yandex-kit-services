@@ -171,6 +171,23 @@ class AIBusinessSummary(BaseModel):
     error: Optional[str] = None
 
 
+class RequestParseIn(BaseModel):
+    text: str
+
+
+class RequestParseOut(BaseModel):
+    available: bool
+    model: Optional[str] = None
+    client_name: Optional[str] = None
+    client_phone: Optional[str] = None
+    city_id: Optional[int] = None
+    city_name: Optional[str] = None
+    equipment_type: Optional[str] = None
+    description: Optional[str] = None
+    source: Optional[str] = None
+    error: Optional[str] = None
+
+
 class UserCreate(BaseModel):
     email: str
     name: str

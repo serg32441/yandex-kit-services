@@ -4,7 +4,7 @@ from sqlalchemy import desc
 from typing import List, Optional
 from datetime import date, datetime, timezone
 from ..database import get_db
-from ..models import Request, StatusLog, SparePartRequest, Partner
+from ..models import Request, StatusLog, SparePartRequest, Partner, City
 from ..schemas import (
     RequestCreate,
     RequestUpdate,
@@ -15,6 +15,8 @@ from ..schemas import (
     SparePartUpdate,
     SparePartOut,
     AIInsight,
+    RequestParseIn,
+    RequestParseOut,
 )
 from .. import telegram, scoring, ai
 
@@ -74,6 +76,47 @@ def priorities(
         scoring.enrich(r, now)
     rows.sort(key=lambda r: r.score, reverse=True)
     return rows[:limit]
+
+
+@router.post("/parse", response_model=RequestParseOut)
+def parse_request(payload: RequestParseIn, db: Session = Depends(get_db)):
+    """Распознаёт поля заявки из надиктованного/вставленного текста через ИИ."""
+    text = (payload.text or "").strip()
+    if not text:
+        raise HTTPException(status_code=400, detail="Пустой текст")
+
+    result = ai.parse_request_text(text)
+    if not result.get("available") or result.get("error"):
+        return RequestParseOut(
+            available=result.get("available", False),
+            model=result.get("model"),
+            error=result.get("error"),
+        )
+
+    # Сопоставляем распознанный город с существующими в системе
+    city_id = None
+    city_name = result.get("city")
+    if city_name:
+        cities = db.query(City).all()
+        target = city_name.strip().lower()
+        for c in cities:
+            cn = c.name.strip().lower()
+            if cn == target or cn in target or target in cn:
+                city_id = c.id
+                city_name = c.name
+                break
+
+    return RequestParseOut(
+        available=True,
+        model=result.get("model"),
+        client_name=result.get("client_name"),
+        client_phone=result.get("client_phone"),
+        city_id=city_id,
+        city_name=city_name,
+        equipment_type=result.get("equipment_type"),
+        description=result.get("description"),
+        source=result.get("source"),
+    )
 
 
 @router.post("", response_model=RequestOut)

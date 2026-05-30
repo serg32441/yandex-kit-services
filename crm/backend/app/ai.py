@@ -261,3 +261,84 @@ def business_summary(stats: dict) -> dict:
         "attention": _as_list(parsed.get("attention")),
         "recommendations": _as_list(parsed.get("recommendations")),
     }
+
+
+PARSE_SYSTEM_PROMPT = (
+    "Ты — ассистент менеджера сервиса по ремонту оборудования. "
+    "Менеджер надиктовал или вставил текст новой заявки от клиента. "
+    "Извлеки из текста структурированные данные. "
+    "Отвечай ТОЛЬКО валидным JSON без markdown, строго по схеме:\n"
+    '{"client_name":"имя клиента или null",'
+    '"client_phone":"телефон или null",'
+    '"city":"название города или null",'
+    '"equipment_type":"что за оборудование / что сломалось, кратко, или null",'
+    '"description":"описание проблемы или null",'
+    '"source":"avito|phone|repeat|referral|other"}'
+    "\nПравила: телефон по возможности нормализуй в формат +7XXXXXXXXXX. "
+    "Если поля нет в тексте — ставь null. source выбери наиболее подходящий, "
+    "по умолчанию phone, если клиент звонил. Все значения — на русском."
+)
+
+
+def parse_request_text(text: str) -> dict:
+    """Извлекает поля заявки из свободного текста (надиктованного голосом)."""
+    if not ai_available():
+        return {"available": False,
+                "error": "ИИ не настроен. Задайте OPENROUTER_API_KEY на сервере."}
+
+    payload = {
+        "model": OPENROUTER_MODEL,
+        "messages": [
+            {"role": "system", "content": PARSE_SYSTEM_PROMPT},
+            {"role": "user", "content": text.strip()[:4000]},
+        ],
+        "temperature": 0.1,
+        "max_tokens": 400,
+    }
+    headers = {
+        "Authorization": f"Bearer {OPENROUTER_API_KEY}",
+        "Content-Type": "application/json",
+        "X-Title": "Repair CRM",
+    }
+
+    try:
+        with httpx.Client(timeout=40) as client:
+            resp = client.post(
+                f"{OPENROUTER_BASE_URL}/chat/completions",
+                json=payload,
+                headers=headers,
+            )
+        if resp.status_code != 200:
+            return {"available": True, "model": OPENROUTER_MODEL,
+                    "error": f"ИИ вернул ошибку {resp.status_code}. Попробуйте позже."}
+        content = resp.json()["choices"][0]["message"]["content"]
+    except Exception as e:
+        return {"available": True, "model": OPENROUTER_MODEL,
+                "error": f"Не удалось получить ответ ИИ: {e}"}
+
+    parsed = _parse_json(content)
+    if not parsed:
+        return {"available": True, "model": OPENROUTER_MODEL,
+                "error": "Не удалось распознать данные из текста. Попробуйте сформулировать иначе."}
+
+    valid_sources = {"avito", "phone", "repeat", "referral", "other"}
+    source = (parsed.get("source") or "phone").strip().lower()
+    if source not in valid_sources:
+        source = "phone"
+
+    def _clean(v):
+        if v is None:
+            return None
+        s = str(v).strip()
+        return s if s and s.lower() not in ("null", "none", "—", "-") else None
+
+    return {
+        "available": True,
+        "model": OPENROUTER_MODEL,
+        "client_name": _clean(parsed.get("client_name")),
+        "client_phone": _clean(parsed.get("client_phone")),
+        "city": _clean(parsed.get("city")),
+        "equipment_type": _clean(parsed.get("equipment_type")),
+        "description": _clean(parsed.get("description")),
+        "source": source,
+    }
