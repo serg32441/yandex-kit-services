@@ -300,18 +300,17 @@ def business_summary(stats: dict) -> dict:
 
 PARSE_SYSTEM_PROMPT = (
     "Ты — ассистент менеджера сервиса по ремонту оборудования. "
-    "Менеджер надиктовал или вставил текст новой заявки от клиента. "
-    "Извлеки из текста структурированные данные. "
-    "Отвечай ТОЛЬКО валидным JSON без markdown, строго по схеме:\n"
-    '{"client_name":"имя клиента или null",'
-    '"client_phone":"телефон или null",'
-    '"city":"название города или null",'
-    '"equipment_type":"что за оборудование / что сломалось, кратко, или null",'
-    '"description":"описание проблемы или null",'
-    '"source":"avito|phone|repeat|referral|other"}'
-    "\nПравила: телефон по возможности нормализуй в формат +7XXXXXXXXXX. "
-    "Если поля нет в тексте — ставь null. source выбери наиболее подходящий, "
-    "по умолчанию phone, если клиент звонил. Все значения — на русском."
+    "Извлеки из текста заявки данные и верни ТОЛЬКО JSON-объект, "
+    "начинающийся с { и заканчивающийся }. "
+    "Никакого текста до или после JSON. Никаких ```.\n"
+    "Схема (все поля обязательны):\n"
+    '{"client_name":"имя или null","client_phone":"телефон или null",'
+    '"city":"город или null","equipment_type":"оборудование/поломка кратко или null",'
+    '"description":"описание или null","source":"avito|phone|repeat|referral|other"}\n'
+    "Телефон нормализуй в +7XXXXXXXXXX. "
+    "Если поля нет — null. source по умолчанию phone. Значения на русском.\n"
+    'Пример: {"client_name":"Иван","client_phone":"+79991234567",'
+    '"city":"Сочи","equipment_type":"лампа UV","description":"мигает и гаснет","source":"phone"}'
 )
 
 
@@ -329,7 +328,6 @@ def parse_request_text(text: str) -> dict:
         ],
         "temperature": 0.1,
         "max_tokens": 400,
-        "response_format": {"type": "json_object"},
     }
     headers = {
         "Authorization": f"Bearer {OPENROUTER_API_KEY}",
@@ -352,21 +350,39 @@ def parse_request_text(text: str) -> dict:
         return {"available": True, "model": OPENROUTER_MODEL,
                 "error": f"Не удалось получить ответ ИИ: {e}"}
 
-    parsed = _parse_json(content)
-    if not parsed:
-        return {"available": True, "model": OPENROUTER_MODEL,
-                "error": "Не удалось распознать данные из текста. Попробуйте сформулировать иначе."}
-
-    valid_sources = {"avito", "phone", "repeat", "referral", "other"}
-    source = (parsed.get("source") or "phone").strip().lower()
-    if source not in valid_sources:
-        source = "phone"
-
     def _clean(v):
         if v is None:
             return None
         s = str(v).strip()
         return s if s and s.lower() not in ("null", "none", "—", "-") else None
+
+    parsed = _parse_json(content)
+    if not parsed:
+        # Regex fallback: try to pull phone from raw text; put rest as description
+        phone_match = re.search(
+            r'(?:\+7|8)[\s\-]?\(?\d{3}\)?[\s\-]?\d{3}[\s\-]?\d{2}[\s\-]?\d{2}', text
+        )
+        phone = phone_match.group(0).strip() if phone_match else None
+        # Normalise 8xxx → +7xxx
+        if phone and phone.startswith("8"):
+            phone = "+7" + phone[1:]
+        phone = re.sub(r'[\s\-()]', '', phone) if phone else None
+
+        return {
+            "available": True,
+            "model": OPENROUTER_MODEL,
+            "client_name": None,
+            "client_phone": phone,
+            "city": None,
+            "equipment_type": None,
+            "description": text.strip()[:2000],
+            "source": "phone",
+        }
+
+    valid_sources = {"avito", "phone", "repeat", "referral", "other"}
+    source = (parsed.get("source") or "phone").strip().lower()
+    if source not in valid_sources:
+        source = "phone"
 
     return {
         "available": True,

@@ -82,8 +82,14 @@ export default function NewRequestPage() {
         description: data.description || f.description,
         source: data.source || f.source,
       }));
-      if (data.city_name && !data.city_id) {
-        setParseNote(`Город «${data.city_name}» не найден в системе — выберите вручную или добавьте на странице «Партнёры».`);
+      const anyFilled = data.client_name || data.client_phone || data.city_id ||
+        data.equipment_type || data.description;
+      if (!anyFilled) {
+        setParseNote("ИИ не смог разобрать текст. Проверьте подключение или попробуйте ещё раз.");
+      } else if (data.city_name && !data.city_id) {
+        setParseNote(`Город «${data.city_name}» не найден в системе — выберите вручную.`);
+      } else if (!data.client_name && !data.client_phone) {
+        setParseNote("Текст распознан частично — описание заполнено. Введите имя и телефон клиента вручную.");
       } else {
         setParseNote("Готово! Поля заполнены — проверьте и при необходимости поправьте.");
       }
