@@ -32,8 +32,8 @@ function AuthGate({ children }) {
 
   if (state === "loading") {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-gray-400 text-sm">Загрузка...</div>
+      <div className="min-h-screen bg-[#F5F5F7] flex items-center justify-center">
+        <div className="text-[#AEAEB2] text-[14px]">Загрузка...</div>
       </div>
     );
   }
@@ -45,19 +45,24 @@ function Layout() {
   const close = useCallback(() => setSidebarOpen(false), []);
 
   return (
-    <div className="flex h-screen overflow-hidden">
+    <div className="flex h-screen overflow-hidden bg-[#F5F5F7]">
       <Sidebar isOpen={sidebarOpen} onClose={close} />
       <div className="flex-1 flex flex-col overflow-hidden min-w-0">
-        <header className="md:hidden flex items-center gap-3 px-4 h-14 bg-white border-b shrink-0">
+        <header className="md:hidden flex items-center gap-3 px-4 h-14 bg-white border-b border-black/[0.06] shrink-0">
           <button
             onClick={() => setSidebarOpen(true)}
-            className="text-gray-600 hover:text-gray-900 text-2xl leading-none"
+            className="text-[#6E6E73] hover:text-[#1D1D1F] transition-colors p-1"
             aria-label="Открыть меню"
           >
-            ☰
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+              <line x1="3" y1="6" x2="21" y2="6"/>
+              <line x1="3" y1="12" x2="21" y2="12"/>
+              <line x1="3" y1="18" x2="21" y2="18"/>
+            </svg>
           </button>
+          <span className="text-[15px] font-semibold text-[#1D1D1F]">CRM</span>
         </header>
-        <main className="flex-1 overflow-y-auto p-4 md:p-6">
+        <main className="flex-1 overflow-y-auto p-5 md:p-8">
           <Routes>
             <Route path="/" element={<Navigate to="/dashboard" replace />} />
             <Route path="/dashboard" element={<Dashboard />} />

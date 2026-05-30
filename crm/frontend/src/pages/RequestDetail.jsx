@@ -6,10 +6,13 @@ import StatusBadge, { STATUS_CONFIG } from "../components/StatusBadge";
 const STATUSES = Object.keys(STATUS_CONFIG);
 
 const SPARE_PART_STATUS = {
-  requested: { label: "Запрошена", color: "text-orange-600" },
-  confirmed: { label: "Подтверждена", color: "text-blue-600" },
-  sent:      { label: "Отправлена", color: "text-green-600" },
+  requested: { label: "Запрошена",    color: "text-orange-500" },
+  confirmed: { label: "Подтверждена", color: "text-indigo-500" },
+  sent:      { label: "Отправлена",   color: "text-emerald-500" },
 };
+
+const CARD = "bg-white rounded-[20px] border border-black/[0.05] shadow-[0_1px_3px_rgba(0,0,0,0.04),0_8px_20px_rgba(0,0,0,0.04)] p-6";
+const INPUT = "w-full border border-black/[0.1] rounded-xl px-4 py-2.5 text-[14px] text-[#1D1D1F] placeholder-[#AEAEB2] focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-400 transition-colors bg-white";
 
 export default function RequestDetail() {
   const { id } = useParams();
@@ -19,7 +22,6 @@ export default function RequestDetail() {
   const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);
 
-  // Edit state
   const [editPartner, setEditPartner] = useState(false);
   const [selectedPartner, setSelectedPartner] = useState("");
   const [newStatus, setNewStatus] = useState("");
@@ -100,24 +102,28 @@ export default function RequestDetail() {
     }
   }
 
-  if (error) return <div className="text-red-500 p-4">{error}</div>;
-  if (!req) return <div className="p-4 text-gray-400">Загрузка...</div>;
+  if (error) return <div className="text-red-500 p-4 text-[14px]">{error}</div>;
+  if (!req) return (
+    <div className="flex items-center justify-center h-48">
+      <div className="text-[#AEAEB2] text-[14px]">Загрузка...</div>
+    </div>
+  );
 
   const commission = req.total_amount ? (req.total_amount * 0.3).toFixed(0) : null;
 
   return (
-    <div className="max-w-3xl space-y-5">
+    <div className="max-w-3xl space-y-4">
       {/* Header */}
       <div className="flex items-start gap-4">
-        <button onClick={() => navigate(-1)} className="text-gray-400 hover:text-gray-600 mt-1">
+        <button onClick={() => navigate(-1)} className="text-[#AEAEB2] hover:text-[#6E6E73] mt-1 transition-colors text-[14px]">
           ← Назад
         </button>
         <div className="flex-1">
           <div className="flex items-center gap-3 flex-wrap">
-            <h2 className="text-2xl font-bold">Заявка #{req.id}</h2>
+            <h2 className="text-[22px] font-semibold text-[#1D1D1F] tracking-tight">Заявка #{req.id}</h2>
             <StatusBadge status={req.status} />
           </div>
-          <p className="text-sm text-gray-400 mt-1">
+          <p className="text-[13px] text-[#AEAEB2] mt-1">
             Создана: {new Date(req.created_at).toLocaleString("ru")}
             {req.updated_at && ` · Обновлена: ${new Date(req.updated_at).toLocaleString("ru")}`}
           </p>
@@ -125,41 +131,38 @@ export default function RequestDetail() {
       </div>
 
       {/* Client info */}
-      <div className="bg-white rounded-2xl border p-5 space-y-3">
-        <h3 className="font-semibold text-gray-700 mb-1">Клиент</h3>
-        <InfoRow label="Имя" value={req.client_name} />
-        <InfoRow label="Телефон" value={
-          <a href={`tel:${req.client_phone}`} className="text-blue-600 hover:underline">
-            {req.client_phone}
-          </a>
-        } />
-        <InfoRow label="Город" value={req.city?.name || "—"} />
-        <InfoRow label="Источник" value={req.source === "avito" ? "Авито" : req.source} />
-        <InfoRow label="Оборудование" value={req.equipment_type || "—"} />
-        {req.description && (
-          <div>
-            <p className="text-xs text-gray-400 mb-1">Описание</p>
-            <p className="text-sm text-gray-700 whitespace-pre-wrap bg-gray-50 rounded p-2">
-              {req.description}
-            </p>
-          </div>
-        )}
+      <div className={CARD}>
+        <h3 className="text-[11px] font-semibold text-[#AEAEB2] uppercase tracking-wider mb-4">Клиент</h3>
+        <div className="space-y-3">
+          <InfoRow label="Имя" value={req.client_name} />
+          <InfoRow label="Телефон" value={
+            <a href={`tel:${req.client_phone}`} className="text-indigo-600 hover:underline">{req.client_phone}</a>
+          } />
+          <InfoRow label="Город" value={req.city?.name || "—"} />
+          <InfoRow label="Источник" value={req.source === "avito" ? "Авито" : req.source} />
+          <InfoRow label="Оборудование" value={req.equipment_type || "—"} />
+          {req.description && (
+            <div>
+              <p className="text-[12px] text-[#AEAEB2] mb-1.5">Описание</p>
+              <p className="text-[14px] text-[#3A3A3C] bg-[#F5F5F7] rounded-xl p-3 whitespace-pre-wrap leading-relaxed">{req.description}</p>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Partner */}
-      <div className="bg-white rounded-2xl border p-5">
-        <div className="flex items-center justify-between mb-3">
-          <h3 className="font-semibold text-gray-700">Партнёр</h3>
+      <div className={CARD}>
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-[11px] font-semibold text-[#AEAEB2] uppercase tracking-wider">Партнёр</h3>
           <button
             onClick={() => setEditPartner(!editPartner)}
-            className="text-blue-600 text-sm hover:underline"
+            className="text-[13px] text-indigo-600 hover:text-indigo-700 font-medium transition-colors"
           >
             {req.partner ? "Изменить" : "Назначить"}
           </button>
         </div>
-
         {req.partner ? (
-          <div className="space-y-2">
+          <div className="space-y-3">
             <InfoRow label="Имя" value={req.partner.name} />
             <InfoRow label="Телефон" value={req.partner.phone || "—"} />
             <InfoRow label="Telegram" value={
@@ -168,33 +171,26 @@ export default function RequestDetail() {
             } />
             {req.partner_comment && (
               <div>
-                <p className="text-xs text-gray-400 mb-1">Комментарий партнёра</p>
-                <p className="text-sm text-gray-700 bg-gray-50 rounded p-2">{req.partner_comment}</p>
+                <p className="text-[12px] text-[#AEAEB2] mb-1.5">Комментарий партнёра</p>
+                <p className="text-[14px] text-[#3A3A3C] bg-[#F5F5F7] rounded-xl p-3">{req.partner_comment}</p>
               </div>
             )}
           </div>
         ) : (
-          <p className="text-gray-400 text-sm">Партнёр не назначен</p>
+          <p className="text-[14px] text-[#AEAEB2]">Партнёр не назначен</p>
         )}
-
         {editPartner && (
-          <form onSubmit={handleAssignPartner} className="mt-3 flex gap-2">
-            <select
-              value={selectedPartner}
-              onChange={(e) => setSelectedPartner(e.target.value)}
-              className="flex-1 border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
+          <form onSubmit={handleAssignPartner} className="mt-4 flex gap-2">
+            <select value={selectedPartner} onChange={(e) => setSelectedPartner(e.target.value)} className={`flex-1 ${INPUT}`}>
               <option value="">— выберите партнёра —</option>
               {partners.filter((p) => p.is_active).map((p) => (
-                <option key={p.id} value={p.id}>
-                  {p.name} ({p.city?.name || "без города"})
-                </option>
+                <option key={p.id} value={p.id}>{p.name} ({p.city?.name || "без города"})</option>
               ))}
             </select>
             <button
               type="submit"
               disabled={!selectedPartner || saving}
-              className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-700 disabled:opacity-50"
+              className="bg-[#1D1D1F] text-white px-5 py-2.5 rounded-xl text-[14px] font-medium hover:bg-[#3A3A3C] disabled:opacity-40 transition-colors"
             >
               Сохранить
             </button>
@@ -203,20 +199,24 @@ export default function RequestDetail() {
       </div>
 
       {/* Finance */}
-      <div className="bg-white rounded-2xl border p-5">
-        <h3 className="font-semibold text-gray-700 mb-3">Финансы</h3>
-        <div className="flex gap-4 flex-wrap">
+      <div className={CARD}>
+        <h3 className="text-[11px] font-semibold text-[#AEAEB2] uppercase tracking-wider mb-4">Финансы</h3>
+        <div className="grid grid-cols-3 gap-4">
           <div>
-            <p className="text-xs text-gray-400">Сумма ремонта</p>
-            <p className="font-bold text-lg">{req.total_amount ? `${req.total_amount.toLocaleString("ru")} ₽` : "—"}</p>
+            <p className="text-[12px] text-[#AEAEB2] mb-1">Сумма ремонта</p>
+            <p className="text-[20px] font-semibold text-[#1D1D1F] tracking-tight">
+              {req.total_amount ? `${req.total_amount.toLocaleString("ru")} ₽` : "—"}
+            </p>
           </div>
           <div>
-            <p className="text-xs text-gray-400">Ваша комиссия (30%)</p>
-            <p className="font-bold text-lg text-green-600">{commission ? `${parseInt(commission).toLocaleString("ru")} ₽` : "—"}</p>
+            <p className="text-[12px] text-[#AEAEB2] mb-1">Комиссия 30%</p>
+            <p className="text-[20px] font-semibold text-emerald-600 tracking-tight">
+              {commission ? `${parseInt(commission).toLocaleString("ru")} ₽` : "—"}
+            </p>
           </div>
           <div>
-            <p className="text-xs text-gray-400">Партнёру (70%)</p>
-            <p className="font-bold text-lg text-gray-600">
+            <p className="text-[12px] text-[#AEAEB2] mb-1">Партнёру 70%</p>
+            <p className="text-[20px] font-semibold text-[#6E6E73] tracking-tight">
               {req.total_amount ? `${(req.total_amount * 0.7).toLocaleString("ru", { maximumFractionDigits: 0 })} ₽` : "—"}
             </p>
           </div>
@@ -224,8 +224,8 @@ export default function RequestDetail() {
       </div>
 
       {/* Status change */}
-      <div className="bg-white rounded-2xl border p-5">
-        <h3 className="font-semibold text-gray-700 mb-3">Изменить статус</h3>
+      <div className={CARD}>
+        <h3 className="text-[11px] font-semibold text-[#AEAEB2] uppercase tracking-wider mb-4">Изменить статус</h3>
         <form onSubmit={handleStatusUpdate} className="space-y-3">
           <div className="flex gap-2 flex-wrap">
             {STATUSES.map((s) => (
@@ -233,10 +233,10 @@ export default function RequestDetail() {
                 key={s}
                 type="button"
                 onClick={() => setNewStatus(s === newStatus ? "" : s)}
-                className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors ${
+                className={`px-3.5 py-1.5 rounded-full text-[12px] font-medium transition-all ${
                   newStatus === s
-                    ? "bg-blue-600 text-white border-blue-600"
-                    : "border-gray-200 text-gray-600 hover:border-gray-400"
+                    ? "bg-[#1D1D1F] text-white"
+                    : "bg-[#F5F5F7] text-[#6E6E73] hover:bg-[#EBEBED]"
                 }`}
               >
                 {STATUS_CONFIG[s].label}
@@ -249,7 +249,7 @@ export default function RequestDetail() {
               placeholder="Сумма ремонта (₽)"
               value={totalAmount}
               onChange={(e) => setTotalAmount(e.target.value)}
-              className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className={INPUT}
             />
           )}
           <div className="flex gap-2">
@@ -258,12 +258,12 @@ export default function RequestDetail() {
               placeholder="Комментарий (необязательно)"
               value={statusComment}
               onChange={(e) => setStatusComment(e.target.value)}
-              className="flex-1 border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className={`flex-1 ${INPUT}`}
             />
             <button
               type="submit"
               disabled={!newStatus || saving}
-              className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-700 disabled:opacity-50"
+              className="bg-[#1D1D1F] text-white px-5 py-2.5 rounded-xl text-[14px] font-medium hover:bg-[#3A3A3C] disabled:opacity-40 transition-colors"
             >
               {saving ? "..." : "Обновить"}
             </button>
@@ -272,29 +272,28 @@ export default function RequestDetail() {
       </div>
 
       {/* Spare parts */}
-      <div className="bg-white rounded-2xl border p-5">
-        <h3 className="font-semibold text-gray-700 mb-3">Запчасти</h3>
+      <div className={CARD}>
+        <h3 className="text-[11px] font-semibold text-[#AEAEB2] uppercase tracking-wider mb-4">Запчасти</h3>
         {req.spare_parts.length === 0 ? (
-          <p className="text-gray-400 text-sm">Запчасти не запрашивались</p>
+          <p className="text-[14px] text-[#AEAEB2] mb-4">Запчасти не запрашивались</p>
         ) : (
-          <div className="space-y-2 mb-3">
+          <div className="space-y-2 mb-4">
             {req.spare_parts.map((p) => (
-              <div key={p.id} className="flex items-center gap-3 p-2 bg-gray-50 rounded-lg">
+              <div key={p.id} className="flex items-center gap-3 p-3 bg-[#F5F5F7] rounded-[14px]">
                 <div className="flex-1">
-                  <p className="text-sm font-medium">{p.part_name}</p>
-                  <p className="text-xs text-gray-400">
-                    Кол-во: {p.quantity}
-                    {p.price ? ` · ${p.price.toLocaleString("ru")} ₽` : ""}
+                  <p className="text-[14px] font-medium text-[#1D1D1F]">{p.part_name}</p>
+                  <p className="text-[12px] text-[#AEAEB2] mt-0.5">
+                    Кол-во: {p.quantity}{p.price ? ` · ${p.price.toLocaleString("ru")} ₽` : ""}
                   </p>
                 </div>
-                <span className={`text-xs font-medium ${SPARE_PART_STATUS[p.status]?.color}`}>
+                <span className={`text-[12px] font-medium ${SPARE_PART_STATUS[p.status]?.color}`}>
                   {SPARE_PART_STATUS[p.status]?.label || p.status}
                 </span>
                 {p.status !== "sent" && (
                   <select
                     value={p.status}
                     onChange={(e) => handleSparePartStatus(p.id, e.target.value)}
-                    className="text-xs border rounded px-2 py-1 focus:outline-none"
+                    className="text-[12px] border border-black/[0.1] rounded-lg px-2 py-1.5 bg-white focus:outline-none"
                   >
                     <option value="requested">Запрошена</option>
                     <option value="confirmed">Подтверждена</option>
@@ -311,12 +310,12 @@ export default function RequestDetail() {
             placeholder="Название запчасти..."
             value={newPart}
             onChange={(e) => setNewPart(e.target.value)}
-            className="flex-1 border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className={`flex-1 ${INPUT}`}
           />
           <button
             type="submit"
             disabled={!newPart.trim() || addingPart}
-            className="bg-gray-800 text-white px-4 py-2 rounded-lg text-sm hover:bg-gray-900 disabled:opacity-50"
+            className="bg-[#1D1D1F] text-white px-5 py-2.5 rounded-xl text-[14px] font-medium hover:bg-[#3A3A3C] disabled:opacity-40 transition-colors"
           >
             Добавить
           </button>
@@ -324,25 +323,23 @@ export default function RequestDetail() {
       </div>
 
       {/* Status history */}
-      <div className="bg-white rounded-2xl border p-5">
-        <h3 className="font-semibold text-gray-700 mb-3">История статусов</h3>
+      <div className={CARD}>
+        <h3 className="text-[11px] font-semibold text-[#AEAEB2] uppercase tracking-wider mb-4">История статусов</h3>
         {req.status_logs.length === 0 ? (
-          <p className="text-gray-400 text-sm">История пуста</p>
+          <p className="text-[14px] text-[#AEAEB2]">История пуста</p>
         ) : (
           <div className="space-y-3">
             {[...req.status_logs].reverse().map((log) => (
-              <div key={log.id} className="text-sm">
+              <div key={log.id}>
                 <div className="flex items-center gap-2 flex-wrap">
                   <StatusBadge status={log.status} />
-                  <span className="text-gray-400 text-xs">
-                    {new Date(log.created_at).toLocaleString("ru")}
-                  </span>
-                  <span className="text-gray-300 text-xs ml-auto">
+                  <span className="text-[12px] text-[#AEAEB2]">{new Date(log.created_at).toLocaleString("ru")}</span>
+                  <span className="text-[12px] text-[#AEAEB2] ml-auto">
                     {log.changed_by.startsWith("partner:") ? "Партнёр" : log.changed_by}
                   </span>
                 </div>
                 {log.comment && (
-                  <p className="text-gray-500 text-xs mt-1 pl-1">{log.comment}</p>
+                  <p className="text-[13px] text-[#6E6E73] mt-1.5 pl-1">{log.comment}</p>
                 )}
               </div>
             ))}
@@ -355,9 +352,9 @@ export default function RequestDetail() {
 
 function InfoRow({ label, value }) {
   return (
-    <div className="flex gap-3 text-sm">
-      <span className="text-gray-400 w-24 shrink-0">{label}</span>
-      <span className="font-medium min-w-0 break-words">{value}</span>
+    <div className="flex gap-4 text-[14px]">
+      <span className="text-[#AEAEB2] w-24 shrink-0">{label}</span>
+      <span className="font-medium text-[#1D1D1F] min-w-0 break-words">{value}</span>
     </div>
   );
 }

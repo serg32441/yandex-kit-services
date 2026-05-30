@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "../api";
 
+const INPUT = "w-full border border-black/[0.1] rounded-xl px-4 py-2.5 text-[14px] text-[#1D1D1F] placeholder-[#AEAEB2] focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-400 transition-colors bg-white";
+
 export default function NewRequestPage() {
   const navigate = useNavigate();
   const [cities, setCities] = useState([]);
@@ -24,14 +26,12 @@ export default function NewRequestPage() {
     api.getPartners({ active_only: true }).then(setPartners).catch(() => {});
   }, []);
 
-  // Filter partners by selected city
   const filteredPartners = form.city_id
     ? partners.filter((p) => p.city_id === parseInt(form.city_id))
     : partners;
 
   function set(field, value) {
     setForm((f) => ({ ...f, [field]: value }));
-    // Reset partner when city changes
     if (field === "city_id") setForm((f) => ({ ...f, city_id: value, partner_id: "" }));
   }
 
@@ -61,60 +61,41 @@ export default function NewRequestPage() {
   return (
     <div className="max-w-lg">
       <div className="flex items-center gap-3 mb-6">
-        <button onClick={() => navigate(-1)} className="text-gray-400 hover:text-gray-600">
+        <button onClick={() => navigate(-1)} className="text-[#AEAEB2] hover:text-[#6E6E73] transition-colors text-[14px]">
           ← Назад
         </button>
-        <h2 className="text-2xl font-bold">Новая заявка</h2>
+        <h2 className="text-[22px] font-semibold text-[#1D1D1F] tracking-tight">Новая заявка</h2>
       </div>
 
       {error && (
-        <div className="bg-red-50 border border-red-200 text-red-700 rounded-lg px-4 py-3 mb-4 text-sm">
+        <div className="bg-red-50 border border-red-200 text-red-600 rounded-xl px-4 py-3 mb-5 text-[14px]">
           {error}
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="bg-white rounded-xl border p-6 space-y-4">
+      <form
+        onSubmit={handleSubmit}
+        className="bg-white rounded-[20px] border border-black/[0.05] shadow-[0_1px_3px_rgba(0,0,0,0.04),0_8px_20px_rgba(0,0,0,0.04)] p-6 space-y-4"
+      >
         <Field label="Имя клиента *">
-          <input
-            required
-            type="text"
-            placeholder="Иван Иванов"
-            value={form.client_name}
-            onChange={(e) => set("client_name", e.target.value)}
-            className={INPUT}
-          />
+          <input required type="text" placeholder="Иван Иванов"
+            value={form.client_name} onChange={(e) => set("client_name", e.target.value)} className={INPUT} />
         </Field>
 
         <Field label="Телефон *">
-          <input
-            required
-            type="tel"
-            placeholder="+7 999 123 4567"
-            value={form.client_phone}
-            onChange={(e) => set("client_phone", e.target.value)}
-            className={INPUT}
-          />
+          <input required type="tel" placeholder="+7 999 123 4567"
+            value={form.client_phone} onChange={(e) => set("client_phone", e.target.value)} className={INPUT} />
         </Field>
 
         <Field label="Город">
-          <select
-            value={form.city_id}
-            onChange={(e) => set("city_id", e.target.value)}
-            className={INPUT}
-          >
+          <select value={form.city_id} onChange={(e) => set("city_id", e.target.value)} className={INPUT}>
             <option value="">— выберите город —</option>
-            {cities.map((c) => (
-              <option key={c.id} value={c.id}>{c.name}</option>
-            ))}
+            {cities.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
           </select>
         </Field>
 
         <Field label="Партнёр">
-          <select
-            value={form.partner_id}
-            onChange={(e) => set("partner_id", e.target.value)}
-            className={INPUT}
-          >
+          <select value={form.partner_id} onChange={(e) => set("partner_id", e.target.value)} className={INPUT}>
             <option value="">— назначить позже —</option>
             {filteredPartners.filter((p) => p.is_active).map((p) => (
               <option key={p.id} value={p.id}>
@@ -125,21 +106,12 @@ export default function NewRequestPage() {
         </Field>
 
         <Field label="Оборудование">
-          <input
-            type="text"
-            placeholder="Кресло для маникюра, лампа UV..."
-            value={form.equipment_type}
-            onChange={(e) => set("equipment_type", e.target.value)}
-            className={INPUT}
-          />
+          <input type="text" placeholder="Кресло для маникюра, лампа UV..."
+            value={form.equipment_type} onChange={(e) => set("equipment_type", e.target.value)} className={INPUT} />
         </Field>
 
         <Field label="Источник">
-          <select
-            value={form.source}
-            onChange={(e) => set("source", e.target.value)}
-            className={INPUT}
-          >
+          <select value={form.source} onChange={(e) => set("source", e.target.value)} className={INPUT}>
             <option value="avito">Авито</option>
             <option value="phone">Звонок</option>
             <option value="repeat">Повторный клиент</option>
@@ -149,19 +121,14 @@ export default function NewRequestPage() {
         </Field>
 
         <Field label="Описание проблемы">
-          <textarea
-            placeholder="Опишите поломку..."
-            value={form.description}
-            onChange={(e) => set("description", e.target.value)}
-            rows={3}
-            className={INPUT}
-          />
+          <textarea placeholder="Опишите поломку..." value={form.description}
+            onChange={(e) => set("description", e.target.value)} rows={3} className={INPUT} />
         </Field>
 
         <button
           type="submit"
           disabled={saving}
-          className="w-full bg-blue-600 text-white py-2.5 rounded-lg font-medium hover:bg-blue-700 disabled:opacity-50 transition-colors"
+          className="w-full bg-[#1D1D1F] text-white py-3 rounded-xl text-[14px] font-semibold hover:bg-[#3A3A3C] disabled:opacity-40 transition-colors mt-2"
         >
           {saving ? "Создаю..." : "Создать заявку"}
         </button>
@@ -173,11 +140,8 @@ export default function NewRequestPage() {
 function Field({ label, children }) {
   return (
     <div>
-      <label className="block text-sm font-medium text-gray-700 mb-1">{label}</label>
+      <label className="block text-[12px] font-medium text-[#6E6E73] mb-1.5">{label}</label>
       {children}
     </div>
   );
 }
-
-const INPUT =
-  "w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500";
