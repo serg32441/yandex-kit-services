@@ -72,17 +72,50 @@ def _build_user_prompt(req, rule) -> str:
 def _parse_json(text: str) -> dict | None:
     if not text:
         return None
+    text = text.strip()
+
+    # Direct parse
     try:
         return json.loads(text)
     except Exception:
         pass
-    # Иногда модель оборачивает JSON в ```json ... ``` или текст
-    match = re.search(r"\{.*\}", text, re.DOTALL)
-    if match:
-        try:
-            return json.loads(match.group(0))
-        except Exception:
-            return None
+
+    # Markdown code blocks: ```json ... ``` or ``` ... ```
+    for pat in [r'```json\s*(\{.*?\})\s*```', r'```\s*(\{.*?\})\s*```']:
+        m = re.search(pat, text, re.DOTALL)
+        if m:
+            try:
+                return json.loads(m.group(1))
+            except Exception:
+                pass
+
+    # Find outermost JSON object by tracking brace depth (handles nested objects)
+    start = text.find('{')
+    if start != -1:
+        depth = 0
+        in_str = False
+        esc = False
+        for i, ch in enumerate(text[start:], start):
+            if esc:
+                esc = False
+                continue
+            if ch == '\\' and in_str:
+                esc = True
+                continue
+            if ch == '"':
+                in_str = not in_str
+                continue
+            if in_str:
+                continue
+            if ch == '{':
+                depth += 1
+            elif ch == '}':
+                depth -= 1
+                if depth == 0:
+                    try:
+                        return json.loads(text[start:i + 1])
+                    except Exception:
+                        break
     return None
 
 
@@ -102,6 +135,7 @@ def analyze_request(req, rule) -> dict:
         ],
         "temperature": 0.3,
         "max_tokens": 600,
+        "response_format": {"type": "json_object"},
     }
     headers = {
         "Authorization": f"Bearer {OPENROUTER_API_KEY}",
@@ -218,6 +252,7 @@ def business_summary(stats: dict) -> dict:
         ],
         "temperature": 0.4,
         "max_tokens": 800,
+        "response_format": {"type": "json_object"},
     }
     headers = {
         "Authorization": f"Bearer {OPENROUTER_API_KEY}",
@@ -294,6 +329,7 @@ def parse_request_text(text: str) -> dict:
         ],
         "temperature": 0.1,
         "max_tokens": 400,
+        "response_format": {"type": "json_object"},
     }
     headers = {
         "Authorization": f"Bearer {OPENROUTER_API_KEY}",
