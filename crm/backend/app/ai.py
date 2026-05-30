@@ -157,3 +157,107 @@ def analyze_request(req, rule) -> dict:
         "estimated_value": parsed.get("estimated_value"),
         "risks": [str(r) for r in risks][:5],
     }
+
+
+BUSINESS_SYSTEM_PROMPT = (
+    "Ты — бизнес-аналитик CRM сервисного бизнеса по ремонту оборудования. "
+    "Менеджер принимает заявки от клиентов и распределяет их партнёрам в разных городах, "
+    "беря комиссию с каждой выполненной заявки. "
+    "На основе сводных данных дай короткую деловую сводку и практические рекомендации — "
+    "на чём менеджеру сфокусироваться, чтобы не терять заявки и зарабатывать больше. "
+    "Отвечай ТОЛЬКО валидным JSON без markdown, строго по схеме:\n"
+    '{"headline":"одно предложение — общая картина за период",'
+    '"highlights":["что идёт хорошо, 1-3 пункта"],'
+    '"attention":["проблемы и риски, требующие внимания, 1-4 пункта"],'
+    '"recommendations":["конкретные следующие действия, 2-4 пункта"]}'
+    "\nВсе тексты — на русском, кратко и по делу, с цифрами где уместно."
+)
+
+
+def _fmt_business(stats: dict) -> str:
+    lines = [
+        f"Период: {stats.get('period')}",
+        f"Заявок за период: {stats.get('total_this_month')}",
+        f"Активных заявок сейчас: {stats.get('total_active')}",
+        f"Заявок сегодня: {stats.get('total_today')}",
+        f"Комиссия за период: {stats.get('commission_this_month')} руб.",
+        f"Заявок с высоким приоритетом (требуют внимания): {stats.get('high_priority_count')}",
+        "Распределение по статусам: "
+        + ", ".join(f"{k}={v}" for k, v in (stats.get("by_status") or {}).items()),
+    ]
+    top = stats.get("top_partners") or []
+    if top:
+        lines.append("Топ партнёров (закрыто заявок / комиссия за период):")
+        for p in top:
+            lines.append(f"  • {p['name']} ({p.get('city') or 'без города'}): "
+                         f"{p['closed']} закрыто, {p['commission']} руб.")
+    idle = stats.get("idle_partners") or []
+    if idle:
+        lines.append("Активные партнёры без закрытых заявок за период: "
+                     + ", ".join(idle))
+    uncovered = stats.get("uncovered_cities") or []
+    if uncovered:
+        lines.append("Города с заявками, но без активных партнёров: "
+                     + ", ".join(uncovered))
+    return "\n".join(lines)
+
+
+def business_summary(stats: dict) -> dict:
+    """Генерирует ИИ-сводку по всему бизнесу на основе агрегированных данных."""
+    if not ai_available():
+        return {
+            "available": False,
+            "error": "ИИ не настроен. Задайте OPENROUTER_API_KEY на сервере.",
+        }
+
+    payload = {
+        "model": OPENROUTER_MODEL,
+        "messages": [
+            {"role": "system", "content": BUSINESS_SYSTEM_PROMPT},
+            {"role": "user", "content": _fmt_business(stats)},
+        ],
+        "temperature": 0.4,
+        "max_tokens": 800,
+    }
+    headers = {
+        "Authorization": f"Bearer {OPENROUTER_API_KEY}",
+        "Content-Type": "application/json",
+        "X-Title": "Repair CRM",
+    }
+
+    try:
+        with httpx.Client(timeout=50) as client:
+            resp = client.post(
+                f"{OPENROUTER_BASE_URL}/chat/completions",
+                json=payload,
+                headers=headers,
+            )
+        if resp.status_code != 200:
+            return {"available": True, "model": OPENROUTER_MODEL,
+                    "error": f"ИИ вернул ошибку {resp.status_code}. Попробуйте позже."}
+        content = resp.json()["choices"][0]["message"]["content"]
+    except Exception as e:
+        return {"available": True, "model": OPENROUTER_MODEL,
+                "error": f"Не удалось получить ответ ИИ: {e}"}
+
+    parsed = _parse_json(content)
+    if not parsed:
+        return {"available": True, "model": OPENROUTER_MODEL,
+                "headline": content.strip()[:600],
+                "highlights": [], "attention": [], "recommendations": []}
+
+    def _as_list(v):
+        if not v:
+            return []
+        if isinstance(v, str):
+            return [v]
+        return [str(x) for x in v][:6]
+
+    return {
+        "available": True,
+        "model": OPENROUTER_MODEL,
+        "headline": parsed.get("headline"),
+        "highlights": _as_list(parsed.get("highlights")),
+        "attention": _as_list(parsed.get("attention")),
+        "recommendations": _as_list(parsed.get("recommendations")),
+    }

@@ -85,4 +85,5 @@ export const api = {
 
   // Stats
   getDashboard: () => request("GET", "/stats/dashboard"),
+  getAiSummary: () => request("POST", "/stats/ai-summary"),
 };

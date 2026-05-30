@@ -161,6 +161,16 @@ class AIInsight(BaseModel):
     error: Optional[str] = None
 
 
+class AIBusinessSummary(BaseModel):
+    available: bool
+    model: Optional[str] = None
+    headline: Optional[str] = None
+    highlights: List[str] = []
+    attention: List[str] = []
+    recommendations: List[str] = []
+    error: Optional[str] = None
+
+
 class UserCreate(BaseModel):
     email: str
     name: str
