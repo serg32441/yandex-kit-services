@@ -144,6 +144,14 @@ def update_status(request_id: int, payload: StatusUpdate, db: Session = Depends(
     db.add(log)
     db.commit()
     db.refresh(req)
+
+    # Если статус изменил менеджер (не сам партнёр через бота) — уведомим
+    # партнёра в Telegram с актуальными кнопками управления заявкой.
+    changed_by = payload.changed_by or ""
+    if not changed_by.startswith("partner:"):
+        if req.partner and req.partner.telegram_id:
+            telegram.send_status_notification(req.partner.telegram_id, req.id, req.status)
+
     return req
 
 

@@ -77,7 +77,14 @@ async def handle_callback(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
     if data.startswith("status:"):
         _, request_id_str, new_status = data.split(":")
         request_id = int(request_id_str)
-        await _update_status(query, request_id, new_status, telegram_id)
+        # Закрытие заявки всегда идёт через ввод суммы, а не прямой сменой статуса
+        if new_status == "done":
+            context.user_data["done_request_id"] = request_id
+            await query.message.reply_text(
+                "💰 Укажите стоимость ремонта (только цифры, например: 5000):"
+            )
+        else:
+            await _update_status(query, request_id, new_status, telegram_id)
 
     elif data.startswith("done:"):
         request_id = int(data.split(":")[1])

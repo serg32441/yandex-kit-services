@@ -5,20 +5,34 @@ BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "")
 TELEGRAM_API = f"https://api.telegram.org/bot{BOT_TOKEN}"
 
 
+def _status_keyboard(request_id: int, status: str):
+    """Единый набор кнопок управления заявкой для партнёра по текущему статусу."""
+    if status == "transferred":
+        rows = [[
+            {"text": "✅ Принял в работу", "callback_data": f"status:{request_id}:in_progress"},
+            {"text": "❌ Не могу взять", "callback_data": f"status:{request_id}:new"},
+        ]]
+    elif status in ("in_progress", "parts_sent"):
+        rows = [[
+            {"text": "🔩 Нужны запчасти", "callback_data": f"parts:{request_id}"},
+            {"text": "✅ Готово", "callback_data": f"done:{request_id}"},
+        ]]
+    elif status == "waiting_parts":
+        rows = [[
+            {"text": "✅ Готово", "callback_data": f"done:{request_id}"},
+        ]]
+    else:
+        return None
+    return {"inline_keyboard": rows}
+
+
 def send_request_notification(telegram_id: str, request) -> None:
     if not BOT_TOKEN or not telegram_id:
         return
 
     rid = request.id
     city_name = request.city.name if request.city else "н/д"
-    keyboard = {
-        "inline_keyboard": [
-            [
-                {"text": "✅ Принял в работу", "callback_data": f"status:{rid}:in_progress"},
-                {"text": "❌ Не могу взять", "callback_data": f"status:{rid}:new"},
-            ]
-        ]
-    }
+    keyboard = _status_keyboard(rid, "transferred")
     text = (
         f"🔔 *Новая заявка \\#{rid}*\n\n"
         f"👤 Клиент: {_esc(request.client_name)}\n"
@@ -45,13 +59,7 @@ def send_status_notification(telegram_id: str, request_id: int, status: str) -> 
     }
     label = labels.get(status, status)
 
-    keyboard = None
-    if status == "parts_sent":
-        keyboard = {
-            "inline_keyboard": [
-                [{"text": "✅ Готово", "callback_data": f"status:{request_id}:done"}]
-            ]
-        }
+    keyboard = _status_keyboard(request_id, status)
 
     text = f"📋 Заявка \\#{request_id}: статус обновлён → *{label}*"
     _send(telegram_id, text, keyboard)
