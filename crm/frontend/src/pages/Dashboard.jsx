@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { api } from "../api";
 import StatusBadge, { STATUS_CONFIG } from "../components/StatusBadge";
+import PriorityBadge from "../components/PriorityBadge";
 
 const STATUS_ORDER = ["transferred", "in_progress", "waiting_parts", "closed"];
 const STATUS_LABELS = {
@@ -29,10 +30,12 @@ function StatCard({ label, value }) {
 
 export default function Dashboard() {
   const [stats, setStats] = useState(null);
+  const [priorities, setPriorities] = useState([]);
   const [error, setError] = useState("");
 
   useEffect(() => {
     api.getDashboard().then(setStats).catch((e) => setError(e.message));
+    api.getPriorities(5).then(setPriorities).catch(() => {});
   }, []);
 
   if (error) return <div className="text-red-500 p-4 text-[14px]">{error}</div>;
@@ -85,6 +88,32 @@ export default function Dashboard() {
           ))}
         </div>
       </div>
+
+      {priorities.length > 0 && (
+        <div className="bg-white rounded-[20px] border border-black/[0.05] shadow-[0_1px_3px_rgba(0,0,0,0.04),0_8px_20px_rgba(0,0,0,0.04)] overflow-hidden">
+          <div className="px-7 pt-5 pb-3 flex items-center gap-2">
+            <span className="text-[15px]">⚡</span>
+            <h3 className="text-[15px] font-semibold text-[#1D1D1F]">Требуют внимания</h3>
+          </div>
+          <div className="divide-y divide-black/[0.04]">
+            {priorities.map((r) => (
+              <Link
+                key={r.id}
+                to={`/requests/${r.id}`}
+                className="flex items-center gap-4 px-7 py-3.5 hover:bg-[#F9F9FB] transition-colors"
+              >
+                <div className="flex-1 min-w-0">
+                  <p className="text-[14px] font-medium text-[#1D1D1F] truncate">{r.client_name}</p>
+                  <p className="text-[12px] text-[#AEAEB2] truncate mt-0.5">{r.recommendation || r.equipment_type || "—"}</p>
+                </div>
+                <div className="shrink-0">
+                  <PriorityBadge priority={r.priority} score={r.score} />
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
 
       <div className="bg-white rounded-[20px] border border-black/[0.05] shadow-[0_1px_3px_rgba(0,0,0,0.04),0_8px_20px_rgba(0,0,0,0.04)] overflow-hidden">
         <div className="divide-y divide-black/[0.04]">

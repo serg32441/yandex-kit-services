@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { api } from "../api";
 import StatusBadge, { STATUS_CONFIG } from "../components/StatusBadge";
+import PriorityBadge from "../components/PriorityBadge";
 
 const STATUSES = Object.keys(STATUS_CONFIG);
 
@@ -29,6 +30,9 @@ export default function RequestDetail() {
   const [totalAmount, setTotalAmount] = useState("");
   const [newPart, setNewPart] = useState("");
   const [addingPart, setAddingPart] = useState(false);
+
+  const [aiInsight, setAiInsight] = useState(null);
+  const [aiLoading, setAiLoading] = useState(false);
 
   function load() {
     api.getRequest(id).then((r) => {
@@ -102,6 +106,19 @@ export default function RequestDetail() {
     }
   }
 
+  async function runAiInsight() {
+    setAiLoading(true);
+    setAiInsight(null);
+    try {
+      const data = await api.getAiInsight(id);
+      setAiInsight(data);
+    } catch (e) {
+      setAiInsight({ available: true, error: e.message });
+    } finally {
+      setAiLoading(false);
+    }
+  }
+
   if (error) return <div className="text-red-500 p-4 text-[14px]">{error}</div>;
   if (!req) return (
     <div className="flex items-center justify-center h-48">
@@ -129,6 +146,86 @@ export default function RequestDetail() {
           </p>
         </div>
       </div>
+
+      {/* Priority & AI */}
+      {req.status !== "done" && req.status !== "closed" && (
+        <div className={CARD}>
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="text-[11px] font-semibold text-[#AEAEB2] uppercase tracking-wider">Приоритет и рекомендация</h3>
+            <PriorityBadge priority={req.priority} score={req.score} />
+          </div>
+          {req.recommendation && (
+            <p className="text-[14px] text-[#1D1D1F] font-medium leading-relaxed">{req.recommendation}</p>
+          )}
+          {req.score_factors?.length > 0 && (
+            <ul className="mt-3 space-y-1.5">
+              {req.score_factors.map((f, i) => (
+                <li key={i} className="text-[13px] text-[#6E6E73] flex gap-2">
+                  <span className="text-indigo-400 mt-0.5">•</span>
+                  <span>{f}</span>
+                </li>
+              ))}
+            </ul>
+          )}
+
+          <div className="mt-5 pt-5 border-t border-black/[0.06]">
+            <button
+              onClick={runAiInsight}
+              disabled={aiLoading}
+              className="inline-flex items-center gap-2 bg-gradient-to-r from-indigo-500 to-purple-500 text-white px-4 py-2.5 rounded-xl text-[14px] font-medium hover:opacity-90 disabled:opacity-50 transition-opacity"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M12 3l1.9 5.8L20 10l-6.1 1.2L12 17l-1.9-5.8L4 10l6.1-1.2z"/>
+              </svg>
+              {aiLoading ? "ИИ анализирует..." : "ИИ-анализ заявки"}
+            </button>
+
+            {aiInsight && (
+              <div className="mt-4">
+                {aiInsight.error ? (
+                  <div className="bg-amber-50 border border-amber-200 text-amber-700 rounded-xl px-4 py-3 text-[13px]">
+                    {aiInsight.error}
+                  </div>
+                ) : (
+                  <div className="bg-[#F7F6FE] border border-indigo-100 rounded-[16px] p-4 space-y-3">
+                    {aiInsight.summary && (
+                      <p className="text-[14px] text-[#1D1D1F] leading-relaxed">{aiInsight.summary}</p>
+                    )}
+                    {aiInsight.next_action && (
+                      <div>
+                        <p className="text-[11px] font-semibold text-indigo-500 uppercase tracking-wider mb-1">Следующий шаг</p>
+                        <p className="text-[14px] text-[#1D1D1F]">{aiInsight.next_action}</p>
+                      </div>
+                    )}
+                    {aiInsight.estimated_value && (
+                      <div>
+                        <p className="text-[11px] font-semibold text-indigo-500 uppercase tracking-wider mb-1">Потенциал</p>
+                        <p className="text-[14px] text-[#1D1D1F]">{aiInsight.estimated_value}</p>
+                      </div>
+                    )}
+                    {aiInsight.risks?.length > 0 && (
+                      <div>
+                        <p className="text-[11px] font-semibold text-indigo-500 uppercase tracking-wider mb-1">Риски</p>
+                        <ul className="space-y-1">
+                          {aiInsight.risks.map((r, i) => (
+                            <li key={i} className="text-[13px] text-[#6E6E73] flex gap-2">
+                              <span className="text-red-400 mt-0.5">•</span>
+                              <span>{r}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                    {aiInsight.model && (
+                      <p className="text-[11px] text-[#AEAEB2] pt-1">Анализ: {aiInsight.model}</p>
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* Client info */}
       <div className={CARD}>

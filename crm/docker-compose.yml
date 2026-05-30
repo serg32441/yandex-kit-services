@@ -26,6 +26,8 @@ services:
       DATABASE_URL: postgresql://crm:${POSTGRES_PASSWORD:-crm_password}@db:5432/crm
       TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN:-}
       BOT_SECRET: ${BOT_SECRET:-crm-bot-internal-secret}
+      OPENROUTER_API_KEY: ${OPENROUTER_API_KEY:-}
+      OPENROUTER_MODEL: ${OPENROUTER_MODEL:-tencent/hy3-preview}
     ports:
       - "8000:8000"
 

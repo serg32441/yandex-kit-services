@@ -14,14 +14,17 @@ from ..schemas import (
     SparePartCreate,
     SparePartUpdate,
     SparePartOut,
+    AIInsight,
 )
-from .. import telegram
+from .. import telegram, scoring, ai
 
 router = APIRouter()
 
 VALID_STATUSES = {
     "new", "transferred", "in_progress", "waiting_parts", "parts_sent", "done", "closed"
 }
+
+ACTIVE_STATUSES = {"new", "transferred", "in_progress", "waiting_parts", "parts_sent"}
 
 
 @router.get("", response_model=List[RequestListOut])
@@ -52,7 +55,25 @@ def list_requests(
         q = q.filter(
             Request.client_name.ilike(like) | Request.client_phone.ilike(like)
         )
-    return q.order_by(desc(Request.created_at)).offset(skip).limit(limit).all()
+    rows = q.order_by(desc(Request.created_at)).offset(skip).limit(limit).all()
+    now = datetime.now(timezone.utc)
+    for r in rows:
+        scoring.enrich(r, now)
+    return rows
+
+
+@router.get("/priorities", response_model=List[RequestListOut])
+def priorities(
+    limit: int = Query(default=6, le=20),
+    db: Session = Depends(get_db),
+):
+    """Активные заявки, отсортированные по приоритету — «на что обратить внимание»."""
+    rows = db.query(Request).filter(Request.status.in_(ACTIVE_STATUSES)).all()
+    now = datetime.now(timezone.utc)
+    for r in rows:
+        scoring.enrich(r, now)
+    rows.sort(key=lambda r: r.score, reverse=True)
+    return rows[:limit]
 
 
 @router.post("", response_model=RequestOut)
@@ -84,7 +105,18 @@ def get_request(request_id: int, db: Session = Depends(get_db)):
     req = db.query(Request).filter(Request.id == request_id).first()
     if not req:
         raise HTTPException(status_code=404, detail="Заявка не найдена")
+    scoring.enrich(req)
     return req
+
+
+@router.post("/{request_id}/ai-insight", response_model=AIInsight)
+def ai_insight(request_id: int, db: Session = Depends(get_db)):
+    """Глубокий ИИ-разбор заявки через OpenRouter (по запросу менеджера)."""
+    req = db.query(Request).filter(Request.id == request_id).first()
+    if not req:
+        raise HTTPException(status_code=404, detail="Заявка не найдена")
+    rule = scoring.score_request(req)
+    return ai.analyze_request(req, rule)
 
 
 @router.patch("/{request_id}", response_model=RequestOut)

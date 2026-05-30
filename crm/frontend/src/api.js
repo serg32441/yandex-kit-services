@@ -59,6 +59,8 @@ export const api = {
     return request("GET", `/requests${qs ? "?" + qs : ""}`);
   },
   getRequest: (id) => request("GET", `/requests/${id}`),
+  getPriorities: (limit = 6) => request("GET", `/requests/priorities?limit=${limit}`),
+  getAiInsight: (id) => request("POST", `/requests/${id}/ai-insight`),
   createRequest: (data) => request("POST", "/requests", data),
   updateRequest: (id, data) => request("PATCH", `/requests/${id}`, data),
   updateStatus: (id, data) => request("PATCH", `/requests/${id}/status`, data),

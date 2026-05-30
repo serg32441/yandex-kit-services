@@ -121,6 +121,11 @@ class RequestListOut(BaseModel):
     updated_at: Optional[datetime] = None
     city: Optional[CityOut] = None
     partner: Optional[PartnerOut] = None
+    # Скоринг (вычисляется на лету)
+    score: int = 0
+    priority: str = "low"
+    score_factors: List[str] = []
+    recommendation: Optional[str] = None
     model_config = {"from_attributes": True}
 
 
@@ -137,7 +142,23 @@ class RequestOut(RequestBase):
     partner: Optional[PartnerOut] = None
     status_logs: List[StatusLogOut] = []
     spare_parts: List[SparePartOut] = []
+    # Скоринг (вычисляется на лету)
+    score: int = 0
+    priority: str = "low"
+    score_factors: List[str] = []
+    recommendation: Optional[str] = None
     model_config = {"from_attributes": True}
+
+
+class AIInsight(BaseModel):
+    available: bool
+    model: Optional[str] = None
+    priority: Optional[str] = None
+    summary: Optional[str] = None
+    next_action: Optional[str] = None
+    estimated_value: Optional[str] = None
+    risks: List[str] = []
+    error: Optional[str] = None
 
 
 class UserCreate(BaseModel):

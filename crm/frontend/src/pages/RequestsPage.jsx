@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { api } from "../api";
 import StatusBadge from "../components/StatusBadge";
+import PriorityBadge from "../components/PriorityBadge";
 
 const STATUSES = [
   { value: "", label: "Все статусы" },
@@ -22,6 +23,7 @@ export default function RequestsPage() {
   const [cities, setCities] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
+  const [sortByPriority, setSortByPriority] = useState(false);
 
   const status = searchParams.get("status") || "";
   const cityId = searchParams.get("city_id") || "";
@@ -42,6 +44,10 @@ export default function RequestsPage() {
     else next.delete(key);
     setSearchParams(next);
   }
+
+  const displayed = sortByPriority
+    ? [...requests].sort((a, b) => (b.score || 0) - (a.score || 0))
+    : requests;
 
   return (
     <div className="space-y-4 max-w-6xl">
@@ -76,6 +82,17 @@ export default function RequestsPage() {
           <option value="">Все города</option>
           {cities.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
         </select>
+        <button
+          type="button"
+          onClick={() => setSortByPriority((v) => !v)}
+          className={`px-4 py-2.5 rounded-xl text-[14px] font-medium transition-colors ${
+            sortByPriority
+              ? "bg-[#1D1D1F] text-white"
+              : "border border-black/[0.1] text-[#3A3A3C] hover:bg-[#F5F5F7]"
+          }`}
+        >
+          ⚡ Сначала важные
+        </button>
       </div>
 
       {/* Table */}
@@ -93,12 +110,13 @@ export default function RequestsPage() {
                 <th className="px-5 py-4 text-left text-[11px] font-semibold text-[#AEAEB2] uppercase tracking-wider hidden md:table-cell">Оборудование</th>
                 <th className="px-5 py-4 text-left text-[11px] font-semibold text-[#AEAEB2] uppercase tracking-wider hidden sm:table-cell">Город</th>
                 <th className="px-5 py-4 text-left text-[11px] font-semibold text-[#AEAEB2] uppercase tracking-wider hidden lg:table-cell">Партнёр</th>
+                <th className="px-5 py-4 text-left text-[11px] font-semibold text-[#AEAEB2] uppercase tracking-wider">Приоритет</th>
                 <th className="px-5 py-4 text-left text-[11px] font-semibold text-[#AEAEB2] uppercase tracking-wider">Статус</th>
                 <th className="px-5 py-4 text-left text-[11px] font-semibold text-[#AEAEB2] uppercase tracking-wider hidden sm:table-cell">Дата</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-black/[0.04]">
-              {requests.map((r) => (
+              {displayed.map((r) => (
                 <tr key={r.id} className="hover:bg-[#F9F9FB] transition-colors">
                   <td className="px-5 py-3.5 text-[#AEAEB2] text-[13px]">{r.id}</td>
                   <td className="px-5 py-3.5">
@@ -112,6 +130,7 @@ export default function RequestsPage() {
                   <td className="px-5 py-3.5 text-[#6E6E73] hidden lg:table-cell">
                     {r.partner?.name || <span className="text-[#AEAEB2]">—</span>}
                   </td>
+                  <td className="px-5 py-3.5"><PriorityBadge priority={r.priority} score={r.score} /></td>
                   <td className="px-5 py-3.5"><StatusBadge status={r.status} /></td>
                   <td className="px-5 py-3.5 text-[#AEAEB2] text-[13px] hidden sm:table-cell">
                     {new Date(r.created_at).toLocaleDateString("ru")}
