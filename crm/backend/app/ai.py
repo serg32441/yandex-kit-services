@@ -69,13 +69,13 @@ def _parse_json(text: str) -> dict | None:
         return None
     text = text.strip()
 
-    # Direct parse
+    # 1. Direct parse
     try:
         return json.loads(text)
     except Exception:
         pass
 
-    # Markdown code blocks: ```json ... ``` or ``` ... ```
+    # 2. Markdown code blocks: ```json{...}``` or ```{...}```
     for pat in [r'```json\s*(\{.*?\})\s*```', r'```\s*(\{.*?\})\s*```']:
         m = re.search(pat, text, re.DOTALL)
         if m:
@@ -84,7 +84,7 @@ def _parse_json(text: str) -> dict | None:
             except Exception:
                 pass
 
-    # Find outermost JSON object by tracking brace depth (handles nested objects)
+    # 3. Brace-depth tracking (finds first complete {...} in surrounding text)
     start = text.find('{')
     if start != -1:
         depth = 0
@@ -112,13 +112,24 @@ def _parse_json(text: str) -> dict | None:
                     except Exception:
                         break
 
-    # Last resort: model returned key: "value" lines instead of JSON
-    kv: dict = {}
-    for line in text.splitlines():
-        m = re.match(r'\s*"?(\w+)"?\s*:\s*"(.+)"', line)
-        if m:
-            kv[m.group(1)] = m.group(2)
-    return kv if kv else None
+    # 4. Model returned fields without outer braces — wrap and retry
+    # Handles: "headline": "text", "highlights": [...] (missing {})
+    wrapped = "{" + text.strip().rstrip(",") + "}"
+    try:
+        return json.loads(wrapped)
+    except Exception:
+        pass
+
+    # 5. Strip leading/trailing prose, wrap the rest
+    # Handles: "Here is my analysis:\n\"headline\": ..."
+    inner = re.sub(r'^[^"{\[]*', '', text)  # drop leading non-JSON chars
+    if inner and inner != text:
+        try:
+            return json.loads("{" + inner.rstrip(",") + "}")
+        except Exception:
+            pass
+
+    return None
 
 
 def analyze_request(req, rule) -> dict:
@@ -177,11 +188,7 @@ def analyze_request(req, rule) -> dict:
             return {
                 "available": True,
                 "model": OPENROUTER_MODEL,
-                "priority": rule["priority"],
-                "summary": content.strip()[:1000] or "ИИ вернул пустой ответ.",
-                "next_action": rule["recommendation"],
-                "estimated_value": None,
-                "risks": [],
+                "error": "Не удалось разобрать ответ ИИ. Попробуйте ещё раз.",
             }
 
         risks = parsed.get("risks") or []
@@ -304,8 +311,7 @@ def business_summary(stats: dict) -> dict:
         parsed = _parse_json(content)
         if not parsed:
             return {"available": True, "model": OPENROUTER_MODEL,
-                    "headline": content.strip()[:600] or "ИИ вернул пустой ответ.",
-                    "highlights": [], "attention": [], "recommendations": []}
+                    "error": "Не удалось разобрать ответ ИИ. Попробуйте ещё раз."}
 
         return {
             "available": True,
