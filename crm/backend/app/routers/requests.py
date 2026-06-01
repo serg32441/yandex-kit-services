@@ -1,3 +1,4 @@
+import re
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from sqlalchemy import desc
@@ -93,18 +94,28 @@ def parse_request(payload: RequestParseIn, db: Session = Depends(get_db)):
             error=result.get("error"),
         )
 
-    # Сопоставляем распознанный город с существующими в системе
-    city_id = None
-    city_name = result.get("city")
-    if city_name:
-        cities = db.query(City).all()
-        target = city_name.strip().lower()
+    # Сопоставляем город: сначала по тому, что вернул ИИ, затем — сканируем
+    # исходный текст на известные города (с учётом русских склонений).
+    cities = db.query(City).all()
+
+    def _find_city(haystack: Optional[str]):
+        if not haystack:
+            return None
+        t = haystack.lower()
         for c in cities:
             cn = c.name.strip().lower()
-            if cn == target or cn in target or target in cn:
-                city_id = c.id
-                city_name = c.name
-                break
+            if cn in t:
+                return c
+            # Корень слова, чтобы поймать склонения: Москва→Москве, Казань→Казани
+            if len(cn) >= 6:
+                stem = re.escape(cn[:-2])
+                if re.search(r'\b' + stem + r'[а-яё]*', t):
+                    return c
+        return None
+
+    matched = _find_city(result.get("city")) or _find_city(text)
+    city_id = matched.id if matched else None
+    city_name = matched.name if matched else result.get("city")
 
     return RequestParseOut(
         available=True,
