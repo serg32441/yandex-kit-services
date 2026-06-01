@@ -58,7 +58,7 @@ export default function Sidebar({ isOpen, onClose }) {
                 <line x1="14" y1="10" x2="23" y2="19" stroke="white" strokeOpacity="0.6" strokeWidth="1.5" strokeLinecap="round"/>
               </svg>
             </div>
-            <span className="text-[15px] font-semibold text-[#1D1D1F] tracking-tight">CRM</span>
+            <span className="text-[15px] font-semibold text-[#1D1D1F] tracking-tight">ЧМ Сочи СРМ</span>
           </div>
           <button onClick={onClose} className="md:hidden text-[#AEAEB2] hover:text-[#6E6E73] p-1 transition-colors">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
