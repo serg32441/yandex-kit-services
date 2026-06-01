@@ -241,10 +241,16 @@ def analyze_request(req, rule) -> dict:
 
         parsed = _parse_json(content)
         if not parsed:
+            # ИИ не дал структурированный ответ — отдаём rule-based разбор,
+            # чтобы менеджер всё равно получил полезную рекомендацию.
             return {
                 "available": True,
                 "model": OPENROUTER_MODEL,
-                "error": f"Не удалось разобрать JSON. Ответ модели: {content[:400]!r}",
+                "priority": rule["priority"],
+                "summary": "Авто-оценка по правилам (ИИ временно недоступен).",
+                "next_action": rule["recommendation"],
+                "estimated_value": None,
+                "risks": rule.get("score_factors", [])[:4],
             }
 
         risks = parsed.get("risks") or []
@@ -260,11 +266,15 @@ def analyze_request(req, rule) -> dict:
             "estimated_value": _as_str(parsed.get("estimated_value")),
             "risks": [str(r) for r in risks][:5],
         }
-    except Exception as e:
+    except Exception:
         return {
             "available": True,
             "model": OPENROUTER_MODEL,
-            "error": f"Ошибка обработки ответа ИИ: {e}",
+            "priority": rule["priority"],
+            "summary": "Авто-оценка по правилам (ИИ временно недоступен).",
+            "next_action": rule["recommendation"],
+            "estimated_value": None,
+            "risks": rule.get("score_factors", [])[:4],
         }
 
 
@@ -367,7 +377,7 @@ def business_summary(stats: dict) -> dict:
         parsed = _parse_json(content)
         if not parsed:
             return {"available": True, "model": OPENROUTER_MODEL,
-                    "error": f"Не удалось разобрать JSON. Ответ модели: {content[:400]!r}"}
+                    "error": "ИИ вернул ответ в неожиданном формате. Попробуйте ещё раз."}
 
         return {
             "available": True,
