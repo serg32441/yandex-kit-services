@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+
+# Директива для Яндекса — основное зеркало без www
+Host: https://chm-sochi.ru
+
+Sitemap: https://chm-sochi.ru/sitemap.xml

@@ -1,0 +1,56 @@
+version: "3.9"
+
+# Блог на WordPress, доступный по адресу https://chm-sochi.ru/blog
+# (подкаталог основного домена — лучший вариант для SEO).
+#
+# Запуск на сервере:
+#   cd /root/yandex-kit-services/blog
+#   cp .env.example .env   # и впишите надёжные пароли
+#   docker compose up -d
+#
+# Затем добавьте reverse proxy в nginx (см. nginx-host.conf) и перезагрузите nginx.
+
+services:
+  blog-db:
+    image: mariadb:11
+    restart: unless-stopped
+    environment:
+      MARIADB_DATABASE: ${WP_DB_NAME:-wordpress}
+      MARIADB_USER: ${WP_DB_USER:-wordpress}
+      MARIADB_PASSWORD: ${WP_DB_PASSWORD:-change_me}
+      MARIADB_ROOT_PASSWORD: ${WP_DB_ROOT_PASSWORD:-change_me_root}
+    volumes:
+      - blog_db:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  wordpress:
+    image: wordpress:php8.3-apache
+    restart: unless-stopped
+    depends_on:
+      blog-db:
+        condition: service_healthy
+    environment:
+      WORDPRESS_DB_HOST: blog-db:3306
+      WORDPRESS_DB_NAME: ${WP_DB_NAME:-wordpress}
+      WORDPRESS_DB_USER: ${WP_DB_USER:-wordpress}
+      WORDPRESS_DB_PASSWORD: ${WP_DB_PASSWORD:-change_me}
+      # Блог живёт в подкаталоге /blog и работает за reverse proxy с HTTPS.
+      WORDPRESS_CONFIG_EXTRA: |
+        define('WP_HOME', 'https://chm-sochi.ru/blog');
+        define('WP_SITEURL', 'https://chm-sochi.ru/blog');
+        if (isset($$_SERVER['HTTP_X_FORWARDED_PROTO']) && $$_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') {
+            $$_SERVER['HTTPS'] = 'on';
+        }
+    volumes:
+      - blog_wp:/var/www/html
+    ports:
+      # Локальный порт, который проксирует nginx (наружу не открывается)
+      - "127.0.0.1:8082:80"
+
+volumes:
+  blog_db:
+  blog_wp:
