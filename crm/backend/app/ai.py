@@ -188,7 +188,7 @@ def analyze_request(req, rule) -> dict:
             return {
                 "available": True,
                 "model": OPENROUTER_MODEL,
-                "error": "Не удалось разобрать ответ ИИ. Попробуйте ещё раз.",
+                "error": f"Не удалось разобрать JSON. Ответ модели: {content[:400]!r}",
             }
 
         risks = parsed.get("risks") or []
@@ -311,7 +311,7 @@ def business_summary(stats: dict) -> dict:
         parsed = _parse_json(content)
         if not parsed:
             return {"available": True, "model": OPENROUTER_MODEL,
-                    "error": "Не удалось разобрать ответ ИИ. Попробуйте ещё раз."}
+                    "error": f"Не удалось разобрать JSON. Ответ модели: {content[:400]!r}"}
 
         return {
             "available": True,
