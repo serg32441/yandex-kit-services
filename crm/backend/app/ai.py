@@ -135,7 +135,6 @@ def analyze_request(req, rule) -> dict:
         ],
         "temperature": 0.3,
         "max_tokens": 600,
-        "response_format": {"type": "json_object"},
     }
     headers = {
         "Authorization": f"Bearer {OPENROUTER_API_KEY}",
@@ -157,7 +156,7 @@ def analyze_request(req, rule) -> dict:
                 "error": f"ИИ вернул ошибку {resp.status_code}. Попробуйте позже.",
             }
         data = resp.json()
-        content = data["choices"][0]["message"]["content"]
+        content = data.get("choices", [{}])[0].get("message", {}).get("content") or ""
     except Exception as e:
         return {
             "available": True,
@@ -165,32 +164,43 @@ def analyze_request(req, rule) -> dict:
             "error": f"Не удалось получить ответ ИИ: {e}",
         }
 
-    parsed = _parse_json(content)
-    if not parsed:
-        # Модель ответила не-JSON — отдадим текст как summary
+    try:
+        def _as_str(v):
+            if v is None:
+                return None
+            return v if isinstance(v, str) else str(v)
+
+        parsed = _parse_json(content)
+        if not parsed:
+            return {
+                "available": True,
+                "model": OPENROUTER_MODEL,
+                "priority": rule["priority"],
+                "summary": content.strip()[:1000] or "ИИ вернул пустой ответ.",
+                "next_action": rule["recommendation"],
+                "estimated_value": None,
+                "risks": [],
+            }
+
+        risks = parsed.get("risks") or []
+        if isinstance(risks, str):
+            risks = [risks]
+
         return {
             "available": True,
             "model": OPENROUTER_MODEL,
-            "priority": rule["priority"],
-            "summary": content.strip()[:1000],
-            "next_action": rule["recommendation"],
-            "estimated_value": None,
-            "risks": [],
+            "priority": _as_str(parsed.get("priority")) or rule["priority"],
+            "summary": _as_str(parsed.get("summary")),
+            "next_action": _as_str(parsed.get("next_action")) or rule["recommendation"],
+            "estimated_value": _as_str(parsed.get("estimated_value")),
+            "risks": [str(r) for r in risks][:5],
         }
-
-    risks = parsed.get("risks") or []
-    if isinstance(risks, str):
-        risks = [risks]
-
-    return {
-        "available": True,
-        "model": OPENROUTER_MODEL,
-        "priority": parsed.get("priority") or rule["priority"],
-        "summary": parsed.get("summary"),
-        "next_action": parsed.get("next_action") or rule["recommendation"],
-        "estimated_value": parsed.get("estimated_value"),
-        "risks": [str(r) for r in risks][:5],
-    }
+    except Exception as e:
+        return {
+            "available": True,
+            "model": OPENROUTER_MODEL,
+            "error": f"Ошибка обработки ответа ИИ: {e}",
+        }
 
 
 BUSINESS_SYSTEM_PROMPT = (
@@ -252,7 +262,6 @@ def business_summary(stats: dict) -> dict:
         ],
         "temperature": 0.4,
         "max_tokens": 800,
-        "response_format": {"type": "json_object"},
     }
     headers = {
         "Authorization": f"Bearer {OPENROUTER_API_KEY}",
@@ -270,32 +279,46 @@ def business_summary(stats: dict) -> dict:
         if resp.status_code != 200:
             return {"available": True, "model": OPENROUTER_MODEL,
                     "error": f"ИИ вернул ошибку {resp.status_code}. Попробуйте позже."}
-        content = resp.json()["choices"][0]["message"]["content"]
+        data = resp.json()
+        content = data.get("choices", [{}])[0].get("message", {}).get("content") or ""
     except Exception as e:
         return {"available": True, "model": OPENROUTER_MODEL,
                 "error": f"Не удалось получить ответ ИИ: {e}"}
 
-    parsed = _parse_json(content)
-    if not parsed:
+    try:
+        def _as_list(v):
+            if not v:
+                return []
+            if isinstance(v, str):
+                return [v]
+            return [str(x) for x in v][:6]
+
+        def _as_str(v):
+            if v is None:
+                return None
+            if isinstance(v, str):
+                return v.strip() or None
+            if isinstance(v, list):
+                return " ".join(str(x) for x in v) or None
+            return str(v)
+
+        parsed = _parse_json(content)
+        if not parsed:
+            return {"available": True, "model": OPENROUTER_MODEL,
+                    "headline": content.strip()[:600] or "ИИ вернул пустой ответ.",
+                    "highlights": [], "attention": [], "recommendations": []}
+
+        return {
+            "available": True,
+            "model": OPENROUTER_MODEL,
+            "headline": _as_str(parsed.get("headline")),
+            "highlights": _as_list(parsed.get("highlights")),
+            "attention": _as_list(parsed.get("attention")),
+            "recommendations": _as_list(parsed.get("recommendations")),
+        }
+    except Exception as e:
         return {"available": True, "model": OPENROUTER_MODEL,
-                "headline": content.strip()[:600],
-                "highlights": [], "attention": [], "recommendations": []}
-
-    def _as_list(v):
-        if not v:
-            return []
-        if isinstance(v, str):
-            return [v]
-        return [str(x) for x in v][:6]
-
-    return {
-        "available": True,
-        "model": OPENROUTER_MODEL,
-        "headline": parsed.get("headline"),
-        "highlights": _as_list(parsed.get("highlights")),
-        "attention": _as_list(parsed.get("attention")),
-        "recommendations": _as_list(parsed.get("recommendations")),
-    }
+                "error": f"Ошибка обработки ответа ИИ: {e}"}
 
 
 PARSE_SYSTEM_PROMPT = (
