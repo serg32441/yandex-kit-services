@@ -408,6 +408,50 @@ PARSE_SYSTEM_PROMPT = (
 )
 
 
+# Слова, которые не считаем именем (часто стоят рядом и с заглавной буквы)
+_NAME_STOPWORDS = {
+    "Звонил", "Звонила", "Клиент", "Клиента", "Заявка", "Заявку", "Телефон",
+    "Номер", "Город", "Адрес", "Имя", "Зовут", "Это", "Здравствуйте", "Привет",
+    "Добрый", "Ремонт", "Сломал", "Сломалась", "Сломался", "Нужен", "Нужно",
+}
+
+# Триггеры, после которых обычно идёт имя клиента
+_NAME_TRIGGERS = r"(?:зовут|меня зовут|имя|клиент[а]?|звонил[а]?|обратил[ся]+|это)"
+
+
+def _guess_phone(text: str) -> str | None:
+    m = re.search(r'(?:\+7|8|7)[\s\-]?\(?\d{3}\)?[\s\-]?\d{3}[\s\-]?\d{2}[\s\-]?\d{2}', text)
+    if not m:
+        return None
+    phone = re.sub(r'[\s\-()]', '', m.group(0))
+    if phone.startswith("8"):
+        phone = "+7" + phone[1:]
+    elif phone.startswith("7"):
+        phone = "+" + phone
+    return phone
+
+
+def _guess_name(text: str) -> str | None:
+    # 1. После триггерного слова: "зовут Иван", "клиент Пётр Сидоров"
+    m = re.search(
+        _NAME_TRIGGERS + r"\s+([А-ЯЁ][а-яё]+(?:\s+[А-ЯЁ][а-яё]+){0,2})",
+        text, re.IGNORECASE,
+    )
+    if m:
+        # Берём слова с заглавной буквы из совпадения
+        words = [w for w in m.group(1).split() if w[:1].isupper()]
+        words = [w for w in words if w not in _NAME_STOPWORDS]
+        if words:
+            return " ".join(words[:3])
+
+    # 2. Первое слово с заглавной буквы, не из стоп-листа (русское имя)
+    for w in re.findall(r'[А-ЯЁ][а-яё]{2,}', text):
+        if w not in _NAME_STOPWORDS:
+            return w
+
+    return None
+
+
 def parse_request_text(text: str) -> dict:
     """Извлекает поля заявки из свободного текста (надиктованного голосом)."""
     if not ai_available():
@@ -439,7 +483,7 @@ def parse_request_text(text: str) -> dict:
         if resp.status_code != 200:
             return {"available": True, "model": OPENROUTER_MODEL,
                     "error": f"ИИ вернул ошибку {resp.status_code}. Попробуйте позже."}
-        content = resp.json()["choices"][0]["message"]["content"]
+        content = resp.json().get("choices", [{}])[0].get("message", {}).get("content") or ""
     except Exception as e:
         return {"available": True, "model": OPENROUTER_MODEL,
                 "error": f"Не удалось получить ответ ИИ: {e}"}
@@ -452,21 +496,13 @@ def parse_request_text(text: str) -> dict:
 
     parsed = _parse_json(content)
     if not parsed:
-        # Regex fallback: try to pull phone from raw text; put rest as description
-        phone_match = re.search(
-            r'(?:\+7|8)[\s\-]?\(?\d{3}\)?[\s\-]?\d{3}[\s\-]?\d{2}[\s\-]?\d{2}', text
-        )
-        phone = phone_match.group(0).strip() if phone_match else None
-        # Normalise 8xxx → +7xxx
-        if phone and phone.startswith("8"):
-            phone = "+7" + phone[1:]
-        phone = re.sub(r'[\s\-()]', '', phone) if phone else None
-
+        # Резервный режим: вытаскиваем телефон и имя из исходного текста,
+        # остальное кладём в описание — форма заполняется хотя бы частично.
         return {
             "available": True,
             "model": OPENROUTER_MODEL,
-            "client_name": None,
-            "client_phone": phone,
+            "client_name": _guess_name(text),
+            "client_phone": _guess_phone(text),
             "city": None,
             "equipment_type": None,
             "description": text.strip()[:2000],
@@ -481,8 +517,9 @@ def parse_request_text(text: str) -> dict:
     return {
         "available": True,
         "model": OPENROUTER_MODEL,
-        "client_name": _clean(parsed.get("client_name")),
-        "client_phone": _clean(parsed.get("client_phone")),
+        # Если ИИ не вернул имя/телефон — подстрахуемся эвристикой по тексту
+        "client_name": _clean(parsed.get("client_name")) or _guess_name(text),
+        "client_phone": _clean(parsed.get("client_phone")) or _guess_phone(text),
         "city": _clean(parsed.get("city")),
         "equipment_type": _clean(parsed.get("equipment_type")),
         "description": _clean(parsed.get("description")),
