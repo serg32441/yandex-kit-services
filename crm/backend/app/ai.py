@@ -13,6 +13,7 @@
 import os
 import json
 import re
+import ast
 import httpx
 
 OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY", "")
@@ -64,70 +65,125 @@ def _build_user_prompt(req, rule) -> str:
     return "\n".join(lines)
 
 
+def _loads(s: str) -> dict | None:
+    """Пытается распарсить строку и как JSON, и как Python-литерал.
+
+    Многие модели возвращают dict в стиле Python — с одинарными кавычками
+    и None/True/False вместо null/true/false. ast.literal_eval это понимает.
+    """
+    if not s:
+        return None
+    try:
+        v = json.loads(s)
+        return v if isinstance(v, dict) else None
+    except Exception:
+        pass
+    try:
+        v = ast.literal_eval(s)
+        return v if isinstance(v, dict) else None
+    except Exception:
+        return None
+
+
+def _repair_truncated(s: str) -> str | None:
+    """Чинит обрезанный по лимиту токенов JSON: закрывает строку и скобки.
+
+    Поддерживает и двойные, и одинарные кавычки. Возвращает строку,
+    которую затем пробуем распарсить через _loads.
+    """
+    start = s.find('{')
+    if start == -1:
+        return None
+    s = s[start:]
+    stack = []
+    in_str = False
+    esc = False
+    quote = ""
+    for ch in s:
+        if esc:
+            esc = False
+            continue
+        if in_str:
+            if ch == '\\':
+                esc = True
+            elif ch == quote:
+                in_str = False
+            continue
+        if ch in ('"', "'"):
+            in_str = True
+            quote = ch
+        elif ch in '{[':
+            stack.append(ch)
+        elif ch in '}]':
+            if stack:
+                stack.pop()
+    out = s
+    if in_str:
+        out += quote               # закрыть незавершённую строку
+    while stack:                   # закрыть незавершённые скобки
+        out += '}' if stack.pop() == '{' else ']'
+    return out
+
+
 def _parse_json(text: str) -> dict | None:
     if not text:
         return None
     text = text.strip()
 
-    # 1. Direct parse
-    try:
-        return json.loads(text)
-    except Exception:
-        pass
+    # 1. Прямой парсинг (JSON или Python-dict)
+    result = _loads(text)
+    if result is not None:
+        return result
 
-    # 2. Markdown code blocks: ```json{...}``` or ```{...}```
+    # 2. Markdown-блоки: ```json{...}``` или ```{...}```
     for pat in [r'```json\s*(\{.*?\})\s*```', r'```\s*(\{.*?\})\s*```']:
         m = re.search(pat, text, re.DOTALL)
         if m:
-            try:
-                return json.loads(m.group(1))
-            except Exception:
-                pass
+            result = _loads(m.group(1))
+            if result is not None:
+                return result
 
-    # 3. Brace-depth tracking (finds first complete {...} in surrounding text)
+    # 3. Поиск первого полного {...} по глубине скобок
     start = text.find('{')
     if start != -1:
         depth = 0
         in_str = False
         esc = False
+        quote = ""
         for i, ch in enumerate(text[start:], start):
             if esc:
                 esc = False
                 continue
-            if ch == '\\' and in_str:
-                esc = True
-                continue
-            if ch == '"':
-                in_str = not in_str
-                continue
             if in_str:
+                if ch == '\\':
+                    esc = True
+                elif ch == quote:
+                    in_str = False
                 continue
-            if ch == '{':
+            if ch in ('"', "'"):
+                in_str = True
+                quote = ch
+            elif ch == '{':
                 depth += 1
             elif ch == '}':
                 depth -= 1
                 if depth == 0:
-                    try:
-                        return json.loads(text[start:i + 1])
-                    except Exception:
-                        break
+                    result = _loads(text[start:i + 1])
+                    if result is not None:
+                        return result
+                    break
 
-    # 4. Model returned fields without outer braces — wrap and retry
-    # Handles: "headline": "text", "highlights": [...] (missing {})
-    wrapped = "{" + text.strip().rstrip(",") + "}"
-    try:
-        return json.loads(wrapped)
-    except Exception:
-        pass
+    # 4. Поля без внешних скобок — обернём и попробуем
+    result = _loads("{" + text.rstrip(",") + "}")
+    if result is not None:
+        return result
 
-    # 5. Strip leading/trailing prose, wrap the rest
-    # Handles: "Here is my analysis:\n\"headline\": ..."
-    inner = re.sub(r'^[^"{\[]*', '', text)  # drop leading non-JSON chars
-    if inner and inner != text:
-        try:
-            return json.loads("{" + inner.rstrip(",") + "}")
-        except Exception:
-            pass
+    # 5. Обрезанный ответ — чиним и парсим
+    repaired = _repair_truncated(text)
+    if repaired:
+        result = _loads(repaired)
+        if result is not None:
+            return result
 
     return None
 
@@ -147,7 +203,7 @@ def analyze_request(req, rule) -> dict:
             {"role": "user", "content": _build_user_prompt(req, rule)},
         ],
         "temperature": 0.3,
-        "max_tokens": 600,
+        "max_tokens": 900,
     }
     headers = {
         "Authorization": f"Bearer {OPENROUTER_API_KEY}",
@@ -267,7 +323,7 @@ def business_summary(stats: dict) -> dict:
             {"role": "user", "content": _fmt_business(stats)},
         ],
         "temperature": 0.4,
-        "max_tokens": 800,
+        "max_tokens": 1200,
     }
     headers = {
         "Authorization": f"Bearer {OPENROUTER_API_KEY}",
