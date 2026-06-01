@@ -73,15 +73,25 @@ export default function NewRequestPage() {
     try {
       const data = await api.parseRequest(transcript);
       if (data.error) { setParseNote(data.error); return; }
+
+      // Если найден город — подбираем активного партнёра в этом городе
+      let assignedPartner = null;
+      if (data.city_id) {
+        const inCity = partners.filter((p) => p.is_active && p.city_id === data.city_id);
+        if (inCity.length > 0) assignedPartner = inCity[0];
+      }
+
       setForm((f) => ({
         ...f,
         client_name: data.client_name || f.client_name,
         client_phone: data.client_phone || f.client_phone,
         city_id: data.city_id ? String(data.city_id) : f.city_id,
+        partner_id: assignedPartner ? String(assignedPartner.id) : f.partner_id,
         equipment_type: data.equipment_type || f.equipment_type,
         description: data.description || f.description,
         source: data.source || f.source,
       }));
+
       const anyFilled = data.client_name || data.client_phone || data.city_id ||
         data.equipment_type || data.description;
       if (!anyFilled) {
@@ -90,6 +100,10 @@ export default function NewRequestPage() {
         setParseNote(`Город «${data.city_name}» не найден в системе — выберите вручную.`);
       } else if (!data.client_name && !data.client_phone) {
         setParseNote("Текст распознан частично — описание заполнено. Введите имя и телефон клиента вручную.");
+      } else if (assignedPartner) {
+        setParseNote(`Готово! Город определён, назначен партнёр «${assignedPartner.name}» — при необходимости поменяйте.`);
+      } else if (data.city_id) {
+        setParseNote("Готово! Город определён, но активных партнёров в нём нет — назначьте партнёра вручную.");
       } else {
         setParseNote("Готово! Поля заполнены — проверьте и при необходимости поправьте.");
       }
