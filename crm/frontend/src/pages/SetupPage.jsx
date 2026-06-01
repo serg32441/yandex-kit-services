@@ -38,7 +38,7 @@ export default function SetupPage() {
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
       <div className="bg-white rounded-xl shadow-lg p-8 w-full max-w-md">
         <div className="mb-6">
-          <h1 className="text-2xl font-bold text-gray-800">🔧 Ремонт CRM</h1>
+          <h1 className="text-2xl font-bold text-gray-800">🔧 РемХаб</h1>
           <p className="text-gray-500 text-sm mt-1">Первый запуск — создайте аккаунт администратора</p>
         </div>
 
