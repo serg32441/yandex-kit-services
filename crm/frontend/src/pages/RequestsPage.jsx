@@ -119,13 +119,13 @@ export default function RequestsPage() {
                     <p className="text-[12px] text-[#AEAEB2] mt-0.5">
                       {[r.equipment_type, r.city?.name].filter(Boolean).join(" · ") || r.client_phone || "—"}
                     </p>
-                    <div className="mt-2">
-                      <StatusBadge status={r.status} />
-                    </div>
                   </div>
-                  <p className="text-[12px] text-[#AEAEB2] shrink-0 mt-0.5">
-                    {new Date(r.created_at).toLocaleDateString("ru", { day: "numeric", month: "short" })}
-                  </p>
+                  <div className="flex flex-col items-end gap-1 shrink-0">
+                    <StatusBadge status={r.status} />
+                    <p className="text-[12px] text-[#AEAEB2]">
+                      {new Date(r.created_at).toLocaleDateString("ru", { day: "numeric", month: "short" })}
+                    </p>
+                  </div>
                 </Link>
               ))}
             </div>
