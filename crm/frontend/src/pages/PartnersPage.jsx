@@ -138,12 +138,52 @@ export default function PartnersPage() {
         Добавить партнёра
       </button>
 
-      {/* Partners table */}
+      {/* Partners list */}
       <div className={`${CARD} overflow-hidden`}>
         {partners.length === 0 ? (
           <div className="p-12 text-center text-[#AEAEB2] text-[14px]">Партнёры не добавлены</div>
         ) : (
-          <table className="w-full text-[14px]">
+          <>
+          {/* Мобильный список (карточки) */}
+          <div className="sm:hidden divide-y divide-black/[0.04]">
+            {partners.map((p) => (
+              <div key={p.id} className={`px-5 py-4 ${!p.is_active ? "opacity-50" : ""}`}>
+                <div className="flex items-start gap-3">
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[15px] font-medium text-[#1D1D1F] truncate">{p.name}</p>
+                    <p className="text-[13px] text-[#AEAEB2] truncate mt-0.5">
+                      {[p.city?.name, p.phone].filter(Boolean).join(" · ") || "—"}
+                    </p>
+                    <p className="text-[12px] mt-1">
+                      {p.telegram_username
+                        ? <span className="text-[#6E6E73]">@{p.telegram_username}</span>
+                        : p.telegram_id
+                        ? <span className="font-mono text-[#6E6E73]">{p.telegram_id}</span>
+                        : <span className="text-red-400">Telegram не привязан</span>}
+                    </p>
+                  </div>
+                  <span className={`shrink-0 text-[12px] font-medium px-2.5 py-1 rounded-full ${
+                    p.is_active ? "bg-emerald-50 text-emerald-600" : "bg-[#F2F2F7] text-[#6E6E73]"
+                  }`}>
+                    {p.is_active ? "Активен" : "Неактивен"}
+                  </span>
+                </div>
+                <div className="flex gap-4 mt-3">
+                  <button onClick={() => openEdit(p)} className="text-indigo-600 text-[13px] font-medium hover:underline">
+                    Изменить
+                  </button>
+                  {p.is_active && (
+                    <button onClick={() => handleDeactivate(p.id)} className="text-red-400 text-[13px] font-medium hover:underline">
+                      Удалить
+                    </button>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Десктопная таблица */}
+          <table className="hidden sm:table w-full text-[14px]">
             <thead>
               <tr className="border-b border-black/[0.05]">
                 <th className="px-5 py-4 text-left text-[11px] font-semibold text-[#AEAEB2] uppercase tracking-wider">Имя</th>
@@ -190,6 +230,7 @@ export default function PartnersPage() {
               ))}
             </tbody>
           </table>
+          </>
         )}
       </div>
 
