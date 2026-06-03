@@ -162,11 +162,11 @@ export default function Dashboard() {
         />
       </div>
 
-      {/* Главное действие */}
-      <div className="flex justify-end">
+      {/* Главное действие — выровнено по колонке «Комиссия» */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         <Link
           to="/requests/new"
-          className="flex items-center justify-center gap-2 bg-[#1D1D1F] text-white px-5 py-2.5 rounded-xl text-[14px] font-medium hover:bg-[#3A3A3C] transition-colors"
+          className="col-start-2 sm:col-start-4 flex items-center justify-center gap-2 bg-[#1D1D1F] text-white py-4 rounded-[20px] text-[14px] font-medium hover:bg-[#3A3A3C] transition-colors"
         >
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
             <circle cx="12" cy="12" r="10"/>
