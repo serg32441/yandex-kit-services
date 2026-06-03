@@ -163,17 +163,19 @@ export default function Dashboard() {
       </div>
 
       {/* Главное действие */}
-      <Link
-        to="/requests/new"
-        className="flex items-center justify-center gap-2 w-full bg-[#1D1D1F] text-white py-4 rounded-[20px] text-[14px] font-medium hover:bg-[#3A3A3C] transition-colors"
-      >
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-          <circle cx="12" cy="12" r="10"/>
-          <line x1="12" y1="8" x2="12" y2="16"/>
-          <line x1="8" y1="12" x2="16" y2="12"/>
-        </svg>
-        Новая заявка
-      </Link>
+      <div className="flex justify-end">
+        <Link
+          to="/requests/new"
+          className="flex items-center justify-center gap-2 bg-[#1D1D1F] text-white px-5 py-2.5 rounded-xl text-[14px] font-medium hover:bg-[#3A3A3C] transition-colors"
+        >
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" y1="8" x2="12" y2="16"/>
+            <line x1="8" y1="12" x2="16" y2="12"/>
+          </svg>
+          Новая заявка
+        </Link>
+      </div>
 
       {/* Воронка заявок */}
       <div className="bg-white rounded-[20px] border border-black/[0.05] shadow-[0_1px_3px_rgba(0,0,0,0.04),0_8px_20px_rgba(0,0,0,0.04)] p-5">
