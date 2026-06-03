@@ -147,33 +147,35 @@ export default function PartnersPage() {
           {/* Мобильный список (карточки) */}
           <div className="sm:hidden divide-y divide-black/[0.04]">
             {partners.map((p) => (
-              <div key={p.id} className={`px-5 py-4 ${!p.is_active ? "opacity-50" : ""}`}>
-                <div className="flex items-start gap-3">
-                  <div className="flex-1 min-w-0">
-                    <p className="text-[15px] font-medium text-[#1D1D1F] truncate">{p.name}</p>
-                    <p className="text-[13px] text-[#AEAEB2] truncate mt-0.5">
-                      {[p.city?.name, p.phone].filter(Boolean).join(" · ") || "—"}
-                    </p>
-                    <p className="text-[12px] mt-1">
-                      {p.telegram_username
-                        ? <span className="text-[#6E6E73]">@{p.telegram_username}</span>
-                        : p.telegram_id
-                        ? <span className="font-mono text-[#6E6E73]">{p.telegram_id}</span>
-                        : <span className="text-red-400">Telegram не привязан</span>}
-                    </p>
-                  </div>
-                  <span className={`shrink-0 text-[12px] font-medium px-2.5 py-1 rounded-full ${
+              <div
+                key={p.id}
+                onClick={() => openEdit(p)}
+                className={`px-5 py-4 flex items-start gap-3 hover:bg-[#F9F9FB] transition-colors cursor-pointer ${!p.is_active ? "opacity-50" : ""}`}
+              >
+                <div className="flex-1 min-w-0">
+                  <p className="text-[15px] font-medium text-[#1D1D1F] truncate">{p.name}</p>
+                  <p className="text-[13px] text-[#AEAEB2] truncate mt-0.5">
+                    {[p.city?.name, p.phone].filter(Boolean).join(" · ") || "—"}
+                  </p>
+                  <p className="text-[12px] mt-1">
+                    {p.telegram_username
+                      ? <span className="text-[#6E6E73]">@{p.telegram_username}</span>
+                      : p.telegram_id
+                      ? <span className="font-mono text-[#6E6E73]">{p.telegram_id}</span>
+                      : <span className="text-red-400">Telegram не привязан</span>}
+                  </p>
+                </div>
+                <div className="flex flex-col items-end gap-2 shrink-0">
+                  <span className={`text-[12px] font-medium px-2.5 py-1 rounded-full ${
                     p.is_active ? "bg-emerald-50 text-emerald-600" : "bg-[#F2F2F7] text-[#6E6E73]"
                   }`}>
                     {p.is_active ? "Активен" : "Неактивен"}
                   </span>
-                </div>
-                <div className="flex gap-4 mt-3">
-                  <button onClick={() => openEdit(p)} className="text-indigo-600 text-[13px] font-medium hover:underline">
-                    Изменить
-                  </button>
                   {p.is_active && (
-                    <button onClick={() => handleDeactivate(p.id)} className="text-red-400 text-[13px] font-medium hover:underline">
+                    <button
+                      onClick={(e) => { e.stopPropagation(); handleDeactivate(p.id); }}
+                      className="text-red-400 text-[13px] font-medium hover:underline"
+                    >
                       Удалить
                     </button>
                   )}
@@ -196,7 +198,11 @@ export default function PartnersPage() {
             </thead>
             <tbody className="divide-y divide-black/[0.04]">
               {partners.map((p) => (
-                <tr key={p.id} className={`hover:bg-[#F9F9FB] transition-colors ${!p.is_active ? "opacity-40" : ""}`}>
+                <tr
+                  key={p.id}
+                  onClick={() => openEdit(p)}
+                  className={`hover:bg-[#F9F9FB] transition-colors cursor-pointer ${!p.is_active ? "opacity-40" : ""}`}
+                >
                   <td className="px-5 py-3.5 font-medium text-[#1D1D1F]">{p.name}</td>
                   <td className="px-5 py-3.5 text-[#6E6E73] hidden sm:table-cell">{p.city?.name || "—"}</td>
                   <td className="px-5 py-3.5 text-[#6E6E73] hidden md:table-cell">{p.phone || "—"}</td>
@@ -215,12 +221,12 @@ export default function PartnersPage() {
                     </span>
                   </td>
                   <td className="px-5 py-3.5">
-                    <div className="flex gap-3 justify-end">
-                      <button onClick={() => openEdit(p)} className="text-indigo-600 text-[13px] hover:underline">
-                        Изменить
-                      </button>
+                    <div className="flex justify-end">
                       {p.is_active && (
-                        <button onClick={() => handleDeactivate(p.id)} className="text-red-400 text-[13px] hover:underline">
+                        <button
+                          onClick={(e) => { e.stopPropagation(); handleDeactivate(p.id); }}
+                          className="text-red-400 text-[13px] hover:underline"
+                        >
                           Удалить
                         </button>
                       )}
