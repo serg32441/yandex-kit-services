@@ -1,8 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { api } from "../api";
-import StatusBadge from "../components/StatusBadge";
+import StatusBadge, { STATUS_CONFIG } from "../components/StatusBadge";
 import PriorityBadge from "../components/PriorityBadge";
+
+// Та же плашка статуса, что в списках на дашборде (фиксированная ширина, по центру).
+function SmallStatusBadge({ status }) {
+  const cfg = STATUS_CONFIG[status] || { label: status, color: "bg-[#F2F2F7] text-[#6E6E73]" };
+  return (
+    <span className={`inline-flex items-center justify-center min-w-[130px] px-3 py-1 rounded-full text-[11px] font-medium ${cfg.color}`}>
+      {cfg.label}
+    </span>
+  );
+}
 
 const STATUSES = [
   { value: "", label: "Все статусы" },
@@ -103,28 +113,25 @@ export default function RequestsPage() {
           <div className="p-12 text-center text-[#AEAEB2] text-[14px]">Заявки не найдены</div>
         ) : (
           <>
-            {/* Мобильный список (карточки) */}
+            {/* Мобильный список (карточки) — в стиле списков на дашборде */}
             <div className="sm:hidden divide-y divide-black/[0.04]">
               {displayed.map((r) => (
                 <Link
                   key={r.id}
                   to={`/requests/${r.id}`}
-                  className="flex items-start gap-3 px-4 py-4 hover:bg-[#F9F9FB] transition-colors"
+                  className="flex items-center gap-4 px-5 py-4 hover:bg-[#F9F9FB] transition-colors"
                 >
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 flex-wrap">
+                    <div className="flex items-center gap-2">
                       <p className="text-[15px] font-medium text-[#1D1D1F] truncate">{r.client_name}</p>
                       {r.priority === "high" && <PriorityBadge priority={r.priority} score={r.score} />}
                     </div>
-                    <p className="text-[12px] text-[#AEAEB2] mt-0.5">
+                    <p className="text-[13px] text-[#AEAEB2] truncate mt-0.5">
                       {[r.equipment_type, r.city?.name].filter(Boolean).join(" · ") || r.client_phone || "—"}
                     </p>
                   </div>
-                  <div className="flex flex-col items-end gap-1 shrink-0">
-                    <StatusBadge status={r.status} />
-                    <p className="text-[12px] text-[#AEAEB2]">
-                      {new Date(r.created_at).toLocaleDateString("ru", { day: "numeric", month: "short" })}
-                    </p>
+                  <div className="shrink-0">
+                    <SmallStatusBadge status={r.status} />
                   </div>
                 </Link>
               ))}
