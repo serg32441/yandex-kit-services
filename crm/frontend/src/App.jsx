@@ -60,7 +60,7 @@ function Layout() {
               <line x1="3" y1="18" x2="21" y2="18"/>
             </svg>
           </button>
-          <span className="text-[15px] font-semibold text-[#1D1D1F]">РемХаб</span>
+          <span className="text-[15px] font-semibold text-[#1D1D1F]">Саша</span>
         </header>
         <main className="flex-1 overflow-y-auto p-5 md:p-8">
           <Routes>
