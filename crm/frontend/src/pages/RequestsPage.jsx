@@ -114,7 +114,7 @@ export default function RequestsPage() {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
                       <p className="text-[15px] font-medium text-[#1D1D1F] truncate">{r.client_name}</p>
-                      <PriorityBadge priority={r.priority} score={r.score} />
+                      {r.priority === "high" && <PriorityBadge priority={r.priority} score={r.score} />}
                     </div>
                     <p className="text-[12px] text-[#AEAEB2] mt-0.5">
                       {[r.equipment_type, r.city?.name].filter(Boolean).join(" · ") || r.client_phone || "—"}
