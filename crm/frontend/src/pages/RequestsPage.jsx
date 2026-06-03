@@ -95,50 +95,80 @@ export default function RequestsPage() {
         </button>
       </div>
 
-      {/* Table */}
+      {/* Список / таблица */}
       <div className="bg-white rounded-[20px] border border-black/[0.05] shadow-[0_1px_3px_rgba(0,0,0,0.04),0_8px_20px_rgba(0,0,0,0.04)] overflow-hidden">
         {loading ? (
           <div className="p-12 text-center text-[#AEAEB2] text-[14px]">Загрузка...</div>
         ) : requests.length === 0 ? (
           <div className="p-12 text-center text-[#AEAEB2] text-[14px]">Заявки не найдены</div>
         ) : (
-          <table className="w-full text-[14px]">
-            <thead>
-              <tr className="border-b border-black/[0.05]">
-                <th className="px-5 py-4 text-left text-[11px] font-semibold text-[#AEAEB2] uppercase tracking-wider w-12">#</th>
-                <th className="px-5 py-4 text-left text-[11px] font-semibold text-[#AEAEB2] uppercase tracking-wider">Клиент</th>
-                <th className="px-5 py-4 text-left text-[11px] font-semibold text-[#AEAEB2] uppercase tracking-wider hidden md:table-cell">Оборудование</th>
-                <th className="px-5 py-4 text-left text-[11px] font-semibold text-[#AEAEB2] uppercase tracking-wider hidden sm:table-cell">Город</th>
-                <th className="px-5 py-4 text-left text-[11px] font-semibold text-[#AEAEB2] uppercase tracking-wider hidden lg:table-cell">Партнёр</th>
-                <th className="px-5 py-4 text-left text-[11px] font-semibold text-[#AEAEB2] uppercase tracking-wider">Приоритет</th>
-                <th className="px-5 py-4 text-left text-[11px] font-semibold text-[#AEAEB2] uppercase tracking-wider">Статус</th>
-                <th className="px-5 py-4 text-left text-[11px] font-semibold text-[#AEAEB2] uppercase tracking-wider hidden sm:table-cell">Дата</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-black/[0.04]">
+          <>
+            {/* Мобильный список (карточки) */}
+            <div className="sm:hidden divide-y divide-black/[0.04]">
               {displayed.map((r) => (
-                <tr key={r.id} className="hover:bg-[#F9F9FB] transition-colors">
-                  <td className="px-5 py-3.5 text-[#AEAEB2] text-[13px]">{r.id}</td>
-                  <td className="px-5 py-3.5">
-                    <Link to={`/requests/${r.id}`} className="hover:text-indigo-600 transition-colors">
-                      <p className="font-medium text-[#1D1D1F]">{r.client_name}</p>
-                      <p className="text-[12px] text-[#AEAEB2] mt-0.5">{r.client_phone}</p>
-                    </Link>
-                  </td>
-                  <td className="px-5 py-3.5 text-[#6E6E73] hidden md:table-cell">{r.equipment_type || "—"}</td>
-                  <td className="px-5 py-3.5 text-[#6E6E73] hidden sm:table-cell">{r.city?.name || "—"}</td>
-                  <td className="px-5 py-3.5 text-[#6E6E73] hidden lg:table-cell">
-                    {r.partner?.name || <span className="text-[#AEAEB2]">—</span>}
-                  </td>
-                  <td className="px-5 py-3.5"><PriorityBadge priority={r.priority} score={r.score} /></td>
-                  <td className="px-5 py-3.5"><StatusBadge status={r.status} /></td>
-                  <td className="px-5 py-3.5 text-[#AEAEB2] text-[13px] hidden sm:table-cell">
-                    {new Date(r.created_at).toLocaleDateString("ru")}
-                  </td>
-                </tr>
+                <Link
+                  key={r.id}
+                  to={`/requests/${r.id}`}
+                  className="flex items-start gap-3 px-4 py-4 hover:bg-[#F9F9FB] transition-colors"
+                >
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <p className="text-[15px] font-medium text-[#1D1D1F] truncate">{r.client_name}</p>
+                      <PriorityBadge priority={r.priority} score={r.score} />
+                    </div>
+                    <p className="text-[12px] text-[#AEAEB2] mt-0.5">
+                      {[r.equipment_type, r.city?.name].filter(Boolean).join(" · ") || r.client_phone || "—"}
+                    </p>
+                    <div className="mt-2">
+                      <StatusBadge status={r.status} />
+                    </div>
+                  </div>
+                  <p className="text-[12px] text-[#AEAEB2] shrink-0 mt-0.5">
+                    {new Date(r.created_at).toLocaleDateString("ru", { day: "numeric", month: "short" })}
+                  </p>
+                </Link>
               ))}
-            </tbody>
-          </table>
+            </div>
+
+            {/* Десктопная таблица */}
+            <table className="hidden sm:table w-full text-[14px]">
+              <thead>
+                <tr className="border-b border-black/[0.05]">
+                  <th className="px-5 py-4 text-left text-[11px] font-semibold text-[#AEAEB2] uppercase tracking-wider w-12">#</th>
+                  <th className="px-5 py-4 text-left text-[11px] font-semibold text-[#AEAEB2] uppercase tracking-wider">Клиент</th>
+                  <th className="px-5 py-4 text-left text-[11px] font-semibold text-[#AEAEB2] uppercase tracking-wider hidden md:table-cell">Оборудование</th>
+                  <th className="px-5 py-4 text-left text-[11px] font-semibold text-[#AEAEB2] uppercase tracking-wider">Город</th>
+                  <th className="px-5 py-4 text-left text-[11px] font-semibold text-[#AEAEB2] uppercase tracking-wider hidden lg:table-cell">Партнёр</th>
+                  <th className="px-5 py-4 text-left text-[11px] font-semibold text-[#AEAEB2] uppercase tracking-wider">Приоритет</th>
+                  <th className="px-5 py-4 text-left text-[11px] font-semibold text-[#AEAEB2] uppercase tracking-wider">Статус</th>
+                  <th className="px-5 py-4 text-left text-[11px] font-semibold text-[#AEAEB2] uppercase tracking-wider hidden lg:table-cell">Дата</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-black/[0.04]">
+                {displayed.map((r) => (
+                  <tr key={r.id} className="hover:bg-[#F9F9FB] transition-colors">
+                    <td className="px-5 py-3.5 text-[#AEAEB2] text-[13px]">{r.id}</td>
+                    <td className="px-5 py-3.5">
+                      <Link to={`/requests/${r.id}`} className="hover:text-indigo-600 transition-colors">
+                        <p className="font-medium text-[#1D1D1F]">{r.client_name}</p>
+                        <p className="text-[12px] text-[#AEAEB2] mt-0.5">{r.client_phone}</p>
+                      </Link>
+                    </td>
+                    <td className="px-5 py-3.5 text-[#6E6E73] hidden md:table-cell">{r.equipment_type || "—"}</td>
+                    <td className="px-5 py-3.5 text-[#6E6E73]">{r.city?.name || "—"}</td>
+                    <td className="px-5 py-3.5 text-[#6E6E73] hidden lg:table-cell">
+                      {r.partner?.name || <span className="text-[#AEAEB2]">—</span>}
+                    </td>
+                    <td className="px-5 py-3.5"><PriorityBadge priority={r.priority} score={r.score} /></td>
+                    <td className="px-5 py-3.5"><StatusBadge status={r.status} /></td>
+                    <td className="px-5 py-3.5 text-[#AEAEB2] text-[13px] hidden lg:table-cell">
+                      {new Date(r.created_at).toLocaleDateString("ru")}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </>
         )}
       </div>
       <p className="text-[13px] text-[#AEAEB2] px-1">{requests.length} заявок</p>
